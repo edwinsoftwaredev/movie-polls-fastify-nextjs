@@ -46,6 +46,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^18.7.1":
+  version: 18.7.1
+  resolution: "@types/node@npm:18.7.1"
+  checksum: f1e2b701b107f97be01da4c46845cd23bcdcb2865f9abbb2847546d09587e726ea207daca6f0d1e72196875ef8c62feeeff5f1c1f2070445acd6d1a61d815c7c
+  languageName: node
+  linkType: hard
+
 "abort-controller@npm:^3.0.0":
   version: 3.0.0
   resolution: "abort-controller@npm:3.0.0"
@@ -398,6 +405,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@types/node": ^18.7.1
     fastify: ^4.4.0
     prisma: ^4.2.1
   languageName: unknown
