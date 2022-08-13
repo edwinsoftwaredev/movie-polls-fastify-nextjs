@@ -7,3 +7,8 @@ services:
       - ./database-scripts/init-database.sql:/docker-entrypoint-initdb.d/setup.sql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  movie-polls-cache:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - ./redis-server:/usr/local/etc/redis

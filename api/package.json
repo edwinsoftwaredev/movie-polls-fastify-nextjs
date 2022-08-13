@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@types/node": "^18.7.1",
-    "fastify": "^4.4.0"
+    "fastify": "^4.4.0",
+    "redis": "^4.2.0"
   },
   "packageManager": "yarn@3.2.2",
   "devDependencies": {
