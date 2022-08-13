@@ -7,4 +7,6 @@ datasource db {
 model User {
   provider    String
   id          String @id
+  displayName String
+  email       String?
 }
