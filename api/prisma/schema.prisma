@@ -1,0 +1,10 @@
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL") 
+}
+
+// Third party authentication
+model User {
+  provider    String
+  id          String @id
+}

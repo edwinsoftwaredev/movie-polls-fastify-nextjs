@@ -9,3 +9,9 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# .env
+.env
+
+# database data
+mysql-data
