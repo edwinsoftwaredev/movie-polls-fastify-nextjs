@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "@fastify/cookie": "^8.0.0",
+    "@fastify/csrf-protection": "^5.1.0",
     "@fastify/helmet": "^9.1.0",
     "fastify": "^4.4.0",
     "passport": "^0.6.0",
