@@ -137,6 +137,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@prisma/client@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "@prisma/client@npm:4.2.1"
+  dependencies:
+    "@prisma/engines-version": 4.2.0-33.2920a97877e12e055c1333079b8d19cee7f33826
+  peerDependencies:
+    prisma: "*"
+  peerDependenciesMeta:
+    prisma:
+      optional: true
+  checksum: 2eefe7182f2ebc26c35777e9ff22acb9c1d1f6e0988c518b32063d7677d066ab7258d13a0ee851addc77526dc0de9c05a02d5688c55377d65ddee1b6866b9e95
+  languageName: node
+  linkType: hard
+
+"@prisma/engines-version@npm:4.2.0-33.2920a97877e12e055c1333079b8d19cee7f33826":
+  version: 4.2.0-33.2920a97877e12e055c1333079b8d19cee7f33826
+  resolution: "@prisma/engines-version@npm:4.2.0-33.2920a97877e12e055c1333079b8d19cee7f33826"
+  checksum: 65975c69a361b56a85cf3652c8d7aec7549abe574158e423a64bc0be4bee83fe72ac2abd60133f776f3d410f97e7dc8c5dc516791ec963703cc6f914d378efc4
+  languageName: node
+  linkType: hard
+
 "@prisma/engines@npm:4.2.1":
   version: 4.2.1
   resolution: "@prisma/engines@npm:4.2.1"
@@ -1548,6 +1569,7 @@ __metadata:
     "@fastify/cookie": ^8.0.0
     "@fastify/csrf-protection": ^5.1.0
     "@fastify/helmet": ^9.1.0
+    "@prisma/client": ^4.2.1
     "@types/node": ^18.7.6
     fastify: ^4.4.0
     nodemon: ^2.0.19
