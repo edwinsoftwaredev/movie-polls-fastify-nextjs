@@ -630,6 +630,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^16.0.2":
+  version: 16.0.2
+  resolution: "dotenv@npm:16.0.2"
+  checksum: ca8f9ca2d67929c7771069f4c31b4e46b9932621009e658e5afd655dde2d69b77642bf36dbc9e72bc170523dfd908a9ee41c26f034c1fdc605ace3b1b4b10faf
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:^8.0.0":
   version: 8.0.0
   resolution: "emoji-regex@npm:8.0.0"
@@ -1598,6 +1605,7 @@ __metadata:
     "@fastify/session": ^9.0.0
     "@prisma/client": ^4.3.1
     "@types/node": ^18.7.6
+    dotenv: ^16.0.2
     fastify: ^4.4.0
     nodemon: ^2.0.19
     passport: ^0.6.0
