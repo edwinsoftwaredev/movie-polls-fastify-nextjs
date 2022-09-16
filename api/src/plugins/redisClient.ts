@@ -1,5 +1,5 @@
-import { FastifyPluginAsync, FastifyPluginOptions } from "fastify";
-import { createClient } from "redis";
+import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
+import { createClient } from 'redis';
 
 interface RedisClientPluginOptions extends FastifyPluginOptions {
   url: string;
@@ -16,13 +16,13 @@ const redisClient: FastifyPluginAsync<RedisClientPluginOptions> = async (
     url,
   });
 
-  redisClient.on("error", (err) =>
-    fastify.log.error("Redis Client Error: ", err)
-  );
+  redisClient.on('error', (err) => {
+    fastify.log.error(`Redis Client: ${err}`);
+  });
 
   await redisClient.connect();
 
-  fastify.decorate("redisClient", redisClient);
+  fastify.decorate('redisClient', redisClient);
 };
 
 export default redisClient;

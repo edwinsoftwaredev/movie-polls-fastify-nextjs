@@ -1,14 +1,25 @@
+# TODO: Secure all these services by
+# placing them behind a proxy (e.g NGINX, etc).
+# The Redis and MySQL servers must not be exposed
+# to the internet!
 services:
   movie-polls-db:
     image: mysql:latest
     restart: always
-    volumes: 
+    volumes:
       - ./mysql-data:/var/lib/mysql
       - ./database-scripts/init-database.sql:/docker-entrypoint-initdb.d/setup.sql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
   movie-polls-cache:
     image: redis:alpine
+    depends_on:
+      - movie-polls-db
     restart: always
     volumes:
       - ./redis-server:/usr/local/etc/redis
+    entrypoint: redis-server --appendonly yes
+    ports:
+      - 6379:6379

@@ -2,42 +2,40 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import Fastify, { FastifyPluginAsync } from 'fastify';
-import fastifyCookie from '@fastify/cookie';
-import fastifyCsrf from '@fastify/csrf-protection';
-import { auth, movies, polls } from 'services';
-import prismaClient from './plugins/prismaClient';
-import redisClient from './plugins/redisClient';
+// import { auth, movies, polls } from 'services';
+import { prismaClient, redisClient } from './plugins';
 
 const fastify = Fastify({
   logger: true,
 });
 
+// Using the same connection URL connection string to the Redis server
+// for each Fastify plugin
+const redisConnectionString = process.env.SESSION_CACHE_URL || '';
+
 // auth
 fastify.register<FastifyPluginAsync>(async (instance, opts) => {
   instance.register(prismaClient, {});
-  instance.register(redisClient, { url: '' });
-  instance.register(auth);
+  instance.register(redisClient, { url: redisConnectionString });
+  // instance.register(auth);
 });
 
 // movies
 fastify.register<FastifyPluginAsync>(async (instance, opts) => {
   instance.register(prismaClient, {});
-  instance.register(redisClient, { url: '' });
-  instance.register(movies);
+  instance.register(redisClient, { url: redisConnectionString });
+  // instance.register(movies);
 });
 
 // polls
 fastify.register<FastifyPluginAsync>(async (instance, opts) => {
   instance.register(prismaClient, {});
-  instance.register(redisClient, { url: '' });
-  instance.register(polls);
+  instance.register(redisClient, { url: redisConnectionString });
+  // instance.register(polls);
 });
 
-fastify.register(fastifyCookie, { secret: 'CHANGEME' });
-fastify.register(fastifyCsrf, { cookieOpts: { signed: true } });
-
 // Server is just limited to listen on
-// the specified methods
+// the specified HTTP methods
 fastify
   .route({
     method: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
