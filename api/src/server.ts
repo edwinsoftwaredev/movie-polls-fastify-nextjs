@@ -2,8 +2,8 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import Fastify, { FastifyPluginAsync } from 'fastify';
-// import { auth, movies, polls } from 'services';
-import { prismaClient, redisClient } from './plugins';
+import { auth, movies, polls } from 'services';
+import { prismaClient, redisClient } from 'plugins';
 
 const fastify = Fastify({
   logger: true,
@@ -17,21 +17,21 @@ const redisConnectionString = process.env.SESSION_CACHE_URL || '';
 fastify.register<FastifyPluginAsync>(async (instance, opts) => {
   instance.register(prismaClient, {});
   instance.register(redisClient, { url: redisConnectionString });
-  // instance.register(auth);
+  instance.register(auth);
 });
 
 // movies
 fastify.register<FastifyPluginAsync>(async (instance, opts) => {
   instance.register(prismaClient, {});
   instance.register(redisClient, { url: redisConnectionString });
-  // instance.register(movies);
+  instance.register(movies);
 });
 
 // polls
 fastify.register<FastifyPluginAsync>(async (instance, opts) => {
   instance.register(prismaClient, {});
   instance.register(redisClient, { url: redisConnectionString });
-  // instance.register(polls);
+  instance.register(polls);
 });
 
 // Server is just limited to listen on
