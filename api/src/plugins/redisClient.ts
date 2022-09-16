@@ -1,4 +1,5 @@
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
+import fastifyPlugin from 'fastify-plugin';
 import { createClient } from 'redis';
 
 interface RedisClientPluginOptions extends FastifyPluginOptions {
@@ -25,4 +26,4 @@ const redisClient: FastifyPluginAsync<RedisClientPluginOptions> = async (
   fastify.decorate('redisClient', redisClient);
 };
 
-export default redisClient;
+export default fastifyPlugin(redisClient);

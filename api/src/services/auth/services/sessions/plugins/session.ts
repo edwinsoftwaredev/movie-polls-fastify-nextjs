@@ -1,20 +1,26 @@
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
+import fastifyPlugin from 'fastify-plugin';
 import fastifySession from '@fastify/session';
+import fastifyCookie from '@fastify/cookie';
 
-interface SessionPluginOptions extends FastifyPluginOptions {}
+interface SessionPluginOptions extends FastifyPluginOptions {
+  sessionSecret: string;
+  isDevEnv: boolean;
+}
 
 const session: FastifyPluginAsync<SessionPluginOptions> = async (
   fastify,
   opts
 ) => {
-  opts;
+  const { sessionSecret, isDevEnv } = opts;
 
+  fastify.register(fastifyCookie);
   fastify.register(fastifySession, {
-    secret: process.env.SESSION_SECRET as string,
+    secret: sessionSecret,
     cookie: {
       sameSite: 'strict',
       httpOnly: true,
-      secure: true,
+      secure: !isDevEnv,
       maxAge: 15 * 60 * 1000,
     },
     // TODO: consider using a RedisJSON
@@ -56,21 +62,21 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
       },
       set(sessionId, session, callback) {
         const { userSession } = session;
-        const sessionCsrfToken = session.get<string>('_csrf');
+        const sessionCsrfToken = session.get<string>('_csrf') || '';
         // Save session in persistent store
         // Then save session in session store
-        fastify.prismaClient.session
+        fastify.prismaClient?.session
           .upsert({
             where: {
               id: sessionId,
             },
             update: {
-              csrfToken: userSession.csrfToken,
+              csrfToken: userSession?.csrfToken,
             },
             create: {
               id: sessionId,
               csrfToken: sessionCsrfToken,
-              userId: userSession.userId,
+              userId: userSession?.userId,
             },
           })
           .then((session) => {
@@ -101,8 +107,8 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
   });
 
   fastify.addHook('preHandler', async (req, res) => {
-    if (!req.session.userSession.userId) return res.redirect(301, '/');
+    if (!req.session.userSession?.userId) return res.redirect(301, '/');
   });
 };
 
-export default session;
+export default fastifyPlugin(session);

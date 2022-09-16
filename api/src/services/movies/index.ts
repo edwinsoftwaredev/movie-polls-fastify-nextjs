@@ -1,20 +1,19 @@
-import { FastifyPluginAsync } from 'fastify';
-
-import { FastifyPluginOptions } from 'fastify';
+import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 
 export interface MoviesPluginOptions extends FastifyPluginOptions {}
 
-const movies: FastifyPluginAsync<MoviesPluginOptions> = async (
-  fastify,
-  opts
-) => {
+const movies: FastifyPluginAsync<MoviesPluginOptions> = async (fastify) => {
   fastify.redisClient;
   fastify.prismaClient;
+
   fastify.register(
-    async () => {
-      // register routes
+    async (instance) => {
+      // Protects the entire plugin from CSRF attacks
+      instance.addHook('onRequest', instance.csrfProtection);
+
       // add decorators
       // add hooks
+      // add routes
     },
     { prefix: '/movies' }
   );
