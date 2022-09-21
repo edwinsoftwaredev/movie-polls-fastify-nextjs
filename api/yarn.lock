@@ -25,13 +25,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/cookie@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@fastify/cookie@npm:8.0.0"
+"@fastify/cookie@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@fastify/cookie@npm:8.2.0"
   dependencies:
     cookie: ^0.5.0
     fastify-plugin: ^4.0.0
-  checksum: 6108fa3cfffc34a9dbeb85db90f44209aee647691d9395893f6ba5859d78cf5f114a0bd33725877312cfef834a133d7e8ebb75e277a90b71a0b298db8699001b
+  checksum: eb42d5b899e2583fe265e4438e940c4058a9ec2d9af295ad13021efef73340f5c5a1eb6541a91e915ff868cfe553102ed699bdc89062c3e966a61add16e2d55f
+  languageName: node
+  linkType: hard
+
+"@fastify/cors@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@fastify/cors@npm:8.1.0"
+  dependencies:
+    fastify-plugin: ^4.0.0
+    mnemonist: 0.39.2
+  checksum: 7fb48eb743b0e821b8104d308ccc76ccd105ee09ad413bf035c8975e508acb75196cee4fe4ec9b6ee5f9917346fa07fc4c08835e6e953dc7e84f27774aea3857
   languageName: node
   linkType: hard
 
@@ -76,25 +86,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/helmet@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@fastify/helmet@npm:9.1.0"
+"@fastify/helmet@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@fastify/helmet@npm:10.0.0"
   dependencies:
-    fastify-plugin: ^3.0.0
-    helmet: ^5.0.1
-  checksum: 08e32555c4ba0ffdb5d3640c80ccd6c44b9eca58571a6134164ec2b4da9b2f69c80ab46265d31e5400958daae828cca4451763e171666454224469cdbd912735
+    fastify-plugin: ^4.2.1
+    helmet: ^6.0.0
+  checksum: 6bf9d6e7baeaffa5622797d9afd47a2ea562f26a84058d8122c6d631847471a7e78ba0ed59813ce738608dce130576a4c1b0838a37a0cb320c39242173f30c8a
   languageName: node
   linkType: hard
 
-"@fastify/session@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@fastify/session@npm:9.0.0"
+"@fastify/session@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@fastify/session@npm:10.0.0"
   dependencies:
-    cookie-signature: ^1.1.0
-    fastify-plugin: ^3.0.0
+    fastify-plugin: ^4.0.0
     safe-stable-stringify: ^2.3.1
-    uid-safe: ^2.1.5
-  checksum: a21a6f586533163db9275da754abfec18a879c31f73216623fd2124609cf46a5241ca7530a36fad337df6474b2f4fd92d0fd1a6ddd0795396df437b81519c01b
+  checksum: 49b337ce4f788908f5b1d0d4dac4ca15397ea7fec21c652c82eb67d00612d05a6b5e5efef3db9f1577bbf64eb75dea21fa734e84839fddd2499d50ccbc8849df
   languageName: node
   linkType: hard
 
@@ -186,14 +194,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/client@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@redis/client@npm:1.2.0"
+"@redis/client@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@redis/client@npm:1.3.0"
   dependencies:
     cluster-key-slot: 1.1.0
     generic-pool: 3.8.2
     yallist: 4.0.0
-  checksum: 098a550a6728d9d3babb432a1c32f1678cbda5ad7fa3d59316fc334be42ef05d778fc4cf2e3d873a34817447870a5fc0486e62793698a279404b3b086ba7422e
+  checksum: 3f935cdffeecbf999ea9e03115af7d95421078a58b3a5aa74afb2d0f90b6e203726753b4aeea5d2f1483c42bf3f64a6794375b2e10873829c2b7641cf179ad84
   languageName: node
   linkType: hard
 
@@ -206,21 +214,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/json@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@redis/json@npm:1.0.3"
+"@redis/json@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@redis/json@npm:1.0.4"
   peerDependencies:
     "@redis/client": ^1.0.0
-  checksum: 26a7003c2fbacfa5998671e3a301cb2285432bf90f237adedcf76c0be0d379528e6710d469a8ea93c04bbd22951f9c2f41d460dbd79e85856f199248c4a250d5
+  checksum: de07f9c37abed603dec352593eb69fc8a94475e7f86b4f65b9805394492d448a1e4181db74269d80eb9dba6f3ae8a41804204821db36bb801cd7c1e30ac7ec80
   languageName: node
   linkType: hard
 
-"@redis/search@npm:1.0.6":
-  version: 1.0.6
-  resolution: "@redis/search@npm:1.0.6"
+"@redis/search@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@redis/search@npm:1.1.0"
   peerDependencies:
     "@redis/client": ^1.0.0
-  checksum: 5c776143520b11ae2e49a05e7fe3df514a01460f2be90759b15e4f097bf4a985784c48c2184ac2c275ced3ec5a0c77b208a4d46a50161d1ad6025e3ab2990aa7
+  checksum: dc0f1c8234580fb839e1135f76a70654461cb03be8918799a2a0cd79dd9815e0978feb99bcc01f5be37dabd95460f6cdba9f61a90a4d39183205883e12855afd
   languageName: node
   linkType: hard
 
@@ -567,13 +575,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie-signature@npm:^1.1.0":
-  version: 1.2.0
-  resolution: "cookie-signature@npm:1.2.0"
-  checksum: d11f56f909733695d989511bf0e1dd874220d818b9d118945dce3c275fa50adfb3f6984354de0f5eefdc9347951a22ba3545230a762576019d23c16055b12d4c
-  languageName: node
-  linkType: hard
-
 "cookie@npm:^0.5.0":
   version: 0.5.0
   resolution: "cookie@npm:0.5.0"
@@ -722,9 +723,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "fastify@npm:4.4.0"
+"fastify-plugin@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "fastify-plugin@npm:4.2.1"
+  checksum: 01eaa6644f21a50c0a83a8ac0dceea8f2d35bafd233788a10a7b60803bb0b27068677b718e05ce14f4e97778f0966389eedbbb16b4f3886d7fbbb6125788d681
+  languageName: node
+  linkType: hard
+
+"fastify@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "fastify@npm:4.6.0"
   dependencies:
     "@fastify/ajv-compiler": ^3.1.1
     "@fastify/error": ^3.0.0
@@ -732,7 +740,7 @@ __metadata:
     abstract-logging: ^2.0.1
     avvio: ^8.1.3
     find-my-way: ^7.0.0
-    light-my-request: ^5.0.0
+    light-my-request: ^5.5.1
     pino: ^8.0.0
     process-warning: ^2.0.0
     proxy-addr: ^2.0.7
@@ -740,7 +748,7 @@ __metadata:
     secure-json-parse: ^2.4.0
     semver: ^7.3.7
     tiny-lru: ^8.0.2
-  checksum: ca5296d6b97916a2ed9596fa3f2d76e2e0b2cc45185adec2c693900bff54550fbed0029dd4106c7c2075ffc877245bbac58068ffc75993b524d00d733c962cde
+  checksum: ac696de3a3675023223b2814196ffac28bb212daeb45feb2fb4b8b4385f66742eaef8367070d81d9281a29dc1603dc906d54e0e020713e7466784a948e5b925c
   languageName: node
   linkType: hard
 
@@ -894,10 +902,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"helmet@npm:^5.0.1":
-  version: 5.1.1
-  resolution: "helmet@npm:5.1.1"
-  checksum: b72ba26cc431804ad3b8ecdc18db95409a492cbb7a7e825efc27fc502b9433fec39fc083f2aad4fe7ed1a89a4287560b59f4435f9689eebbae6a2b61a1ec1b7d
+"helmet@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "helmet@npm:6.0.0"
+  checksum: 0dd89d5b77c5334e815f5d29376ca7af0ad1007136890f497be3455d9ed9734e7203e13d9931e29e4d2ced1c632c52440f16d2a02e8835fd8b8706a12052faad
   languageName: node
   linkType: hard
 
@@ -1066,14 +1074,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"light-my-request@npm:^5.0.0":
-  version: 5.4.0
-  resolution: "light-my-request@npm:5.4.0"
+"json5@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "json5@npm:2.2.1"
+  bin:
+    json5: lib/cli.js
+  checksum: 74b8a23b102a6f2bf2d224797ae553a75488b5adbaee9c9b6e5ab8b510a2fc6e38f876d4c77dea672d4014a44b2399e15f2051ac2b37b87f74c0c7602003543b
+  languageName: node
+  linkType: hard
+
+"light-my-request@npm:^5.5.1":
+  version: 5.6.1
+  resolution: "light-my-request@npm:5.6.1"
   dependencies:
     cookie: ^0.5.0
     process-warning: ^2.0.0
     set-cookie-parser: ^2.4.1
-  checksum: cc87a63136668498fcbc84f094f950c427c7d2c0d3ecf5b97074c9992ff061b8f5f6ede3bbf2b86fa69730612345119509ca3bb2ea77b20986f9c252f2793559
+  checksum: c527702045c23150a2805b2f3a421e398bfa660733aaefb5e110e568bb4d323ff6a46212623cba43c000421c36ac6da5f5a37029603a60d6db68fbd25551bc8b
   languageName: node
   linkType: hard
 
@@ -1139,6 +1156,13 @@ __metadata:
   dependencies:
     brace-expansion: ^2.0.1
   checksum: 15ce53d31a06361e8b7a629501b5c75491bc2b59712d53e802b1987121d91b433d73fcc5be92974fde66b2b51d8fb28d75a9ae900d249feb792bb1ba2a4f0a90
+  languageName: node
+  linkType: hard
+
+"minimist@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "minimist@npm:1.2.6"
+  checksum: d15428cd1e11eb14e1233bcfb88ae07ed7a147de251441d61158619dfb32c4d7e9061d09cab4825fdee18ecd6fce323228c8c47b5ba7cd20af378ca4048fb3fb
   languageName: node
   linkType: hard
 
@@ -1218,6 +1242,15 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: a96865108c6c3b1b8e1d5e9f11843de1e077e57737602de1b82030815f311be11f96f09cce59bd5b903d0b29834733e5313f9301e3ed6d6f6fba2eae0df4298f
+  languageName: node
+  linkType: hard
+
+"mnemonist@npm:0.39.2":
+  version: 0.39.2
+  resolution: "mnemonist@npm:0.39.2"
+  dependencies:
+    obliterator: ^2.0.1
+  checksum: 77075ddf30c5e7ee8ccde6d09b61a2511eb324e9d04871e6cb48ede9ed1d2b002ad121314912bf1926d12ba3cb520ca2fb54c2a6c3f9d4467774af2f447907aa
   languageName: node
   linkType: hard
 
@@ -1320,6 +1353,13 @@ __metadata:
     gauge: ^4.0.3
     set-blocking: ^2.0.0
   checksum: ae238cd264a1c3f22091cdd9e2b106f684297d3c184f1146984ecbe18aaa86343953f26b9520dedd1b1372bc0316905b736c1932d778dbeb1fcf5a1001390e2a
+  languageName: node
+  linkType: hard
+
+"obliterator@npm:^2.0.1":
+  version: 2.0.4
+  resolution: "obliterator@npm:2.0.4"
+  checksum: f28ad35b6d812089315f375dc3e6e5f9bebf958ebe4b10ccd471c7115cbcf595e74bdac4783ae758e5b1f47e3096427fdb37cfa7bed566b132df92ff317b9a7c
   languageName: node
   linkType: hard
 
@@ -1492,13 +1532,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"random-bytes@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "random-bytes@npm:1.0.0"
-  checksum: 09faa256394aa2ca9754aa57e92a27c452c3e97ffb266e98bebb517332e9df7168fea393159f88d884febce949ba8bec8ddb02f03342da6c6023ecc7b155e0ae
-  languageName: node
-  linkType: hard
-
 "readable-stream@npm:^3.6.0":
   version: 3.6.0
   resolution: "readable-stream@npm:3.6.0"
@@ -1535,17 +1568,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redis@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "redis@npm:4.2.0"
+"redis@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "redis@npm:4.3.1"
   dependencies:
     "@redis/bloom": 1.0.2
-    "@redis/client": 1.2.0
+    "@redis/client": 1.3.0
     "@redis/graph": 1.0.1
-    "@redis/json": 1.0.3
-    "@redis/search": 1.0.6
+    "@redis/json": 1.0.4
+    "@redis/search": 1.1.0
     "@redis/time-series": 1.0.3
-  checksum: 6c35b56c6b685e82973c5698c5736c07ccbc59f3bc18d8de61e45ead2df4b8fc82062e5618452f4d3f8c23f02ff8c0b847c8d6a681f909c403a0fb96adcc2b98
+  checksum: fe20b548f80b55abb50e552c63a39e8e1bed1f48de0eaa87ed14b44b1168916a5ad4f51a766994f15fc2df7d5abc45123a97c3a3fa73da42492419978762244d
   languageName: node
   linkType: hard
 
@@ -1599,19 +1632,22 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@fastify/cookie": ^8.0.0
+    "@fastify/cookie": ^8.2.0
+    "@fastify/cors": ^8.1.0
     "@fastify/csrf-protection": ^5.1.0
-    "@fastify/helmet": ^9.1.0
-    "@fastify/session": ^9.0.0
+    "@fastify/helmet": ^10.0.0
+    "@fastify/session": ^10.0.0
     "@prisma/client": ^4.3.1
     "@types/node": ^18.7.6
     dotenv: ^16.0.2
-    fastify: ^4.4.0
+    fastify: ^4.6.0
+    fastify-plugin: ^4.2.1
     nodemon: ^2.0.19
     passport: ^0.6.0
     prisma: ^4.3.1
-    redis: ^4.2.0
+    redis: ^4.3.1
     ts-node: ^10.9.1
+    tsconfig-paths: ^4.1.0
     typescript: ^4.8.2
   languageName: unknown
   linkType: soft
@@ -1794,6 +1830,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"strip-bom@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "strip-bom@npm:3.0.0"
+  checksum: 8d50ff27b7ebe5ecc78f1fe1e00fcdff7af014e73cf724b46fb81ef889eeb1015fc5184b64e81a2efe002180f3ba431bdd77e300da5c6685d702780fbf0c8d5b
+  languageName: node
+  linkType: hard
+
 "supports-color@npm:^5.5.0":
   version: 5.5.0
   resolution: "supports-color@npm:5.5.0"
@@ -1891,6 +1934,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsconfig-paths@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "tsconfig-paths@npm:4.1.0"
+  dependencies:
+    json5: ^2.2.1
+    minimist: ^1.2.6
+    strip-bom: ^3.0.0
+  checksum: e4b101f81b2abd95499d8145e0aa73144e857c2c359191058486cef101b7accae22a69114e5d5814a13d5ab3b0bae70dd0c85bcdb7e829bbe1bfda5c9067c9b1
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^4.8.2":
   version: 4.8.2
   resolution: "typescript@npm:4.8.2"
@@ -1903,20 +1957,11 @@ __metadata:
 
 "typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>":
   version: 4.8.2
-  resolution: "typescript@patch:typescript@npm%3A4.8.2#~builtin<compat/typescript>::version=4.8.2&hash=f456af"
+  resolution: "typescript@patch:typescript@npm%3A4.8.2#~builtin<compat/typescript>::version=4.8.2&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 6f49363af8af2fe480da1d5fa68712644438785208b06690a3cbe5e7365fd652c3a0f1e587bc8684d78fb69de3dde4de185c0bad7bb4f3664ddfc813ce8caad6
-  languageName: node
-  linkType: hard
-
-"uid-safe@npm:^2.1.5":
-  version: 2.1.5
-  resolution: "uid-safe@npm:2.1.5"
-  dependencies:
-    random-bytes: ~1.0.0
-  checksum: 07536043da9a026f4a2bc397543d0ace7587449afa1d9d2c4fd3ce76af8a5263a678788bcc429dff499ef29d45843cd5ee9d05434450fcfc19cc661229f703d1
+  checksum: 5cb0f02f414f5405f4b0e7ee1fd7fa9177b6a8783c9017b6cad85f56ce4c4f93e0e6f2ce37e863cb597d44227cd009474c9fbd85bf7a50004e5557426cb58079
   languageName: node
   linkType: hard
 

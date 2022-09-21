@@ -1,9 +1,20 @@
 {
-	"compilerOptions": {
-		"sourceMap": true,
-		"outDir": "dist",
-		"strict": true,
-		"lib": ["esnext"],
-		"esModuleInterop": true
-	}
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  },
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "decorators": ["src/decorators"],
+      "hooks": ["src/hooks"],
+      "plugins": ["src/plugins"],
+      "routes": ["src/routes"],
+      "services": ["src/services"]
+    }
+  }
 }
