@@ -1,9 +1,61 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import { SignIn } from 'components';
 import styles from '../styles/Home.module.css';
+import { Auth } from 'services';
+import { useEffect } from 'react';
+import { Session } from 'types';
 
-const Home: NextPage = () => {
+interface HomeProps {
+  session?: Session;
+}
+
+export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
+  req,
+  res,
+}) => {
+  // --- Server Auth flow ---
+  // 1. Check that user is authenticated
+  // 2. If user is not authenticated then show login components
+  // 3. If user is authenticated dont show login components
+
+  // If sessionId cookie is not found, get a new session on client side
+  // Session without a sessionId is not an authenticated session
+  const { sessionId } = req.cookies;
+  if (!sessionId)
+    return {
+      props: {},
+    };
+
+  const headers = new Headers();
+  const sessionCookie = `sessionId=${sessionId}`;
+  headers.append('Cookie', [sessionCookie].join('; '));
+
+  const session = await Auth.authenticateSession({ headers });
+
+  return {
+    props: {
+      session,
+    },
+  };
+};
+
+const Home: NextPage<HomeProps> = ({ session }) => {
+  const { sessionCSRFToken, user } = session || {};
+
+  // --- Client Auth flow ---
+  // 1. get session if there isn't
+  // 2. if there is an authenticated user dont show login UI
+  // 3. if there isn't an authenticated user show login UI
+  useEffect(() => {
+    if (!session) {
+      const API_HOST_URL = process.env.NEXT_PUBLIC_API_HOST_URL || '';
+
+      fetch(`${API_HOST_URL}/`, { credentials: 'include' });
+    }
+  }, [session]);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -16,6 +68,16 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+
+        <div>
+          {user ? (
+            <p>
+              Welcome <span>{user.name}</span>
+            </p>
+          ) : (
+            <SignIn />
+          )}
+        </div>
 
         <p className={styles.description}>
           Get started by editing{' '}
