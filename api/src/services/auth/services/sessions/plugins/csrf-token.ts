@@ -9,7 +9,8 @@ const csrfToken: FastifyPluginAsync = async (fastify) => {
   });
 
   fastify.get('/', async (req, res) => {
-    const sessionCSRFToken = await res.generateCsrf();
+    const sessionCSRFToken =
+      req.session.get('_csrf') || (await res.generateCsrf());
     return { sessionCSRFToken };
   });
 };

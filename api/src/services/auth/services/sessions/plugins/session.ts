@@ -23,6 +23,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
       secure: !isDevEnv,
       maxAge: 15 * 60 * 1000,
     },
+    rolling: false,
     // TODO: consider using a RedisJSON
     // instead of manually parsing JSON strings (slow)
     store: {
