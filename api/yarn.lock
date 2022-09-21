@@ -35,6 +35,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/cors@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@fastify/cors@npm:8.1.0"
+  dependencies:
+    fastify-plugin: ^4.0.0
+    mnemonist: 0.39.2
+  checksum: 7fb48eb743b0e821b8104d308ccc76ccd105ee09ad413bf035c8975e508acb75196cee4fe4ec9b6ee5f9917346fa07fc4c08835e6e953dc7e84f27774aea3857
+  languageName: node
+  linkType: hard
+
 "@fastify/csrf-protection@npm:^5.1.0":
   version: 5.1.0
   resolution: "@fastify/csrf-protection@npm:5.1.0"
@@ -1235,6 +1245,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mnemonist@npm:0.39.2":
+  version: 0.39.2
+  resolution: "mnemonist@npm:0.39.2"
+  dependencies:
+    obliterator: ^2.0.1
+  checksum: 77075ddf30c5e7ee8ccde6d09b61a2511eb324e9d04871e6cb48ede9ed1d2b002ad121314912bf1926d12ba3cb520ca2fb54c2a6c3f9d4467774af2f447907aa
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.1.2":
   version: 2.1.2
   resolution: "ms@npm:2.1.2"
@@ -1334,6 +1353,13 @@ __metadata:
     gauge: ^4.0.3
     set-blocking: ^2.0.0
   checksum: ae238cd264a1c3f22091cdd9e2b106f684297d3c184f1146984ecbe18aaa86343953f26b9520dedd1b1372bc0316905b736c1932d778dbeb1fcf5a1001390e2a
+  languageName: node
+  linkType: hard
+
+"obliterator@npm:^2.0.1":
+  version: 2.0.4
+  resolution: "obliterator@npm:2.0.4"
+  checksum: f28ad35b6d812089315f375dc3e6e5f9bebf958ebe4b10ccd471c7115cbcf595e74bdac4783ae758e5b1f47e3096427fdb37cfa7bed566b132df92ff317b9a7c
   languageName: node
   linkType: hard
 
@@ -1607,6 +1633,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@fastify/cookie": ^8.2.0
+    "@fastify/cors": ^8.1.0
     "@fastify/csrf-protection": ^5.1.0
     "@fastify/helmet": ^10.0.0
     "@fastify/session": ^10.0.0
