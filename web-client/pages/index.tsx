@@ -30,7 +30,10 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
 
   const headers = new Headers();
   const sessionCookie = `sessionId=${sessionId}`;
+  const origin = process.env.HOST_URL || '';
+
   headers.append('Cookie', [sessionCookie].join('; '));
+  headers.append('Origin', origin);
 
   const session = await Auth.authenticateSession({ headers });
 
