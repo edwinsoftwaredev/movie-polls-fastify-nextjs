@@ -248,6 +248,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@trpc/server@npm:^9.27.2":
+  version: 9.27.2
+  resolution: "@trpc/server@npm:9.27.2"
+  checksum: b5658b0f5a50ac2c474ceff888df29d0c0924d09a2980b83c62adbe90be8e985737a6d3c60fa817b702b68b20252d0d132389e028af5d6f0ce53ae1e5a8704b8
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.9
   resolution: "@tsconfig/node10@npm:1.0.9"
@@ -1638,6 +1645,7 @@ __metadata:
     "@fastify/helmet": ^10.0.0
     "@fastify/session": ^10.0.0
     "@prisma/client": ^4.3.1
+    "@trpc/server": ^9.27.2
     "@types/node": ^18.7.6
     dotenv: ^16.0.2
     fastify: ^4.6.0
