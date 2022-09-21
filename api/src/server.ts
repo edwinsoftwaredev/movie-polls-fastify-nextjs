@@ -1,3 +1,4 @@
+import fastifyCors from '@fastify/cors';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -8,13 +9,29 @@ const fastify = Fastify({
   logger: true,
 });
 
-// auth
+// CORS configuration
+fastify.register(fastifyCors, {
+  origin: (origin, callback) => {
+    const hostname = new URL(origin).hostname;
+    const allowedHostname = process.env.HOSTNAME;
+
+    if (hostname === allowedHostname) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error('Origin Not Allowed'), false);
+  },
+  credentials: true,
+});
+
+// auth plugin
 fastify.register(authPlugin);
 
-// movies
+// movies plugin
 // fastify.register(moviesPlugin);
 
-// polls
+// polls plugin
 // fastify.register(pollsPlugin);
 
 // Server is just limited to listen on
