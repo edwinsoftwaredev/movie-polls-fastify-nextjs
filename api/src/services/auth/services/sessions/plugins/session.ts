@@ -24,7 +24,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
       maxAge: 15 * 60 * 1000,
     },
     // TODO: consider using a RedisJSON
-    // instead of manually parsing JSON strings
+    // instead of manually parsing JSON strings (slow)
     store: {
       // Adding "workaround" type to callback param,
       // this is due to stores(express.js like stores) compatability issues on the
@@ -33,45 +33,40 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.redisClient
           .get(sessionId)
           .then((sessionJson) => {
-            // if session is not found in the session store
-            // return null
-            if (!sessionJson) return null;
-            const session = JSON.parse(sessionJson);
-            callback(null, session);
-            return session;
-          })
-          .then((session) => {
-            // if session found
-            // return session
-            if (session) return session;
-
+            if (sessionJson) return JSON.parse(sessionJson);
+            // If session not found in cache
+            // search session in persistent storage
             return fastify.prismaClient.session
               .findUniqueOrThrow({
                 where: {
                   id: sessionId,
                 },
               })
-              .then((session) => {
-                callback(null, session);
-                return session;
-              })
-              .catch((reason: Error) => {
-                callback(reason, null);
-              });
+              .then((userSession) => ({
+                id: userSession.id,
+                _csrf: userSession.csrfToken,
+                userId: userSession.userId,
+              }));
+          })
+          .then((session) => {
+            callback(undefined, session);
+          })
+          .catch((reason) => {
+            callback(reason);
           });
       },
       set(sessionId, session, callback) {
         const { userSession } = session;
         const sessionCsrfToken = session.get<string>('_csrf') || '';
-        // Save session in persistent store
-        // Then save session in session store
+        // 1. Save session in persistent storage
+        // 2. Save session in session storage
         fastify.prismaClient?.session
           .upsert({
             where: {
               id: sessionId,
             },
             update: {
-              csrfToken: userSession?.csrfToken,
+              csrfToken: sessionCsrfToken,
             },
             create: {
               id: sessionId,
@@ -79,9 +74,19 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
               userId: userSession?.userId,
             },
           })
-          .then((session) => {
-            const sessionJSON = JSON.stringify(session);
-            return fastify.redisClient.set(session.id, sessionJSON);
+          .then((userSession) => {
+            // The session type retrived from the session storage is not the same
+            // as the type retrived from the persistant storage
+            const { id: sessionId, csrfToken: _csrf, userId } = userSession;
+            const sessionJSON = JSON.stringify({
+              sessionId,
+              _csrf,
+              userId,
+            });
+            return fastify.redisClient.set(sessionId, sessionJSON);
+          })
+          .then(() => {
+            callback(undefined);
           })
           .catch((reason) => {
             callback(reason);
@@ -92,12 +97,15 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         // Then remove session from persistent storage
         fastify.redisClient
           .del(sessionId)
-          .then(() => {
-            return fastify.prismaClient.session.delete({
+          .then(() =>
+            fastify.prismaClient.session.delete({
               where: {
                 id: sessionId,
               },
-            });
+            })
+          )
+          .then(() => {
+            callback();
           })
           .catch((reason) => {
             callback(reason);
@@ -107,7 +115,9 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
   });
 
   fastify.addHook('preHandler', async (req, res) => {
-    if (!req.session.userSession?.userId) return res.redirect(301, '/');
+    if (!req.session.userSession?.userId) {
+      // res.redirect(301, '/');
+    }
   });
 };
 

@@ -1,6 +1,5 @@
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { routes } from './services/plugins';
 import sessions from './services/sessions';
 
 interface AuthPluginOptions extends FastifyPluginOptions {
@@ -15,7 +14,6 @@ const auth: FastifyPluginAsync<AuthPluginOptions> = async (fastify, opts) => {
   fastify.redisClient;
 
   fastify.register(sessions, { sessionSecret, isDevEnv });
-  fastify.register(routes);
 
   // register auth routes
   // register other things

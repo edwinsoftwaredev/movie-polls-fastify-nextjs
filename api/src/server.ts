@@ -12,10 +12,10 @@ const fastify = Fastify({
 fastify.register(authPlugin);
 
 // movies
-fastify.register(moviesPlugin);
+// fastify.register(moviesPlugin);
 
 // polls
-fastify.register(pollsPlugin);
+// fastify.register(pollsPlugin);
 
 // Server is just limited to listen on
 // the specified HTTP methods
