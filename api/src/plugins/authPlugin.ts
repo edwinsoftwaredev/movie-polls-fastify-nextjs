@@ -7,7 +7,7 @@ import redisClient from './redisClient';
 const authPlugin: FastifyPluginAsync = async (fastify) => {
   const redisConnectionString = process.env.SESSION_CACHE_URL || '';
   const sessionSecret = process.env.SESSION_SECRET || '';
-  const isDevEnv = process.env.ENV === 'development';
+  const isDevEnv = process.env.NODE_ENV === 'development';
   const databaseUrl = process.env.DATABASE_URL || '';
 
   fastify.register(prismaClient, { databaseUrl });
