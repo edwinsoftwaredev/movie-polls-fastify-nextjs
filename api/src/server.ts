@@ -5,11 +5,15 @@ import { authPlugin, moviesPlugin, pollsPlugin } from 'plugins';
 import appRouter from 'trpc/server';
 import * as dotenv from 'dotenv';
 import { createContext } from 'trpc/context';
+import fastifyHelmet from '@fastify/helmet';
 dotenv.config();
 
 const fastify = Fastify({
   logger: true,
 });
+
+// helmet plugin
+fastify.register(fastifyHelmet);
 
 // CORS configuration
 fastify.register(fastifyCors, {
@@ -27,14 +31,6 @@ fastify.register(fastifyCors, {
   credentials: true,
 });
 
-fastify.register(fastifyTRPCPlugin, {
-  prefix: '/trpc',
-  trpcOptions: {
-    router: appRouter,
-    createContext,
-  },
-});
-
 // auth plugin
 fastify.register(authPlugin);
 
@@ -43,6 +39,15 @@ fastify.register(authPlugin);
 
 // polls plugin
 // fastify.register(pollsPlugin);
+
+// routes plugin
+fastify.register(fastifyTRPCPlugin, {
+  prefix: '/trpc',
+  trpcOptions: {
+    router: appRouter,
+    createContext,
+  },
+});
 
 // Server is just limited to listen on
 // the specified HTTP methods

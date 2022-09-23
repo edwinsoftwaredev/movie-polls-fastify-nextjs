@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { SignIn } from 'components';
 import styles from '../styles/Home.module.css';
 import { trpc } from 'src/trpc';
-import { useEffect } from 'react';
 
 const Home: NextPage = () => {
   // --- Server Auth flow ---
