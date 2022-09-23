@@ -1,9 +1,11 @@
+import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import fastifyCors from '@fastify/cors';
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import Fastify from 'fastify';
 import { authPlugin, moviesPlugin, pollsPlugin } from 'plugins';
+import appRouter from 'trpc/server';
+import * as dotenv from 'dotenv';
+import { createContext } from 'trpc/context';
+dotenv.config();
 
 const fastify = Fastify({
   logger: true,
@@ -23,6 +25,14 @@ fastify.register(fastifyCors, {
     callback(new Error('Origin Not Allowed'), false);
   },
   credentials: true,
+});
+
+fastify.register(fastifyTRPCPlugin, {
+  prefix: '/trpc',
+  trpcOptions: {
+    router: appRouter,
+    createContext,
+  },
 });
 
 // auth plugin

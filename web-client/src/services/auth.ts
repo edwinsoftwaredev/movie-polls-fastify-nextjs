@@ -1,5 +1,3 @@
-import { Session } from 'types';
-
 export default class Auth {
   static async authenticateSession(props: { headers?: HeadersInit }) {
     const { headers } = props;
@@ -9,7 +7,7 @@ export default class Auth {
 
     const res = await fetch(`${API_HOST_URL}/`, {
       headers,
-    }).then<Session>((res) => res.json());
+    }).then((res) => res.json());
 
     return res;
   }

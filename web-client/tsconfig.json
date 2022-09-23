@@ -18,9 +18,12 @@
     "paths": {
       "components": ["src/components"],
       "services": ["src/services"],
-      "types": ["src/types"]
+      "types": ["src/types"],
+      "trpc": ["src/trpc"],
+      "trpc/server": ["../api/trpc/server"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "references": [{ "path": "../api" }],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../api/trpc/utils.ts"],
   "exclude": ["node_modules"]
 }

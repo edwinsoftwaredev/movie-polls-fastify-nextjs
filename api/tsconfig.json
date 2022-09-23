@@ -15,6 +15,7 @@
       "plugins": ["src/plugins"],
       "routes": ["src/routes"],
       "services": ["src/services"]
-    }
+    },
+    "composite": true
   }
 }

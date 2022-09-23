@@ -1,63 +1,30 @@
-import type { GetServerSideProps, NextPage } from 'next';
+import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { SignIn } from 'components';
 import styles from '../styles/Home.module.css';
-import { Auth } from 'services';
+import { trpc } from 'src/trpc';
 import { useEffect } from 'react';
-import { Session } from 'types';
 
-interface HomeProps {
-  session?: Session;
-}
-
-export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
-  req,
-  res,
-}) => {
+const Home: NextPage = () => {
   // --- Server Auth flow ---
-  // 1. Check that user is authenticated
+  // 1. Check that user is authenticated (that there is session or sessionId cookie)
   // 2. If user is not authenticated then show login components
   // 3. If user is authenticated dont show login components
 
-  // If sessionId cookie is not found, get a new session on client side
-  // Session without a sessionId is not an authenticated session
-  const { sessionId } = req.cookies;
-  if (!sessionId)
-    return {
-      props: {},
-    };
-
-  const headers = new Headers();
-  const sessionCookie = `sessionId=${sessionId}`;
-  const origin = process.env.HOST_URL || '';
-
-  headers.append('Cookie', [sessionCookie].join('; '));
-  headers.append('Origin', origin);
-
-  const session = await Auth.authenticateSession({ headers });
-
-  return {
-    props: {
-      session,
-    },
-  };
-};
-
-const Home: NextPage<HomeProps> = ({ session }) => {
-  const { sessionCSRFToken, user } = session || {};
-
   // --- Client Auth flow ---
-  // 1. get session if there isn't
-  // 2. if there is an authenticated user dont show login UI
-  // 3. if there isn't an authenticated user show login UI
-  useEffect(() => {
-    if (!session) {
-      const API_HOST_URL = process.env.NEXT_PUBLIC_API_HOST_URL || '';
+  // 1. Get session if there isn't (make the request on client side to the api)
+  // 2. If there is an authenticated user dont show login UI
+  // 3. If there isn't an authenticated user show login UI
 
-      fetch(`${API_HOST_URL}/`, { credentials: 'include' });
-    }
-  }, [session]);
+  /**
+   * --- NOTE ---
+   * The Next.js's logic that includes getServerSideProps or getStaticProps
+   * and client side is handle by tRPC and React-Query
+   */
+  const { data: session } = trpc.useQuery(['session:getSession']);
+
+  const { userId, csrfToken } = session || {};
 
   return (
     <div className={styles.container}>
@@ -73,9 +40,9 @@ const Home: NextPage<HomeProps> = ({ session }) => {
         </h1>
 
         <div>
-          {user ? (
+          {userId ? (
             <p>
-              Welcome <span>{user.name}</span>
+              Welcome <span>{userId}</span>
             </p>
           ) : (
             <SignIn />
