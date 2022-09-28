@@ -1,4 +1,5 @@
-import SignIn from './sign-in/sign-in';
-import SignUp from './sign-up/sign-up';
+import SignIn from './sign-in/SignIn';
+import SignUp from './sign-up/SignUp';
+import Footer from './footer/Footer';
 
-export { SignIn, SignUp };
+export { SignIn, SignUp, Footer };

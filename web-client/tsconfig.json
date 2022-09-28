@@ -19,6 +19,7 @@
       "components": ["src/components"],
       "services": ["src/services"],
       "types": ["src/types"],
+      "styles": ["styles"],
       "trpc": ["src/trpc"],
       "trpc/server": ["../api/trpc/server"]
     }
