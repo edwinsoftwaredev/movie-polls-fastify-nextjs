@@ -20,7 +20,6 @@ fastify.register(fastifyCors, {
   origin: (origin, callback) => {
     const hostname = new URL(origin).hostname;
     const allowedHostname = process.env.HOSTNAME;
-
     if (hostname === allowedHostname) {
       callback(null, true);
       return;
