@@ -86,6 +86,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/formbody@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "@fastify/formbody@npm:7.3.0"
+  dependencies:
+    fast-querystring: ^1.0.0
+    fastify-plugin: ^4.0.0
+  checksum: 2b8336c06376aeda93cfad4d1aee405642d1fbeaab9208c600651e8196deab3f80fdee841ab56743663302289b0e8a7558531781a4a7616042127b7d59b800b2
+  languageName: node
+  linkType: hard
+
 "@fastify/helmet@npm:^10.0.0":
   version: 10.0.0
   resolution: "@fastify/helmet@npm:10.0.0"
@@ -726,6 +736,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-decode-uri-component@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "fast-decode-uri-component@npm:1.0.1"
+  checksum: 427a48fe0907e76f0e9a2c228e253b4d8a8ab21d130ee9e4bb8339c5ba4086235cf9576831f7b20955a752eae4b525a177ff9d5825dd8d416e7726939194fbee
+  languageName: node
+  linkType: hard
+
 "fast-deep-equal@npm:^3.1.1, fast-deep-equal@npm:^3.1.3":
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
@@ -743,6 +760,15 @@ __metadata:
     fast-uri: ^2.1.0
     rfdc: ^1.2.0
   checksum: 712e795ecb9d261b4c2c3c5375dbb038434e2bba7eada617d7280c13c7266ab56553f731c5a2a26a71d2d23e485f04949a18374b958aa7cc12773174f86402cb
+  languageName: node
+  linkType: hard
+
+"fast-querystring@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "fast-querystring@npm:1.0.0"
+  dependencies:
+    fast-decode-uri-component: ^1.0.1
+  checksum: 5f70df27d02fcf86ea2baa16ea59e0da8bbd891e3a97aa1e95b1c0c64d5445aeab3bde5ce3e603b21d48c87db70a458febf05150a9dbe7c099aced5f123b3ffd
   languageName: node
   linkType: hard
 
@@ -1787,6 +1813,7 @@ __metadata:
     "@fastify/cookie": ^8.2.0
     "@fastify/cors": ^8.1.0
     "@fastify/csrf-protection": ^5.1.0
+    "@fastify/formbody": ^7.3.0
     "@fastify/helmet": ^10.0.0
     "@fastify/session": ^10.0.0
     "@prisma/client": ^4.4.0
