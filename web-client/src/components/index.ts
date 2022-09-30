@@ -1,5 +1,4 @@
-import SignIn from './sign-in/SignIn';
-import SignUp from './sign-up/SignUp';
+import * as Account from './account';
 import Footer from './footer/Footer';
 
-export { SignIn, SignUp, Footer };
+export { Account, Footer };

@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { SignIn, Footer } from 'components';
+import { Account, Footer } from 'components';
 import styles from '../styles/Home.module.css';
 import { trpc } from 'src/trpc';
 
@@ -49,7 +49,7 @@ const Home: NextPage = () => {
               Welcome <span>{userId}</span>
             </p>
           ) : (
-            <SignIn />
+            <Account.SignIn />
           )}
         </div>
       </main>
