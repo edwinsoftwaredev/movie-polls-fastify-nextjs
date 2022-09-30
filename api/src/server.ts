@@ -17,16 +17,7 @@ fastify.register(fastifyHelmet);
 
 // CORS configuration
 fastify.register(fastifyCors, {
-  origin: (origin, callback) => {
-    const hostname = new URL(origin).hostname;
-    const allowedHostname = process.env.HOSTNAME;
-    if (hostname === allowedHostname) {
-      callback(null, true);
-      return;
-    }
-
-    callback(new Error('Origin Not Allowed'), false);
-  },
+  origin: [`${process.env.WEB_CLIENT_ORIGIN}`],
   credentials: true,
 });
 
