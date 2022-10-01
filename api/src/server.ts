@@ -1,5 +1,6 @@
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import fastifyCors from '@fastify/cors';
+import fastifyFormbody from '@fastify/formbody';
 import Fastify from 'fastify';
 import { authPlugin, moviesPlugin, pollsPlugin } from 'plugins';
 import appRouter from 'trpc/server';
@@ -20,6 +21,9 @@ fastify.register(fastifyCors, {
   origin: [`${process.env.WEB_CLIENT_ORIGIN}`],
   credentials: true,
 });
+
+// Parse application/x-www-form-urlencoded req body
+fastify.register(fastifyFormbody);
 
 // auth plugin
 fastify.register(authPlugin);

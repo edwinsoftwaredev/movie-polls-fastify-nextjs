@@ -21,6 +21,18 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
     const hasSessionId = !!req.cookies['sessionId'];
     req.session.set('isSSR', isSSR);
     req.session.set('hasSessionId', hasSessionId);
+
+    // TODO: should the verifyIdToken function be part of the session
+    // or it should be part of the request.
+    // Things to consider:
+    // - How many times per session a token should be validate
+    // - Does Google return a new idToken (refresh, expire, etc...)
+    // - should this application need to know if the user is authenticated with google
+    // TODO: Is the use of "bind" needed?
+
+    // TODO: Try adding googleOAuth2Client as dependecy to the fastifyPlugin
+    req.session.verifyGoogleIdToken =
+      fastify.googleOAuth2Client.verifyIdToken.bind(fastify.googleOAuth2Client);
   });
 
   fastify.register(fastifySession, {
@@ -145,4 +157,4 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
   });
 };
 
-export default fastifyPlugin(session);
+export default fastifyPlugin(session, { dependencies: [] });
