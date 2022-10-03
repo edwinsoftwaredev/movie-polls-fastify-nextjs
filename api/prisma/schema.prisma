@@ -9,18 +9,21 @@ generator client {
 
 // Third party authentication
 model User {
-  provider    String
-  id          String   @id
-  displayName String
-  email       String?
-  session     Session?
+  provider          String
+  id                String   @id // in the form gg-sub
+  displayName       String
+  email             String?
+  emaiVerified      Boolean
+  picture           String?
+  session           Session?
 }
 
 // 1-(0:1) relationship
 // A Session might or might not be(user hasn't logged in) assigned to a User
 model Session {
-  id        String  @id
-  user      User?   @relation(fields: [userId], references: [id])
-  userId    String? @unique // Adding @unique to constraint User to have just one session
-  csrfToken String
+  id                String  @id
+  user              User?   @relation(fields: [userId], references: [id])
+  userId            String? @unique // Adding @unique to constraint User to have just one session
+  csrfToken         String
+  iss               String?
 }
