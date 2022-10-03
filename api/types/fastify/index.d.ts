@@ -7,10 +7,11 @@ declare module 'fastify' {
     redisClient: RedisClientType;
     prismaClient: PrismaClient;
     googleOAuth2Client: OAuth2Client;
+    verifyGoogleIdToken: (idToken: string) => Promise<LoginTicket>;
   }
 
   interface Session {
     userSession: UserSession;
-    verifyGoogleIdToken: typeof OAuth2Client.prototype.verifyIdToken;
+    verifyGoogleIdToken: (idToken: string) => Promise<LoginTicket>;
   }
 }
