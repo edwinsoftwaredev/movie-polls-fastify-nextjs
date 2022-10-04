@@ -24,7 +24,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
 
     // Adding the Google ID verification functionality
     // to the session
-    req.session.verifyGoogleIdToken = fastify.verifyGoogleIdToken; 
+    req.session.verifyGoogleIdToken = fastify.verifyGoogleIdToken;
   });
 
   fastify.register(fastifySession, {
@@ -95,6 +95,9 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             },
             update: {
               csrfToken: sessionCsrfToken,
+              // TODO: validate that the user's id is the same
+              // on every update
+              userId: userSession?.userId,
             },
             create: {
               id: sessionId,

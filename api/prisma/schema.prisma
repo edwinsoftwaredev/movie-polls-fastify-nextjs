@@ -1,28 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-// Third party authentication
 model User {
-  provider            String
-  id                  String    @id // in the form gg-sub
-  displayName         String
-  email               String?
-  emailVerified       Boolean   @default(false)
-  picture             String?
-  session             Session?
+  provider      String
+  id            String   @id
+  displayName   String
+  email         String?
+  picture       String?
+  emailVerified Boolean  @default(false)
+  sessions      Session[]
 }
 
-// 1-(0:1) relationship
-// A Session might or might not be(user hasn't logged in) assigned to a User
 model Session {
-  id                  String  @id
-  user                User?   @relation(fields: [userId], references: [id])
-  userId              String? @unique // Adding @unique to constraint User to have just one session
-  csrfToken           String
+  id        String  @id
+  user      User?   @relation(fields: [userId], references: [id])
+  userId    String?
+  csrfToken String
 }

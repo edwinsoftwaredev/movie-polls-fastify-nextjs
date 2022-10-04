@@ -4,6 +4,8 @@ CREATE TABLE `User` (
     `id` VARCHAR(191) NOT NULL,
     `displayName` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NULL,
+    `picture` VARCHAR(191) NULL,
+    `emailVerified` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -14,7 +16,6 @@ CREATE TABLE `Session` (
     `userId` VARCHAR(191) NULL,
     `csrfToken` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `Session_userId_key`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
