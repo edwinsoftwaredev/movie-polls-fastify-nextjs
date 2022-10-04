@@ -24,7 +24,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
 
     // Adding the Google ID verification functionality
     // to the session
-    req.session.verifyGoogleIdToken = fastify.verifyGoogleIdToken; 
+    req.session.verifyGoogleIdToken = fastify.verifyGoogleIdToken;
   });
 
   fastify.register(fastifySession, {
@@ -62,7 +62,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
               }));
           })
           .then((session) => {
-            callback(undefined, session);
+            callback(undefined, { userSession: session });
           })
           .catch((reason) => {
             callback(reason);
@@ -88,18 +88,61 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         const sessionCsrfToken = session.get<string>('_csrf') || '';
         // 1. Save session in persistent storage
         // 2. Save session in session storage
-        fastify.prismaClient?.session
-          .upsert({
+
+        const getUser = async () => {
+          if (!userSession.userId) return Promise.resolve();
+          return fastify.prismaClient.user.findUnique({
+            where: {
+              id: userSession.userId
+            }
+          });
+        }
+
+        // Removes a user session.
+        // Because a new session could be generated or invalidated
+        // by the fastify-session plugin and because a user can only
+        // have one session, existent user session has to be removed. 
+        const removeExistingUserSession = async () => {
+          if (!userSession?.userId) return Promise.resolve();
+          return fastify.prismaClient.session.findUnique({
+            where: {
+              userId: userSession.userId
+            }
+          }).then(sessionRes => {
+            if (!sessionRes) return;
+
+            const resRedis = fastify.redisClient.del(sessionRes.id);
+            const resPrisma = fastify.prismaClient.session.delete({
+              where: {
+                id: sessionRes.id
+              }
+            });
+
+            return Promise.all([
+              resRedis,
+              resPrisma
+            ]);
+          });
+        }
+
+        // Upserts a session
+        // Checks: 
+        // The userSession may contain a userId for a user that may not exists.
+        // In order to update/create a session, the existent of a user should be 
+        // validated first.
+        const upsertUserSession = (userExists: boolean) => fastify.prismaClient
+          .session.upsert({
             where: {
               id: sessionId,
             },
             update: {
               csrfToken: sessionCsrfToken,
+              ...(userExists ? { userId: userSession?.userId } : {}),
             },
             create: {
               id: sessionId,
               csrfToken: sessionCsrfToken,
-              userId: userSession?.userId,
+              ...(userExists ? { userId: userSession?.userId } : {}),
             },
           })
           .then((userSession) => {
@@ -119,6 +162,13 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
           .catch((reason) => {
             callback(reason);
           });
+
+        // 1. Removes existing user session
+        // 2. Validates if the defined in the session object exists
+        // 3. Creates/Updates a session considering if user exists 
+        removeExistingUserSession()
+          .then(() => getUser())
+          .then(user => upsertUserSession(!!user));
       },
       destroy(sessionId, callback) {
         // Remove session from session store
