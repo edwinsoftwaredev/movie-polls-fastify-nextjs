@@ -9,17 +9,18 @@ datasource db {
 
 model User {
   provider      String
-  id            String   @id
+  id            String      @id
   displayName   String
   email         String?
   picture       String?
-  emailVerified Boolean  @default(false)
+  emailVerified Boolean     @default(false)
   sessions      Session[]
 }
 
 model Session {
-  id        String  @id
-  user      User?   @relation(fields: [userId], references: [id])
-  userId    String?
-  csrfToken String
+  id            String      @id
+  user          User?       @relation(fields: [userId], references: [id])
+  userId        String?
+  csrfToken     String
+  expiresOn     DateTime?
 }
