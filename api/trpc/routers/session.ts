@@ -9,7 +9,7 @@ export const session = createRouter().query('getSession', {
     } = ctx;
 
     const csrfToken: string =
-      session.get('_csrf') || (await res.generateCsrf());
+      session.userSession.csrfToken || (await res.generateCsrf());
 
     const { userSession } = session;
 

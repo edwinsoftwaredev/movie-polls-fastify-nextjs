@@ -61,12 +61,15 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             });
           })
           .then((userSession) => {
-            // NOTE that the shape of the object
-            // is changed
+            // NOTE that a userSession is returned which is part
+            // of the session object. also the _csrf token in session is
+            // overwritten.
+            // TODO: validate whenwhen should the csrfToken should be recreated
             callback(undefined, {
+              _csrf: userSession.csrfToken,
               userSession: {
                 id: userSession.id,
-                _csrf: userSession.csrfToken,
+                csrfToken: userSession.csrfToken,
                 userId: userSession.userId,
                 expiresOn: userSession.expiresOn
               },
@@ -126,10 +129,10 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
           .then((userSession) => {
             // The session type retrived from the session storage is not the same
             // as the type retrived from the persistant storage
-            const { id: sessionId, csrfToken: _csrf, userId, expiresOn } = userSession;
+            const { id: sessionId, csrfToken, userId, expiresOn } = userSession;
             const userSessionJSON = JSON.stringify({
               id: sessionId,
-              _csrf,
+              csrfToken,
               userId,
               expiresOn
             });
