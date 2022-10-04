@@ -3,7 +3,10 @@ import { Session } from '@prisma/client';
 
 export const session = createRouter().query('getSession', {
   resolve: async ({ input, ctx }) => {
-    const { res, session } = ctx;
+    const {
+      req: { session },
+      res,
+    } = ctx;
 
     const csrfToken: string =
       session.get('_csrf') || (await res.generateCsrf());

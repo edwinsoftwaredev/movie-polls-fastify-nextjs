@@ -1,11 +1,8 @@
-import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import fastifyCors from '@fastify/cors';
 import fastifyFormbody from '@fastify/formbody';
 import Fastify from 'fastify';
-import { authPlugin, moviesPlugin, pollsPlugin } from 'plugins';
-import appRouter from 'trpc/server';
+import { trpcPlugin, authPlugin, moviesPlugin, pollsPlugin } from 'plugins';
 import * as dotenv from 'dotenv';
-import { createContext } from 'trpc/context';
 import fastifyHelmet from '@fastify/helmet';
 dotenv.config();
 
@@ -35,17 +32,11 @@ fastify.register(authPlugin);
 // fastify.register(pollsPlugin);
 
 // routes plugin
-fastify.register(fastifyTRPCPlugin, {
-  prefix: '/trpc',
-  trpcOptions: {
-    router: appRouter,
-    createContext,
-  },
-});
+fastify.register(trpcPlugin);
 
 // Server is just limited to listen on
 // the specified HTTP methods
-fastify.listen({ port: 8080 }, function (err, address) {
+fastify.listen({ port: 8080 }, function (err, _address) {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
