@@ -2,6 +2,11 @@ import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import fastifySession from '@fastify/session';
 import fastifyCookie from '@fastify/cookie';
+import { Session } from '@prisma/client';
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientValidationError,
+} from '@prisma/client/runtime';
 
 interface SessionPluginOptions extends FastifyPluginOptions {
   sessionSecret: string;
@@ -46,32 +51,40 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.redisClient
           .get(sessionId)
           .then((sessionJson) => {
-            if (sessionJson) return JSON.parse(sessionJson);
+            if (sessionJson) return JSON.parse(sessionJson) as Session;
             // If session not found in cache
             // search session in persistent storage
-            return fastify.prismaClient.session
-              .findUniqueOrThrow({
-                where: {
-                  id: sessionId,
-                },
-              })
-              .then((userSession) => ({
+            return fastify.prismaClient.session.findUniqueOrThrow({
+              where: {
+                id: sessionId,
+              },
+            });
+          })
+          .then((userSession) => {
+            // NOTE that the shape of the object
+            // is changed
+            callback(undefined, {
+              userSession: {
                 id: userSession.id,
                 _csrf: userSession.csrfToken,
                 userId: userSession.userId,
-              }));
-          })
-          .then((session) => {
-            callback(undefined, session);
+                expiresOn: userSession.expiresOn
+              },
+            });
           })
           .catch((reason) => {
+            // TODO: Fix that is the session is not found
+            // (e.g user has a sessionID cookie but the session is not found in server side
+            // or that a process on server side removes all expired sessions)
+            // instead of showing the message session not found,
+            // the server should redirect the user to the auth page and reset the session
+            // cookie with a new id
             callback(reason);
           });
       },
       set(sessionId, session, callback) {
         const isSSR = session.get('isSSR') ?? false;
         const hasSessionId = session.get('hasSessionId') ?? false;
-
         // If SSR and sessionId is not provided in the request,
         // the session is not created.
         // NOTE: While this validation will prevent saving a new session
@@ -88,6 +101,9 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         const sessionCsrfToken = session.get<string>('_csrf') || '';
         // 1. Save session in persistent storage
         // 2. Save session in session storage
+
+        // If user was removed from database but from redis
+        // the userId constraint will fail
         fastify.prismaClient?.session
           .upsert({
             where: {
@@ -98,29 +114,44 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
               // TODO: validate that the user's id is the same
               // on every update
               userId: userSession?.userId,
+              expiresOn: session.cookie.expires
             },
             create: {
               id: sessionId,
               csrfToken: sessionCsrfToken,
               userId: userSession?.userId,
+              expiresOn: session.cookie.expires
             },
           })
           .then((userSession) => {
             // The session type retrived from the session storage is not the same
             // as the type retrived from the persistant storage
-            const { id: sessionId, csrfToken: _csrf, userId } = userSession;
-            const sessionJSON = JSON.stringify({
-              sessionId,
+            const { id: sessionId, csrfToken: _csrf, userId, expiresOn } = userSession;
+            const userSessionJSON = JSON.stringify({
+              id: sessionId,
               _csrf,
               userId,
+              expiresOn
             });
-            return fastify.redisClient.set(sessionId, sessionJSON);
+
+            return fastify.redisClient.set(sessionId, userSessionJSON);
           })
           .then(() => {
             callback(undefined);
           })
           .catch((reason) => {
-            callback(reason);
+            if (reason instanceof PrismaClientKnownRequestError) {
+              // checks that error is produce by the userId constraint
+              // failing. If that is the case remove the session from redis
+              if (
+                reason.code === 'P2003' &&
+                reason.meta &&
+                reason.meta['field_name'] === 'userId'
+              )
+                fastify.redisClient.del(sessionId);
+            } else {
+              callback(reason);
+            }
           });
       },
       destroy(sessionId, callback) {
