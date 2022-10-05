@@ -27,6 +27,14 @@ const Home: NextPage = () => {
     refetchOnWindowFocus: true,
   });
 
+  const { data: whoiamRes } = trpc.useQuery(['account:whoiam'], {
+    // enabled: Boolean(session?.userId),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+
+  const { whoiam } = whoiamRes || {};
+
   const { userId, csrfToken } = session || {};
 
   return (
@@ -44,9 +52,9 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>Movie Polls</h1>
 
         <div>
-          {userId ? (
+          {whoiam ? (
             <p>
-              Welcome <span>{userId}</span>
+              Welcome <span>{whoiam.displayName}</span>
             </p>
           ) : (
             <Account.SignIn />

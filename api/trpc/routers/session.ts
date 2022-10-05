@@ -2,7 +2,7 @@ import createRouter from 'trpc/createRouter';
 import { Session } from '@prisma/client';
 
 export const session = createRouter().query('getSession', {
-  resolve: async ({ input, ctx }) => {
+  resolve: async ({ ctx }) => {
     const {
       req: { session },
       res,

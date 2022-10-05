@@ -5,7 +5,6 @@ import fastifyCookie from '@fastify/cookie';
 import { Session } from '@prisma/client';
 import {
   PrismaClientKnownRequestError,
-  PrismaClientValidationError,
 } from '@prisma/client/runtime';
 
 interface SessionPluginOptions extends FastifyPluginOptions {
@@ -32,6 +31,8 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
     req.session.verifyGoogleIdToken = fastify.verifyGoogleIdToken;
   });
 
+  // TODO: A preHandler hooks that make use of session is added before registering the the plugin. 
+  // Plugin loading starts when you call fastify.listen(), fastify.inject() or fastify.ready()
   fastify.register(fastifySession, {
     secret: sessionSecret,
     cookie: {
