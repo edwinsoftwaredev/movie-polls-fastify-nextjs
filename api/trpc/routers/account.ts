@@ -5,7 +5,7 @@ export const account = createRouter().query('whoiam', {
   resolve: async ({ ctx }) => {
     const { req, res, fastify } = ctx;
 
-    const userId = req.session.userSession.userId;
+    const userId = req.session.userSession?.userId;
 
     if (!userId) return { whoiam: null };
 
