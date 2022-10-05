@@ -9,6 +9,9 @@ export const account = createRouter().query('whoiam', {
 
     if (!userId) return { whoiam: null };
 
+    // TODO: type should not be defined but inferrered.
+    // If the type is defined, on client side, the return type
+    // will be any
     const whoiam: User | null = await fastify.account.user.getUser(userId);
 
     return { whoiam };
