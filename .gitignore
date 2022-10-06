@@ -1,2 +1,14 @@
-.node_modules
+node_modules
 .env
+
+# mysql data
+mysql-data
+
+# yarn without zero-installs
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
