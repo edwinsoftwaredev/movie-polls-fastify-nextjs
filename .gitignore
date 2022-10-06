@@ -1,7 +1,17 @@
-node_modules
-
 # local env files
 .env
 
 # database data
 mysql-data
+
+# node
+node_modules
+
+# yarn without zero-installs
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

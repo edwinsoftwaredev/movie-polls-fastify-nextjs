@@ -17,6 +17,5 @@
       "services": ["src/services"],
       "trpc/server": ["../trpc/server"]
     }
-  },
-  "files": ["../types/fastify/*"]
+  }
 }

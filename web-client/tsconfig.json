@@ -20,19 +20,18 @@
       "services": ["src/services"],
       "types": ["src/types"],
       "styles": ["styles"],
-      "trpc": ["src/trpc"],
       "trpc/server": ["../trpc/server"],
       "trpc/client": ["../trpc/client"]
     }
   },
   "include": [
-    "src/trpc/utils.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../api/trpc/utils.ts",
     "../trpc/client/index.ts",
-    "../types/fastify/index.d.ts"
+    // If this file is not included the fastify decorated types
+    // will not be inferred by tRPC
+    "../api/types/fastify/index.d.ts"
   ],
   "exclude": ["node_modules"]
 }
