@@ -1,10 +1,7 @@
 import { FastifyPluginAsync } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import {
-  fastifyTRPCPlugin,
-} from '@trpc/server/adapters/fastify';
-import appRouter from 'trpc/server';
-import { createTRPCFastifyContext } from 'trpc/context';
+import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
+import { appRouter, createTRPCFastifyContext } from 'trpc/server';
 
 const trpcPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.register(fastifyTRPCPlugin, {

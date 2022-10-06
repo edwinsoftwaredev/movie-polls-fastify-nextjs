@@ -1,7 +1,7 @@
 import fastifyCors from '@fastify/cors';
 import fastifyFormbody from '@fastify/formbody';
 import Fastify from 'fastify';
-import { trpcPlugin, authPlugin, moviesPlugin, pollsPlugin } from 'plugins';
+import { trpcPlugin, authPlugin, moviesPlugin, pollsPlugin } from './plugins';
 import * as dotenv from 'dotenv';
 import fastifyHelmet from '@fastify/helmet';
 dotenv.config();

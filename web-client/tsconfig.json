@@ -21,10 +21,18 @@
       "types": ["src/types"],
       "styles": ["styles"],
       "trpc": ["src/trpc"],
-      "trpc/server": ["../api/trpc/server"]
+      "trpc/server": ["../trpc/server"],
+      "trpc/client": ["../trpc/client"]
     }
   },
-  "references": [{ "path": "../api" }],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../api/trpc/utils.ts"],
+  "include": [
+    "src/trpc/utils.ts",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "../api/trpc/utils.ts",
+    "../trpc/client/index.ts",
+    "../types/fastify/index.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

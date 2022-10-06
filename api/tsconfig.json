@@ -14,8 +14,9 @@
       "hooks": ["src/hooks"],
       "plugins": ["src/plugins"],
       "routes": ["src/routes"],
-      "services": ["src/services"]
-    },
-    "composite": true
-  }
+      "services": ["src/services"],
+      "trpc/server": ["../trpc/server"]
+    }
+  },
+  "files": ["../types/fastify/*"]
 }

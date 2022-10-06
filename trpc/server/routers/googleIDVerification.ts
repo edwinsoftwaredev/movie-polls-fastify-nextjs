@@ -1,11 +1,11 @@
-import createRouter from 'trpc/createRouter';
+import createRouter from "../createRouter";
 
 interface GoogleOAuthResponseType {
   credential: string;
 }
 
 export const googleIDVerification = createRouter().mutation(
-  'verifyGoogleIDToken',
+  "verifyGoogleIDToken",
   {
     input: (val) => val,
     resolve: async ({ input, ctx }) => {
@@ -24,7 +24,7 @@ export const googleIDVerification = createRouter().mutation(
           } = ticket.getPayload() || {};
           const googleUserId = ticket.getUserId();
           const userId = `gg-${googleUserId}`;
-          const provider = 'Google';
+          const provider = "Google";
 
           return fastify.prismaClient.user
             .upsert({
@@ -40,7 +40,7 @@ export const googleIDVerification = createRouter().mutation(
               },
               create: {
                 id: userId,
-                displayName: displayName || 'Anonymous',
+                displayName: displayName || "Anonymous",
                 provider,
                 email,
                 emailVerified,
@@ -48,7 +48,7 @@ export const googleIDVerification = createRouter().mutation(
               },
             })
             .then(async (user) => {
-              req.session.set('userSession', {
+              req.session.set("userSession", {
                 ...req.session.userSession,
                 userId: user.id,
               });

@@ -1,0 +1,7 @@
+node_modules
+
+# local env files
+.env
+
+# database data
+mysql-data
