@@ -14,7 +14,6 @@
     "@fastify/session": "^10.0.0",
     "@prisma/client": "4.4.0",
     "@trpc/server": "^9.27.4",
-    "cross-env": "^7.0.3",
     "dotenv": "^16.0.2",
     "fastify": "^4.6.0",
     "fastify-plugin": "^4.2.1",
