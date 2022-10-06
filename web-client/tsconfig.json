@@ -25,6 +25,13 @@
     }
   },
   "references": [{ "path": "../api" }],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../api/trpc/utils.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "../api/trpc/utils.ts",
+    // If this file is not included fastify's decorated types are not inferred by tRPC
+    "../api/types/fastify/index.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
