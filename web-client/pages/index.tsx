@@ -27,13 +27,13 @@ const Home: NextPage = () => {
     refetchOnWindowFocus: true,
   });
 
-  const { data: whoiamRes } = trpc.useQuery(['account:whoiam'], {
+  const { data: whoamiRes } = trpc.useQuery(['account:whoami'], {
     // enabled: Boolean(session?.userId),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
 
-  const { whoiam } = whoiamRes || {};
+  const { whoami } = whoamiRes || {};
 
   const { userId, csrfToken } = session || {};
 
@@ -52,9 +52,9 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>Movie Polls</h1>
 
         <div>
-          {whoiam ? (
+          {whoami ? (
             <p>
-              Welcome <span>{whoiam.displayName}</span>
+              Welcome <span>{whoami.displayName}</span>
             </p>
           ) : (
             <Account.SignIn />
