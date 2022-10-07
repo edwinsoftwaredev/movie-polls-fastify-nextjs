@@ -1,4 +1,4 @@
-import type { AppRouter } from 'trpc/server';
+import type { AppRouter } from '../server';
 import type {
   inferProcedureOutput,
   inferProcedureInput,

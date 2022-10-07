@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "workspaces": [
+    "api",
+    "web-client",
+    "trpc"
+  ],
+  "scripts": {
+    "api:dev": "yarn workspace api dev",
+    "web:dev": "yarn workspace web-client dev"
+  },
+  "devDependencies": {
+    "prisma": "^4.4.0"
+  },
+  "packageManager": "yarn@3.2.4"
+}

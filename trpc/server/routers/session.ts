@@ -1,4 +1,4 @@
-import createRouter from 'trpc/createRouter';
+import createRouter from '../createRouter';
 import { Session } from '@prisma/client';
 
 export const session = createRouter().query('getSession', {
@@ -9,7 +9,7 @@ export const session = createRouter().query('getSession', {
     } = ctx;
 
     const csrfToken: string =
-      session.userSession.csrfToken || (await res.generateCsrf());
+      session.userSession?.csrfToken || (await res.generateCsrf());
 
     const { userSession } = session;
 

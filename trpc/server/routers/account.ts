@@ -1,7 +1,6 @@
-import { User } from '@prisma/client';
-import createRouter from 'trpc/createRouter';
+import createRouter from "../createRouter";
 
-export const account = createRouter().query('whoiam', {
+export const account = createRouter().query("whoiam", {
   resolve: async ({ ctx }) => {
     const { req, res, fastify } = ctx;
 
