@@ -1,7 +1,7 @@
-import createRouter from "../createRouter";
-import { Session } from "@prisma/client";
+import createRouter from '../createRouter';
+import { Session } from '@prisma/client';
 
-export const session = createRouter().query("getSession", {
+export const session = createRouter().query('getSession', {
   resolve: async ({ ctx }) => {
     const {
       req: { session },
@@ -9,7 +9,7 @@ export const session = createRouter().query("getSession", {
     } = ctx;
 
     const csrfToken: string =
-      session.userSession.csrfToken || (await res.generateCsrf());
+      session.userSession?.csrfToken || (await res.generateCsrf());
 
     const { userSession } = session;
 

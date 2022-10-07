@@ -19,16 +19,13 @@
       "components": ["src/components"],
       "services": ["src/services"],
       "types": ["src/types"],
-      "styles": ["styles"],
-      "trpc/server": ["../trpc/server"],
-      "trpc/client": ["../trpc/client"]
+      "styles": ["styles"]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../trpc/client/index.ts",
     // If this file is not included the fastify decorated types
     // will not be inferred by tRPC
     "../api/types/fastify/index.d.ts"

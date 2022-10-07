@@ -2,7 +2,8 @@
   "private": true,
   "workspaces": [
     "api",
-    "web-client"
+    "web-client",
+    "trpc"
   ],
   "scripts": {
     "api:dev": "yarn workspace api dev",

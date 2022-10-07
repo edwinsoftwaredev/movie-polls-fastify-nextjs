@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Account, Footer } from 'components';
 import styles from '../styles/Home.module.css';
-import { trpc } from 'trpc/client';
+import { trpc } from 'src/trpc';
 
 const Home: NextPage = () => {
   // --- Server Auth flow ---

@@ -844,6 +844,7 @@ __metadata:
     google-auth-library: ^8.5.2
     nodemon: ^2.0.19
     redis: ^4.3.1
+    trpc: 1.0.0
     ts-node: ^10.9.1
     tsconfig-paths: ^4.1.0
     typescript: ^4.8.4
@@ -4214,6 +4215,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"trpc@1.0.0, trpc@workspace:trpc":
+  version: 0.0.0-use.local
+  resolution: "trpc@workspace:trpc"
+  dependencies:
+    "@trpc/client": ^9.27.4
+    "@trpc/server": ^9.27.4
+    typescript: ^4.8.4
+  languageName: unknown
+  linkType: soft
+
 "ts-node@npm:^10.9.1":
   version: 10.9.1
   resolution: "ts-node@npm:10.9.1"
@@ -4432,6 +4443,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     react-query: 3
+    trpc: 1.0.0
     typescript: ^4.8.4
   languageName: unknown
   linkType: soft

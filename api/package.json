@@ -18,7 +18,8 @@
     "fastify": "^4.6.0",
     "fastify-plugin": "^4.2.1",
     "google-auth-library": "^8.5.2",
-    "redis": "^4.3.1"
+    "redis": "^4.3.1",
+    "trpc": "1.0.0"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
