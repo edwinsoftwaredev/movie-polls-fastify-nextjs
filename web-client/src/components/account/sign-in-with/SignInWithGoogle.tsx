@@ -11,7 +11,7 @@ const SignInWithGoogle: React.FC = () => {
       <div
         id="g_id_onload"
         data-client_id={process.env.NEXT_PUBLIC_GOOGLE_OAUTH2_CLIENT_ID}
-        data-login_uri={`${process.env.NEXT_PUBLIC_API_HOST_URL}/trpc/googleIDVerification:verifyGoogleIDToken`}
+        data-login_uri={`${process.env.NEXT_PUBLIC_API_HOST_URL}/trpc/googleIDTokenVerification:verifyGoogleIDToken`}
         data-auto_prompt="false"
         data-ux_mode="popup"
       />

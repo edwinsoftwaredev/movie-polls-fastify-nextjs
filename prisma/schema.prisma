@@ -14,10 +14,10 @@ model User {
   email         String?
   picture       String?
   emailVerified Boolean     @default(false)
-  sessions      Session[]
+  sessions      UserSession[]
 }
 
-model Session {
+model UserSession {
   id            String      @id
   user          User?       @relation(fields: [userId], references: [id])
   userId        String?

@@ -2,10 +2,8 @@ import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import fastifySession from '@fastify/session';
 import fastifyCookie from '@fastify/cookie';
-import { Session } from '@prisma/client';
-import {
-  PrismaClientKnownRequestError,
-} from '@prisma/client/runtime';
+import { UserSession } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 interface SessionPluginOptions extends FastifyPluginOptions {
   sessionSecret: string;
@@ -31,7 +29,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
     req.session.verifyGoogleIdToken = fastify.verifyGoogleIdToken;
   });
 
-  // TODO: A preHandler hooks that make use of session is added before registering the the plugin. 
+  // TODO: A preHandler hooks that make use of session is added before registering the the plugin.
   // Plugin loading starts when you call fastify.listen(), fastify.inject() or fastify.ready()
   fastify.register(fastifySession, {
     secret: sessionSecret,
@@ -52,10 +50,10 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.redisClient
           .get(sessionId)
           .then((sessionJson) => {
-            if (sessionJson) return JSON.parse(sessionJson) as Session;
+            if (sessionJson) return JSON.parse(sessionJson) as UserSession;
             // If session not found in cache
             // search session in persistent storage
-            return fastify.prismaClient.session.findUniqueOrThrow({
+            return fastify.prismaClient.userSession.findUniqueOrThrow({
               where: {
                 id: sessionId,
               },
@@ -72,7 +70,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
                 id: userSession.id,
                 csrfToken: userSession.csrfToken,
                 userId: userSession.userId,
-                expiresOn: userSession.expiresOn
+                expiresOn: userSession.expiresOn,
               },
             });
           })
@@ -108,7 +106,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
 
         // If user was removed from database but from redis
         // the userId constraint will fail
-        fastify.prismaClient?.session
+        fastify.prismaClient?.userSession
           .upsert({
             where: {
               id: sessionId,
@@ -118,13 +116,13 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
               // TODO: validate that the user's id is the same
               // on every update
               userId: userSession?.userId,
-              expiresOn: session.cookie.expires
+              expiresOn: session.cookie.expires,
             },
             create: {
               id: sessionId,
               csrfToken: sessionCsrfToken,
               userId: userSession?.userId,
-              expiresOn: session.cookie.expires
+              expiresOn: session.cookie.expires,
             },
           })
           .then((userSession) => {
@@ -135,7 +133,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
               id: sessionId,
               csrfToken,
               userId,
-              expiresOn
+              expiresOn,
             });
 
             return fastify.redisClient.set(sessionId, userSessionJSON);
@@ -164,7 +162,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.redisClient
           .del(sessionId)
           .then(() =>
-            fastify.prismaClient.session.delete({
+            fastify.prismaClient.userSession.delete({
               where: {
                 id: sessionId,
               },

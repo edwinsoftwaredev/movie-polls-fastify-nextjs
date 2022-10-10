@@ -1,5 +1,5 @@
 import { session } from './session';
 import { account } from './account';
-import { googleIDVerification } from './googleIDVerification';
+import { googleIDTokenVerification } from './googleIDTokenVerification';
 
-export { session, account, googleIDVerification };
+export { session, account, googleIDTokenVerification };
