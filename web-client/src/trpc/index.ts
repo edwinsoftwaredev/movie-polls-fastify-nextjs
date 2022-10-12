@@ -1,4 +1,8 @@
 import { createReactQueryHooks } from '@trpc/react';
-import { AppRouter } from 'trpc/client';
+import { SessionRouter, AccountRouter, GoogleAuthRouter } from 'trpc/client';
 
-export const trpc = createReactQueryHooks<AppRouter>();
+export const session = createReactQueryHooks<SessionRouter>();
+export const account = createReactQueryHooks<AccountRouter>();
+export const googleAuth = createReactQueryHooks<GoogleAuthRouter>();
+
+export default { session, account, googleAuth };

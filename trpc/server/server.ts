@@ -1,9 +1,11 @@
+// TODO: should refactor client/utils and remove this module?
 import createRouter from './createRouter';
-import { googleIDTokenVerification, account, session } from './routers';
+import { googleAuthRouter, accountRouter, sessionRouter } from './routers';
+
 const appRouter = createRouter()
-  .merge('session:', session)
-  .merge('account:', account)
-  .merge('googleIDTokenVerification:', googleIDTokenVerification);
+  .merge(sessionRouter)
+  .merge(accountRouter)
+  .merge(googleAuthRouter);
 
 export type AppRouter = typeof appRouter;
 export default appRouter;

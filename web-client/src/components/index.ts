@@ -1,4 +1,5 @@
 import * as Account from './account';
 import Footer from './footer/Footer';
+import Header from './header';
 
-export { Account, Footer };
+export { Header, Account, Footer };

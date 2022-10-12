@@ -11,16 +11,8 @@ interface AuthPluginOptions extends FastifyPluginOptions {
 // auth plugin
 const auth: FastifyPluginAsync<AuthPluginOptions> = async (fastify, opts) => {
   const { sessionSecret, isDevEnv } = opts;
-  fastify.prismaClient;
-  fastify.redisClient;
-
-  // registering session first as
-
   fastify.register(sessions, { sessionSecret, isDevEnv });
   fastify.register(account);
-
-  // register auth routes
-  // register other things
 };
 
 export default fastifyPlugin(auth);

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { Account, Footer } from 'components';
+import { Header, Account, Footer } from 'components';
 import styles from '../styles/Home.module.css';
-import { trpc } from 'src/trpc';
+import trpc from 'src/trpc';
 
 const Home: NextPage = () => {
   // --- Server Auth flow ---
@@ -20,22 +20,24 @@ const Home: NextPage = () => {
    * The Next.js's logic that includes getServerSideProps or getStaticProps
    * and client side is handle by tRPC and React-Query
    */
-  const { data: session } = trpc.useQuery(['session:getSession'], {
+  const { data: session } = trpc.session.useQuery(['session:getSession'], {
     // TODO: Update configuration
     refetchOnMount: true,
     refetchOnReconnect: true,
     refetchOnWindowFocus: true,
   });
 
-  const { data: whoamiRes } = trpc.useQuery(['account:whoami'], {
-    // enabled: Boolean(session?.userId),
-    refetchOnWindowFocus: false,
+  const { data: whoamiRes } = trpc.account.useQuery(['account:whoami'], {
+    // TODO: "ssr: false" might not be the solution
+    ssr: false,
+    enabled: Boolean(session?.isAuthenticated),
+    refetchOnWindowFocus: true,
     refetchOnMount: false,
   });
 
   const { whoami } = whoamiRes || {};
 
-  const { userId, csrfToken } = session || {};
+  const { csrfToken } = session || {};
 
   return (
     <div className={styles.container}>
@@ -45,8 +47,11 @@ const Home: NextPage = () => {
           name="description"
           content="Create movie polls and let everyone decide the winner."
         />
+        <meta name="csrf-token" content={csrfToken} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <Header />
 
       <main className={styles.main}>
         <h1 className={styles.title}>Movie Polls</h1>

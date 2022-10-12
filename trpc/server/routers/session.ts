@@ -1,14 +1,13 @@
 import createRouter from '../createRouter';
 
-export const session = createRouter().query('getSession', {
+const session = createRouter().query('getSession', {
   resolve: async ({ ctx }) => {
     const {
       req: { session },
       res,
     } = ctx;
 
-    const csrfToken: string =
-      session.userSession?.csrfToken || (await res.generateCsrf());
+    const csrfToken: string = await res.generateCsrf();
 
     const { userSession } = session;
 
@@ -16,7 +15,11 @@ export const session = createRouter().query('getSession', {
 
     const { userId } = userSession;
 
-    // should return user info
-    return { csrfToken, userId };
+    return { csrfToken, isAuthenticated: !!userId };
   },
 });
+
+const sessionRouter = createRouter().merge('session:', session);
+
+export type SessionRouter = typeof sessionRouter;
+export default sessionRouter;

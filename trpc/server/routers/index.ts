@@ -1,5 +1,14 @@
-import { session } from './session';
-import { account } from './account';
-import { googleIDTokenVerification } from './googleIDTokenVerification';
+import sessionRouter, { SessionRouter } from './session';
+import accountRouter, { AccountRouter } from './account';
+import googleAuthRouter, { GoogleAuthRouter } from './googleAuth';
 
-export { session, account, googleIDTokenVerification };
+export type AppRouter = SessionRouter | AccountRouter | GoogleAuthRouter;
+
+export {
+  sessionRouter,
+  SessionRouter,
+  accountRouter,
+  AccountRouter,
+  googleAuthRouter,
+  GoogleAuthRouter,
+};

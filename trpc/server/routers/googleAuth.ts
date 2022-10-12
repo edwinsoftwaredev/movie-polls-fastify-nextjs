@@ -4,7 +4,7 @@ interface GoogleOAuthResponseType {
   credential: string;
 }
 
-export const googleIDTokenVerification = createRouter().mutation(
+const googleIDTokenVerification = createRouter().mutation(
   'verifyGoogleIDToken',
   {
     input: (val) => val,
@@ -61,3 +61,11 @@ export const googleIDTokenVerification = createRouter().mutation(
     },
   }
 );
+
+const googleAuthRouter = createRouter().merge(
+  'googleAuth:',
+  googleIDTokenVerification
+);
+
+export type GoogleAuthRouter = typeof googleAuthRouter;
+export default googleAuthRouter;

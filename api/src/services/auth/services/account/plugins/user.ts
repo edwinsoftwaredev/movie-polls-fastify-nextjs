@@ -18,9 +18,6 @@ const user: FastifyPluginAsync = async (fastify) => {
     ...fastify.account,
     user: decorators,
   });
-
-  // Add csrf protection on every request
-  fastify.addHook('onRequest', fastify.csrfProtection);
 };
 
 export default fastifyPlugin(user);

@@ -1,4 +1,4 @@
-import type { AppRouter } from '../server';
+import type { AppRouter } from '../server/server';
 import type {
   inferProcedureOutput,
   inferProcedureInput,

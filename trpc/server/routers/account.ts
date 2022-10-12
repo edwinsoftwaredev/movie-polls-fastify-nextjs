@@ -1,6 +1,6 @@
 import createRouter from '../createRouter';
 
-export const account = createRouter().query('whoami', {
+const account = createRouter().query('whoami', {
   resolve: async ({ ctx }) => {
     const { req, res, fastify } = ctx;
 
@@ -13,3 +13,8 @@ export const account = createRouter().query('whoami', {
     return { whoami };
   },
 });
+
+const accountRouter = createRouter().merge('account:', account);
+
+export type AccountRouter = typeof accountRouter;
+export default accountRouter;

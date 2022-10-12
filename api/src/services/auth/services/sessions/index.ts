@@ -1,6 +1,7 @@
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import csrfToken from './plugins/csrf-token';
+import routes from './plugins/routes';
 import session from './plugins/session';
 
 interface SessionPluginOptions extends FastifyPluginOptions {
@@ -21,6 +22,7 @@ const sessions: FastifyPluginAsync<SessionPluginOptions> = async (
   // notify changes to parent not the other ancestors
   fastify.register(session, { sessionSecret, isDevEnv });
   fastify.register(csrfToken);
+  fastify.register(routes, { prefix: '/trpc/sessionRoutes' });
 };
 
 // Making use of fastify-plugin due to the csrfToken

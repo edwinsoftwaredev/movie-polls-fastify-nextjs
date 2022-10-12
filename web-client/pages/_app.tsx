@@ -1,24 +1,89 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { withTRPC } from '@trpc/next';
-import { AppRouter } from 'trpc/client';
+import { httpLink } from '@trpc/client/links/httpLink';
+import { splitLink } from '@trpc/client/links/splitLink';
+import { AccountRouter, GoogleAuthRouter, SessionRouter } from 'trpc/client';
+import { TRPCLink } from '@trpc/client';
+
+const nextLink: TRPCLink<any> = (runtime) => {
+  return ({ prev, next, op }) => {
+    // It calls for the next link but
+    // with the previous "context"
+    next(op, (result) => {
+      prev(result);
+    });
+  };
+};
 
 function MyApp({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />;
 }
 
-export default withTRPC<AppRouter>({
+export default withTRPC({
   ssr: true,
   config: ({ ctx }) => {
+    const isClient = typeof window !== 'undefined';
+
+    // api url
+    const apiUrl = isClient
+      ? process.env.NEXT_PUBLIC_API_HOST_URL
+      : process.env.API_HOST_URL;
+
+    const links = [
+      splitLink({
+        condition(op) {
+          // Link determined by path
+          return op.path.includes('session:');
+        },
+        true: httpLink<SessionRouter>({
+          url: `${apiUrl}/trpc/sessionRoutes`,
+        }),
+        false: nextLink,
+      }),
+      splitLink({
+        condition(op) {
+          // Link determined by path
+          return op.path.includes('account:');
+        },
+        true: httpLink<AccountRouter>({
+          url: `${apiUrl}/trpc/accountRoutes`,
+        }),
+        false: nextLink,
+      }),
+      splitLink({
+        condition(op) {
+          // Link determined by path
+          return op.path.includes('account:');
+        },
+        true: httpLink<GoogleAuthRouter>({
+          url: `${apiUrl}/trpc/googleAuthRoutes`,
+        }),
+        false: nextLink,
+      }),
+      httpLink({
+        url: `${apiUrl}/trpc`,
+      }),
+    ];
+
     // During client requests
-    if (typeof window !== 'undefined') {
+    if (isClient) {
+      const csrfToken = document
+        .querySelector("meta[name='csrf-token']")
+        ?.getAttribute('content');
+
       return {
-        url: `${process.env.NEXT_PUBLIC_API_HOST_URL}/trpc`,
+        url: `${apiUrl}/trpc`,
+        links,
         // When app initialize (not client) ctx?.req is not defined as expected
         fetch: (url, options) => {
           return fetch(url, {
             ...options,
             credentials: 'include',
+            headers: {
+              ...options?.headers,
+              ...(csrfToken ? { 'csrf-token': csrfToken } : {}),
+            },
           });
         },
       };
@@ -33,7 +98,8 @@ export default withTRPC<AppRouter>({
 
     // During SSR
     return {
-      url: `${process.env.API_HOST_URL}/trpc`,
+      url: `${apiUrl}/trpc`,
+      links,
       fetch: (url, options) => {
         return fetch(url, {
           ...options,
