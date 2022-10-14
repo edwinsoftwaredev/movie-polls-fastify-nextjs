@@ -1,5 +1,1 @@
-export {
-  SessionRouter,
-  AccountRouter,
-  GoogleAuthRouter,
-} from '../server/routers';
+export { AppRouter } from '../server'

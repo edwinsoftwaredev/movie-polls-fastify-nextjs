@@ -1,14 +1,7 @@
-import sessionRouter, { SessionRouter } from './session';
-import accountRouter, { AccountRouter } from './account';
-import googleAuthRouter, { GoogleAuthRouter } from './googleAuth';
+import sessionRouter from './session';
+import accountRouter from './account';
+import googleAuthRouter from './googleAuth';
 
-export type AppRouter = SessionRouter | AccountRouter | GoogleAuthRouter;
+export { sessionRouter, accountRouter, googleAuthRouter };
 
-export {
-  sessionRouter,
-  SessionRouter,
-  accountRouter,
-  AccountRouter,
-  googleAuthRouter,
-  GoogleAuthRouter,
-};
+

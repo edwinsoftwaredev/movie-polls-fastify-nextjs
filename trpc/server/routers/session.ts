@@ -20,6 +20,4 @@ const session = createRouter().query('getSession', {
 });
 
 const sessionRouter = createRouter().merge('session:', session);
-
-export type SessionRouter = typeof sessionRouter;
 export default sessionRouter;

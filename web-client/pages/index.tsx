@@ -20,14 +20,14 @@ const Home: NextPage = () => {
    * The Next.js's logic that includes getServerSideProps or getStaticProps
    * and client side is handle by tRPC and React-Query
    */
-  const { data: session } = trpc.session.useQuery(['session:getSession'], {
+  const { data: session } = trpc.useQuery(['session:getSession'], {
     // TODO: Update configuration
     refetchOnMount: true,
     refetchOnReconnect: true,
     refetchOnWindowFocus: true,
   });
 
-  const { data: whoamiRes } = trpc.account.useQuery(['account:whoami'], {
+  const { data: whoamiRes } = trpc.useQuery(['account:whoami'], {
     // TODO: "ssr: false" might not be the solution
     ssr: false,
     enabled: Boolean(session?.isAuthenticated),

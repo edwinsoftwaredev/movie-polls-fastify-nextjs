@@ -67,5 +67,4 @@ const googleAuthRouter = createRouter().merge(
   googleIDTokenVerification
 );
 
-export type GoogleAuthRouter = typeof googleAuthRouter;
 export default googleAuthRouter;

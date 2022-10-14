@@ -2,7 +2,7 @@ import createRouter from '../createRouter';
 
 const account = createRouter().query('whoami', {
   resolve: async ({ ctx }) => {
-    const { req, res, fastify } = ctx;
+    const { req, fastify } = ctx;
 
     const userId = req.session.userSession?.userId;
 
@@ -15,6 +15,4 @@ const account = createRouter().query('whoami', {
 });
 
 const accountRouter = createRouter().merge('account:', account);
-
-export type AccountRouter = typeof accountRouter;
 export default accountRouter;
