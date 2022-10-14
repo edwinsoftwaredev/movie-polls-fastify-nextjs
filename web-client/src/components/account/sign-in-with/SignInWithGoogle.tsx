@@ -16,11 +16,6 @@ const SignInWithGoogle: React.FC = () => {
         data-ux_mode="popup"
       />
       <div
-        style={{
-          position: 'relative',
-          display: 'flex',
-          justifyContent: 'center',
-        }}
         className="g_id_signin"
         data-type="standard"
         data-size="large"

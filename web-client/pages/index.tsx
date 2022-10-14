@@ -28,9 +28,6 @@ const Home: NextPage = () => {
   });
 
   const { data: whoamiRes } = trpc.useQuery(['account:whoami'], {
-    // TODO: "ssr: false" might not be the solution
-    ssr: false,
-    enabled: Boolean(session?.isAuthenticated),
     refetchOnWindowFocus: true,
     refetchOnMount: false,
   });

@@ -4,7 +4,13 @@ import { createTRPCFastifyContext } from 'trpc/server';
 import { accountRouter } from 'trpc/server/routers';
 
 const routes: FastifyPluginAsync = async (fastify) => {
-  fastify.addHook('onRequest', fastify.csrfProtection);
+  fastify.addHook('onRequest', (req, res, done) => {
+    // for Account routes, CSRF protection 
+    // is disabled
+    if (req.method === 'GET') return done();
+    return fastify.csrfProtection(req, res, done);
+  });
+
   fastify.register(fastifyTRPCPlugin, {
     trpcOptions: {
       router: accountRouter,
