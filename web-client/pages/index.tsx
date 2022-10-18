@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Header, Account, Footer } from 'components';
-import styles from '../styles/Home.module.css';
+import styles from '../styles/Home.module.scss';
 import trpc from 'src/trpc';
 
 const Home: NextPage = () => {
@@ -28,6 +28,7 @@ const Home: NextPage = () => {
   });
 
   const { data: whoamiRes } = trpc.useQuery(['account:whoami'], {
+    enabled: session?.isAuthenticated,
     refetchOnWindowFocus: true,
     refetchOnMount: false,
   });

@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+import '../styles/globals.scss';
 import type { AppProps } from 'next/app';
 import { TRPCLink } from '@trpc/client';
 import { httpLink } from '@trpc/client/links/httpLink';
@@ -61,7 +61,7 @@ const routerLinks = [
       }),
       false: nextLink,
     })
-  ), 
+  ),
   httpLink({
     url: `${apiURL}/trpc`,
   })
