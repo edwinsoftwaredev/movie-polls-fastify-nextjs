@@ -6,9 +6,20 @@ import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
 import { splitLink } from '@trpc/client/links/splitLink';
 import { withTRPC } from '@trpc/next';
 import { AppRouter } from 'trpc/client';
+import { NextPage } from 'next';
+import { ReactElement, ReactNode } from 'react';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
+  return getLayout(<Component {...pageProps} />);
 }
 
 interface MappedRouterRoutesType {

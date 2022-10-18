@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
 import trpc from 'src/trpc';
 import style from './Header.module.scss';
 
@@ -68,8 +67,10 @@ const NavOptions: React.FC = () => (
 );
 
 const Header: React.FC = () => {
-  const { data: sessionData} = trpc.useQuery(['session:getSession'], {
-    refetchOnMount: false,
+  const { data: sessionData, isFetched } = trpc.useQuery(['session:getSession'], {
+    // Setting ssr to false due to this component not being a page
+    // and not being in a page
+    ssr: false,
   });
 
   const { isAuthenticated } = sessionData || {};
@@ -80,11 +81,15 @@ const Header: React.FC = () => {
       <header className={style['header']}>
         <h1>Movie Polls</h1>
         <div />
-        <nav>
-          {
-            isAuthenticated ? <NavOptions /> : <AnonymousUserNavOptions />
-          }
-        </nav>
+        {
+          isFetched ? (
+            <nav>
+              {
+                isAuthenticated ? <NavOptions /> : <AnonymousUserNavOptions />
+              }
+            </nav>
+          ) : <div />
+        }
       </header>
     </div>
   )

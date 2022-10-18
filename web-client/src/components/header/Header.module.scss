@@ -26,10 +26,10 @@
   nav {
     display: inline-block;
     position: relative;
-    color: white;
+    color: #ffffff;
     margin: auto 0;
-    font-size: clamp(0.7rem, 0.7rem + 0.20vw, 1.2rem);
-    font-weight: 400;
+    font-size: clamp(0.6rem, 0.6rem + 0.20vw, 1.2rem);
+    font-weight: normal;
 
     ul {
       list-style-type: none;
@@ -41,6 +41,7 @@
         margin-right: 1.5rem;
         height: 1rem;
         vertical-align: middle;
+        border-color: #ffffff;
       }
 
       li {
