@@ -1,0 +1,57 @@
+.container {
+  background-color: rgba($color: #000000, $alpha: 0.65);
+  backdrop-filter: blur(7px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  // border-bottom: 1px solid #212121;
+}
+
+.header {
+  max-width: 1200px;
+  width: 100%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto;
+  padding: 0 2rem;
+
+  h1 {
+    font-size: clamp(1rem, 1.4rem + 0.20vw, 2rem);
+    color: gold;
+  }
+
+  // TODO: make it hamburger
+  nav {
+    display: inline-block;
+    position: relative;
+    color: white;
+    margin: auto 0;
+    font-size: clamp(0.7rem, 0.7rem + 0.20vw, 1.2rem);
+    font-weight: 400;
+
+    ul {
+      list-style-type: none;
+      margin: auto;
+
+      hr {
+        display: inline-block;
+        margin: auto;
+        margin-right: 1.5rem;
+        height: 1rem;
+        vertical-align: middle;
+      }
+
+      li {
+        display: inline-block;
+        vertical-align: middle;
+
+        &:not(:last-of-type) {
+          margin: auto;
+          margin-right: 1.5rem;
+        }
+      }
+    }
+  }
+}
