@@ -18,7 +18,6 @@ const Home: NextPageWithLayout = () => {
     <div className={styles.container}>
       <main className={styles.main}>
         <h1 className={styles.title}>Movie Polls</h1>
-
         <div>
           {whoami ? (
             <p>
@@ -34,9 +33,7 @@ const Home: NextPageWithLayout = () => {
 };
 
 Home.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <Layout>{page}</Layout>
-  );
+  return (<Layout>{page}</Layout>);
 };
 
 export default Home;

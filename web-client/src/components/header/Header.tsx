@@ -31,7 +31,7 @@ const NavOptions: React.FC = () => (
       </Link>
     </li>
     <li>
-      <Link href='/home'>
+      <Link href='/'>
         <a>Home</a>
       </Link>
     </li>
