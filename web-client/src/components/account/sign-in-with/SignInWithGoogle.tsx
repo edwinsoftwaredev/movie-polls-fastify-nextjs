@@ -1,7 +1,35 @@
-import React from 'react';
 import Script from 'next/script';
+import { useEffect } from 'react';
+
+declare global {
+  interface Window {
+    google?: any;
+  }
+}
 
 const SignInWithGoogle: React.FC = () => {
+  // RE-RENDERING a page that contains a script,
+  // and such script attaches itself to an element in the page
+  // is not going to make the script to re-attach itself to the element
+  // in the page again (<Script /> persist during routing or page rerenders).
+  // Because of that script must be re-attached manually after the 
+  // component/page has been rendered.
+  //
+  // https://nextjs.org/docs/messages/next-script-for-ga
+  useEffect(() => {
+    window.google?.accounts.id.renderButton(
+      document.getElementById('g_id_signin'), 
+      {
+        type: 'standard',
+        theme: 'outlined',
+        size: 'large',
+        text: 'sign_in_with',
+        shape: 'rectangular',
+        logo_alignment: 'left',
+      }
+    );
+  }, []);
+
   return (
     <div>
       <Script
@@ -16,6 +44,7 @@ const SignInWithGoogle: React.FC = () => {
         data-ux_mode="popup"
       />
       <div
+        id='g_id_signin'
         className="g_id_signin"
         data-type="standard"
         data-size="large"
