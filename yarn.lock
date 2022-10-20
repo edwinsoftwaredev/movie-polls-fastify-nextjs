@@ -487,24 +487,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/next@npm:^9.27.4":
-  version: 9.27.4
-  resolution: "@trpc/next@npm:9.27.4"
-  dependencies:
-    "@babel/runtime": ^7.9.0
-    react-ssr-prepass: ^1.5.0
-  peerDependencies:
-    "@trpc/client": 9.27.4
-    "@trpc/react": 9.27.4
-    "@trpc/server": 9.27.4
-    next: "*"
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-    react-query: ^3.37.0
-  checksum: cfb78d689048e1e150d68ed3c5b1cc4ff96f3c3f9a66f47f61f9e808983a7cd3ea6060e60eb6cd40da01b736b3d4f978de47b2b21039c90c125c04be4baeb4ef
-  languageName: node
-  linkType: hard
-
 "@trpc/react@npm:^9.27.4":
   version: 9.27.4
   resolution: "@trpc/react@npm:9.27.4"
@@ -3594,15 +3576,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-ssr-prepass@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "react-ssr-prepass@npm:1.5.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: efe89b9f8b2053474613f56dfdbeb41d8ee2e572bf819a39377d95d3e4a9acf8a4a16e28d8d8034cb9ac2b316d11dc9e62217743e4322046d08175eb3b4fed3e
-  languageName: node
-  linkType: hard
-
 "react@npm:18.2.0":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
@@ -4451,7 +4424,6 @@ __metadata:
   resolution: "web-client@workspace:web-client"
   dependencies:
     "@trpc/client": ^9.27.4
-    "@trpc/next": ^9.27.4
     "@trpc/react": ^9.27.4
     "@trpc/server": ^9.27.4
     "@types/node": 18.7.18

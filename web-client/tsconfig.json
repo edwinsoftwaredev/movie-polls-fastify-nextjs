@@ -28,7 +28,7 @@
     "**/*.tsx",
     // If this file is not included the fastify decorated types
     // will not be inferred by tRPC
-    "../api/types/fastify/index.d.ts"
+    "../api/types/fastify/index.d.ts",
   ],
   "exclude": ["node_modules"]
 }

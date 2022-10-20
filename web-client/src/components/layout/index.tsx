@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react";
 import Head from "next/head";
 import Footer from "../footer/Footer";
 import Header from "../header";
-import trpc from "src/trpc";
+import { trpc } from "src/trpc";
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   // --- Server Auth flow ---
@@ -22,7 +22,7 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
    */
   const { data: session } = trpc.useQuery(['session:getSession'], {
     // TODO: Update configuration.
-    // Settings ssr to false due to this component not being a page and 
+    // Setting s ssr to false due to this component not being a page and 
     // not being in page
     ssr: false,
   });

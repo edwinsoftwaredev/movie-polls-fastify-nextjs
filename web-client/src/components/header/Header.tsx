@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import trpc from 'src/trpc';
+import { trpc } from 'src/trpc';
 import style from './Header.module.scss';
 
 const AnonymousUserNavOptions: React.FC = () => (

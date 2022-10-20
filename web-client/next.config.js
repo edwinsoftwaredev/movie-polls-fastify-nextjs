@@ -1,3 +1,5 @@
+// const path = require("path");
+
 // https://nextjs.org/docs/advanced-features/security-headers
 // https://helmetjs.github.io/
 
@@ -53,6 +55,17 @@ const securityHeaders = [{
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  // In case the source code in the trpc package is needed, uncomment:
+  // webpack: (config, options) => {
+  //   // Adding ../trpc ts files
+  //   config.module.rules.push({
+  //     test: /\.(ts)$/,
+  //     include: [path.resolve(__dirname, '../trpc/')],
+  //     use: [options.defaultLoaders.babel]
+  //   });
+
+  //   return config;
+  // },
   async headers() {
     return [{
       source: '/:path*',
