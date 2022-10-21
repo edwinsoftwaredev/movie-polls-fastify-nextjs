@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { trpc } from 'src/trpc';
 import style from './Header.module.scss';
+import SearchVector from '../../../public/vectors/search.svg';
 
 const AnonymousUserNavOptions: React.FC = () => (
   <ul>
@@ -27,7 +28,11 @@ const NavOptions: React.FC = () => (
   <ul>
     <li>
       <Link href='/search'>
-        <a>Search</a>
+        <a>
+          <div className={style['search-vector']}>
+            <SearchVector />
+          </div>
+        </a>
       </Link>
     </li>
     <li>
@@ -67,14 +72,9 @@ const NavOptions: React.FC = () => (
 );
 
 const Header: React.FC = () => {
-  const { data: sessionData, isFetched } = trpc.useQuery(['session:getSession'], {
-    // Setting ssr to false due to this component not being a page
-    // and not being in a page
-    ssr: false,
-  });
+  const { data: sessionData, isFetched } = trpc.useQuery(['session:getSession']);
 
   const { isAuthenticated } = sessionData || {};
-
 
   return (
     <div className={style['container']}>
@@ -92,7 +92,7 @@ const Header: React.FC = () => {
         }
       </header>
     </div>
-  )
+  );
 };
 
 export default Header;

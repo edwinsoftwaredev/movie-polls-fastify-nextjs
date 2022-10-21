@@ -52,6 +52,22 @@
           margin: auto;
           margin-right: 1.5rem;
         }
+
+        a:hover {
+          color: white;
+        }
+
+        .search-vector {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+
+          svg {
+            stroke-width: 1.5px;
+            margin: auto;
+            color: #ffffff;
+          }
+        }
       }
     }
   }

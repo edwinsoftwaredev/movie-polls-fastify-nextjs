@@ -66,6 +66,15 @@ const nextConfig = {
 
   //   return config;
   // },
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
+      resourceQuery: { not: [/url/]  },
+      use: ['@svgr/webpack'],
+    });
+    return config;
+  },
   async headers() {
     return [{
       source: '/:path*',
