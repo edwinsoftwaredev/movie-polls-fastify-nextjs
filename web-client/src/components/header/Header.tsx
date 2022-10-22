@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { trpc } from 'src/trpc';
 import style from './Header.module.scss';
-import SearchVector from '../../../public/vectors/search.svg';
+import SearchVector from 'public/vectors/search.svg';
 
 const AnonymousUserNavOptions: React.FC = () => (
   <ul>

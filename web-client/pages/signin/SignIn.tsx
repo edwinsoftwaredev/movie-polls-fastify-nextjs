@@ -31,17 +31,24 @@ const SignIn: NextPageWithLayout = () => {
   const { whoami } = whoamiData || {};
 
   return (
-    <div className={style['main']}>
-      <div>
+    <section>
+      <article>
         {
           whoami ? (
-            <p>
-              Welcome <span>{whoami.displayName}</span>
-            </p>
-          ) : <Account.SignIn />
+            <h2>Welcome <span>{whoami.displayName}</span></h2>
+          ) : (
+            <>
+              <span   
+                style={{textAlign: 'center'}}
+              >
+                <h2>You are not authenticated</h2>
+              </span>
+              <Account.SignIn />
+            </>
+          )
         }
-      </div>
-    </div>
+      </article>
+    </section>
   );
 };
 

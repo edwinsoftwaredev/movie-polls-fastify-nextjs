@@ -15,22 +15,69 @@ a {
   box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
+$fixed-content-width: 1200px;
+$dark-color: #888;
+$dark-hover-color: white;
+
+header {
+  max-width: $fixed-content-width;
+  width: 100%;
+  margin: auto;
+}
+
+main {
+  min-height: 100vh;
+  padding: 4rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+section {
+  width: 100%;
+}
+
+article {
+  max-width: $fixed-content-width;
+  width: 100%;
+  margin: auto;
+}
+
+svg {
+  stroke-width: 1.5px;
+  margin: auto;
+}
+
+// TODO: set to dark
+@media (prefers-color-scheme: light) {
   html {
-    color-scheme: dark;
+    // TODO: set to dark
+    color-scheme: light;
   }
+
   body {
-    color: white;
+    color: $dark-color;
     background: black;
+    font-size: clamp(0.6rem, 0.6rem + 0.20vw, 1.2rem);
+    font-weight: normal;
+  }
+
+  a, button, svg {
+    &:hover {
+      color: $dark-hover-color;
+    }
   }
 }
 
-@media (prefers-color-scheme: light) {
-  html {
-    color-scheme: light;
-  }
-  body {
-    color: white;
-    background: black;
-  }
-}
+// TODO: Update light color scheme
+// @media (prefers-color-scheme: light) {
+//   html {
+//     color-scheme: light;
+//   }
+//   body {
+//     color: white;
+//     background: black;
+//   }
+// }
+

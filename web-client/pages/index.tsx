@@ -1,5 +1,4 @@
-import styles from '../styles/Home.module.scss';
-import { getTRPCClient } from 'src/trpc';
+import { getTRPCClient, trpc } from 'src/trpc';
 import { NextPageWithLayout } from './_app';
 import { ReactElement } from 'react';
 import Layout from 'src/components/layout';
@@ -9,9 +8,7 @@ import { dehydrate, QueryClient } from 'react-query';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const trpcClient = getTRPCClient({ req });
   const queryClient = new QueryClient();
-  const sessionQueryData = await trpcClient.query('session:getSession');
   const whoamiQueryData = await trpcClient.query('account:whoami');
-  queryClient.setQueryData('session:getSession', sessionQueryData);
   queryClient.setQueryData('account:whoami', whoamiQueryData);
 
   return {
@@ -22,12 +19,67 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 }
 
 const Home: NextPageWithLayout = () => {
+  const { data: whoamiData } = trpc.useQuery(['account:whoami']);
+  const { whoami } = whoamiData || {};
+
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>Movie Polls</h1>
-      </main>
-    </div>
+    <>
+      {
+        whoami ? (
+          <>
+            {/** Current polls section */}
+            <section>
+              <article>
+                <h2>Current Polls</h2>
+              </article>
+
+              {/** slider */}
+              <section />
+            </section>
+
+            {/** Top 10 Best Popular */}
+            <section>
+              <article>
+                <h2>Top 10 Best Popular Movies</h2>
+              </article>
+
+              {/** slider */}
+              <section />
+            </section>
+
+            {/** Top 10 Best Trending Movies */}
+            <section>
+              <article>
+                <h2>Top 10 Best Trending Movies</h2>
+              </article>
+
+              {/** slider*/}
+              <section />
+            </section>
+
+            {/** Now Playing */}
+            <section>
+              <article>
+                <h2>Now Playing</h2>
+              </article>
+
+              {/** slider */}
+              <section />
+            </section>
+          </>
+        ) : (
+          <section>
+            <span 
+              style={{
+                textAlign: 'center'
+              }}
+            >
+              <h1>Landing Page</h1>
+            </span>
+          </section>
+        )
+      }
+    </>
   );
 };
 

@@ -19,7 +19,8 @@
       "components": ["src/components"],
       "services": ["src/services"],
       "types": ["src/types"],
-      "styles": ["styles"]
+      "styles": ["styles"],
+      "public": ["public"]
     }
   },
   "include": [
