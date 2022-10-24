@@ -41,12 +41,27 @@ section {
 article {
   max-width: $fixed-content-width;
   width: 100%;
-  margin: auto;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  box-sizing: border-box;
+}
+
+footer {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 1rem 2rem;
+  backdrop-filter: contrast(0.5);
+  -webkit-backdrop-filter: contrast(0.5);
 }
 
 svg {
   stroke-width: 1.5px;
   margin: auto;
+}
+
+
+.app-title {
+  font-size: clamp(1rem, 1.4rem + 0.20vw, 2rem);
+  color: gold;
 }
 
 // TODO: set to dark
