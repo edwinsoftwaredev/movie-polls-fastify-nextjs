@@ -14,11 +14,6 @@
   grid-template-rows: auto;
   padding: 0 2rem;
 
-  h1 {
-    font-size: clamp(1rem, 1.4rem + 0.20vw, 2rem);
-    color: gold;
-  }
-
   // TODO: make it hamburger
   nav {
     display: inline-block;

@@ -79,7 +79,7 @@ const Header: React.FC = () => {
   return (
     <div className={style['container']}>
       <header className={style['header']}>
-        <h1>Movie Polls</h1>
+        <h1 className='app-title'>Movie Polls</h1>
         <div />
         {
           isFetched ? (

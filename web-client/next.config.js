@@ -7,6 +7,8 @@ const apiURL = process.env.NEXT_PUBLIC_API_HOST_URL || '';
 // https://cloud.google.com/identity-platform/docs/web/chrome-extension
 const googleURLs = 'https://accounts.google.com'; 
 
+const googleFontsURL = 'https://fonts.googleapis.com https://fonts.gstatic.com';
+
 // TODO: review headers in prod
 const ContentSecurityPolicy = `
   base-uri 'self';
@@ -16,8 +18,8 @@ const ContentSecurityPolicy = `
   child-src 'self';
   frame-src 'self' ${googleURLs};
   frame-ancestors 'self';
-  style-src 'self' ${googleURLs} 'unsafe-inline';
-  font-src 'self';
+  style-src 'self' ${googleURLs} ${googleFontsURL} 'unsafe-inline';
+  font-src 'self' ${googleFontsURL};
   img-src 'self' data:;
   form-action 'self' ${apiURL};
   object-src 'none';
