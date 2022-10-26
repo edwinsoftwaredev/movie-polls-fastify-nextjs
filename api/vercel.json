@@ -1,0 +1,6 @@
+{
+  "rewrites": {
+    "source": "/(.*)",
+    "destinations": "/api/serverless"
+  }
+}

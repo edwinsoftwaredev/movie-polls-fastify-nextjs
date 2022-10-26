@@ -6,7 +6,7 @@ const session = createRouter().query('getSession', {
       req: { session },
       res,
     } = ctx;
-
+    
     const csrfToken: string = await res.generateCsrf();
 
     const { userSession } = session;

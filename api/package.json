@@ -24,6 +24,7 @@
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
     "@types/node": "^18.7.6",
+    "@vercel/node": "^2.5.26",
     "nodemon": "^2.0.19",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
