@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import { trpc } from 'src/trpc';
 import style from './Header.module.scss';
 import SearchVector from 'public/vectors/search.svg';
+import Link from 'next/link';
 
 const AnonymousUserNavOptions: React.FC = () => (
   <ul>
@@ -79,7 +79,11 @@ const Header: React.FC = () => {
   return (
     <div className={style['container']}>
       <header className={style['header']}>
-        <h1 className='app-title'>Movie Polls</h1>
+        <Link href={'/'}>
+          <a>
+            <h1 className='app-title'>Movie Polls</h1>
+          </a>
+        </Link>
         <div />
         {
           isFetched ? (

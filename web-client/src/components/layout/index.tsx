@@ -20,12 +20,7 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
    * The Next.js's logic that includes getServerSideProps or getStaticProps
    * and client side is handle by tRPC and React-Query
    */
-  const { data: session } = trpc.useQuery(['session:getSession'], {
-    // TODO: Update configuration.
-    // Setting s ssr to false due to this component not being a page and 
-    // not being in page
-    ssr: false,
-  });
+  const { data: session } = trpc.useQuery(['session:getSession']);
 
   const { csrfToken } = session || {};
 
