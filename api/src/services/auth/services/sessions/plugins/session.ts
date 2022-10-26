@@ -101,64 +101,95 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
 
         const { userSession } = session;
         const sessionCsrfToken = session.get<string>('_csrf') || '';
-        // 1. Save session in persistent storage
-        // 2. Save session in session storage
+        // 1. Check that session exists in session storage
+        // 2. If session exists in session storage save/update session
+        //    in session storage and call callback.
+        // 2. If session does not exists in session storage
+        //    save session in persistent storage and then in session storage
+        //    and call callback.
+        //
+        // https://redis.com/blog/cache-vs-session-store/
 
-        // If user was removed from database but from redis
-        // the userId constraint will fail
-        fastify.prismaClient?.userSession
-          .upsert({
-            where: {
-              id: sessionId,
-            },
-            update: {
-              csrfToken: sessionCsrfToken,
-              // TODO: validate that the user's id is the same
-              // on every update
-              userId: userSession?.userId,
-              expiresOn: session.cookie.expires,
-            },
-            create: {
-              id: sessionId,
-              csrfToken: sessionCsrfToken,
-              userId: userSession?.userId,
-              expiresOn: session.cookie.expires,
-            },
-          })
-          .then((userSession) => {
-            // The session type retrived from the session storage is not the same
-            // as the type retrived from the persistant storage
-            const { id: sessionId, csrfToken, userId, expiresOn } = userSession;
+        fastify.redisClient.get(sessionId).then((storedSession) => {
+          if (storedSession) {
+            // TODO: Replace JSON parse and stringify methods
+            const storedSessionJSON = JSON.parse(storedSession);
             const userSessionJSON = JSON.stringify({
-              id: sessionId,
-              csrfToken,
-              userId,
-              expiresOn,
+              ...storedSessionJSON,
+              userId: userSession?.userId,
+              csrfToken: sessionCsrfToken,
+              expiresOn: session.cookie.expires,
             });
 
-            return fastify.redisClient.set(sessionId, userSessionJSON);
-          })
-          .then(() => {
-            callback(undefined);
-          })
-          .catch((reason) => {
-            if (reason instanceof PrismaClientKnownRequestError) {
-              // checks that error is produce by the userId constraint
-              // failing. If that is the case remove the session from redis
-              if (
-                reason.code === 'P2003' &&
-                reason.meta &&
-                reason.meta['field_name'] === 'userId'
-              )
-                fastify.redisClient.del(sessionId);
-            } else {
-              callback(reason);
-            }
-          });
+            fastify.redisClient.set(sessionId, userSessionJSON)
+              .then(() => {
+                callback();
+              });
+          } else {
+            // If user was removed from database but from redis
+            // the userId constraint will fail
+            fastify.prismaClient.userSession
+              .upsert({
+                where: {
+                  id: sessionId,
+                },
+                update: {
+                  csrfToken: sessionCsrfToken,
+                  // TODO: validate that the user's id is the same
+                  // on every update
+                  userId: userSession?.userId,
+                  expiresOn: session.cookie.expires,
+                },
+                create: {
+                  id: sessionId,
+                  csrfToken: sessionCsrfToken,
+                  userId: userSession?.userId,
+                  expiresOn: session.cookie.expires,
+                },
+              })
+              .then((userSession) => {
+                // The session type retrived from the session storage is not the same
+                // as the type retrived from the persistent storage
+                const {
+                  id: sessionId,
+                  csrfToken,
+                  userId,
+                  expiresOn,
+                } = userSession;
+                const userSessionJSON = JSON.stringify({
+                  id: sessionId,
+                  csrfToken,
+                  userId,
+                  expiresOn,
+                });
+
+                return fastify.redisClient.set(sessionId, userSessionJSON);
+              })
+              .then(() => {
+                callback(undefined);
+              })
+              .catch((reason) => {
+                if (reason instanceof PrismaClientKnownRequestError) {
+                  // checks that error is produced by the userId constraint
+                  // failing. If that is the case remove the session from redis
+                  if (
+                    reason.code === 'P2003' &&
+                    reason.meta &&
+                    reason.meta['field_name'] === 'userId'
+                  )
+                    fastify.redisClient.del(sessionId);
+                } else {
+                  callback(reason);
+                }
+              });
+          }
+        });
       },
       destroy(sessionId, callback) {
-        // Remove session from session store
-        // Then remove session from persistent storage
+        // 1. Remove session from session storage
+        // 2. Remove session from persistent storage
+        //
+        // https://redis.com/blog/cache-vs-session-store/
         fastify.redisClient
           .del(sessionId)
           .then(() =>
