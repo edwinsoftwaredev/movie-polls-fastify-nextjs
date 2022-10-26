@@ -3,7 +3,7 @@
     "require": ["tsconfig-paths/register"]
   },
   "compilerOptions": {
-    "emit": "noEmit",
+    "noEmit": true,
     "sourceMap": true,
     "outDir": "dist",
     "strict": true,
