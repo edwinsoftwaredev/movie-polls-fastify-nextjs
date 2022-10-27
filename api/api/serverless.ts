@@ -2,13 +2,14 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import Fastify from "fastify";
+import serverlessFunc from '../src/server';
+import Fastify from 'fastify';
 
 const app = Fastify({
   logger: true
 });
 
-app.register(require("../src/server"));
+app.register(serverlessFunc);
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   await app.ready();
