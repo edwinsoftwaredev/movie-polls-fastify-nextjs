@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "npx nodemon src/server.ts",
-    "build": "prisma generate --schema ../prisma/schema.prisma && tsc -p tsconfig.json"
+    "build": "prisma generate --schema ../prisma/schema.prisma && prisma migrate deploy --schema ../prisma/schema.prisma && tsc -p tsconfig.json"
   },
   "dependencies": {
     "@fastify/cookie": "^8.2.0",
