@@ -12,12 +12,13 @@
     "lib": ["esnext"],
     "esModuleInterop": true,
     "baseUrl": ".",
-    "paths": {
-      "decorators": ["src/decorators"],
-      "hooks": ["src/hooks"],
-      "plugins": ["src/plugins"],
-      "routes": ["src/routes"],
-      "services": ["src/services"]
-    }
+    // Path Mappings are not supported by Vercel
+    // "paths": {
+    //   "decorators": ["src/decorators"],
+    //   "hooks": ["src/hooks"],
+    //   "plugins": ["src/plugins"],
+    //   "routes": ["src/routes"],
+    //   "services": ["src/services"]
+    // }
   }
 }
