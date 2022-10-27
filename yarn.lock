@@ -2281,6 +2281,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@upstash/redis@npm:^1.15.1":
+  version: 1.15.1
+  resolution: "@upstash/redis@npm:1.15.1"
+  dependencies:
+    isomorphic-fetch: ^3.0.0
+  checksum: ecbb928900a71a0e83f4ccf97af916c98fcc48fc7e71d53afc28bc2c7bd9e86aa506b30c3a7e8ddd2dbac604e87e2d3d32a82a68cce8e533e45cd970bdfe3e18
+  languageName: node
+  linkType: hard
+
 "@vercel/build-utils@npm:5.5.5":
   version: 5.5.5
   resolution: "@vercel/build-utils@npm:5.5.5"
@@ -2501,6 +2510,7 @@ __metadata:
     "@prisma/client": 4.4.0
     "@trpc/server": ^9.27.4
     "@types/node": ^18.7.6
+    "@upstash/redis": ^1.15.1
     "@vercel/node": ^2.5.26
     dotenv: ^16.0.2
     fastify: ^4.8.1
@@ -4821,6 +4831,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"isomorphic-fetch@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "isomorphic-fetch@npm:3.0.0"
+  dependencies:
+    node-fetch: ^2.6.1
+    whatwg-fetch: ^3.4.1
+  checksum: e5ab79a56ce5af6ddd21265f59312ad9a4bc5a72cebc98b54797b42cb30441d5c5f8d17c5cd84a99e18101c8af6f90c081ecb8d12fd79e332be1778d58486d75
+  languageName: node
+  linkType: hard
+
 "js-sdsl@npm:^4.1.4":
   version: 4.1.5
   resolution: "js-sdsl@npm:4.1.5"
@@ -5377,7 +5397,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.7":
+"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -7020,6 +7040,13 @@ __metadata:
   version: 3.0.1
   resolution: "webidl-conversions@npm:3.0.1"
   checksum: c92a0a6ab95314bde9c32e1d0a6dfac83b578f8fa5f21e675bc2706ed6981bc26b7eb7e6a1fab158e5ce4adf9caa4a0aee49a52505d4d13c7be545f15021b17c
+  languageName: node
+  linkType: hard
+
+"whatwg-fetch@npm:^3.4.1":
+  version: 3.6.2
+  resolution: "whatwg-fetch@npm:3.6.2"
+  checksum: ee976b7249e7791edb0d0a62cd806b29006ad7ec3a3d89145921ad8c00a3a67e4be8f3fb3ec6bc7b58498724fd568d11aeeeea1f7827e7e1e5eae6c8a275afed
   languageName: node
   linkType: hard
 

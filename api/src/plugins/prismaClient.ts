@@ -14,7 +14,7 @@ const prismaClient: FastifyPluginAsync<PrismaClientPluginOptions> = async (
   const prisma = new PrismaClient({
     datasources: {
       db: {
-        url,
+        url
       },
     },
   });

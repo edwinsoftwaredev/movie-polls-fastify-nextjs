@@ -1,5 +1,5 @@
 import { UserSession, PrismaClient, User } from '@prisma/client';
-import { RedisClientType } from '@redis/client';
+import { Redis } from '@upstash/redis';
 import { OAuth2Client, LoginTicket } from 'google-auth-library';
 
 // Importing these type declaration allows the LSP to
@@ -17,7 +17,7 @@ import type * as Fastify from 'fastify';
 
 declare module 'fastify' {
   interface FastifyInstance {
-    redisClient: RedisClientType;
+    redisClient: Redis;
     prismaClient: PrismaClient;
     googleOAuth2Client: OAuth2Client;
     verifyGoogleIdToken: (idToken: string) => Promise<LoginTicket>;

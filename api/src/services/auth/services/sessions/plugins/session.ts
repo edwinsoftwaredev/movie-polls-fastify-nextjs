@@ -29,8 +29,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
     req.session.verifyGoogleIdToken = fastify.verifyGoogleIdToken;
   });
 
-  // TODO: A preHandler hooks that make use of session is added before registering the the plugin.
-  // Plugin loading starts when you call fastify.listen(), fastify.inject() or fastify.ready()
+  // TODO: Remove database query
   fastify.register(fastifySession, {
     secret: sessionSecret,
     cookie: {
@@ -40,17 +39,15 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
       maxAge: 15 * 60 * 1000,
     },
     rolling: false,
-    // TODO: consider using a RedisJSON
-    // instead of manually parsing JSON strings (slow)
     store: {
       // Adding "workaround" type to callback param,
       // this is due to stores(express.js like stores) compatability issues on the
       // @fastify/session plugin
       get(sessionId, callback: (...args: Array<any>) => void) {
         fastify.redisClient
-          .get(sessionId)
-          .then((sessionJson) => {
-            if (sessionJson) return JSON.parse(sessionJson) as UserSession;
+          .get<UserSession>(sessionId)
+          .then((userSession) => {
+            if (userSession) return userSession;
             // If session not found in cache
             // search session in persistent storage
             return fastify.prismaClient.userSession.findUniqueOrThrow({
@@ -63,21 +60,16 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             // NOTE that a userSession is returned which is part
             // of the session object. also the _csrf token in session is
             // overwritten.
-            // TODO: validate whenwhen should the csrfToken should be recreated
+            // TODO: validate when should the csrfToken should be recreated
             callback(undefined, {
               _csrf: userSession.csrfToken,
-              userSession: {
-                id: userSession.id,
-                csrfToken: userSession.csrfToken,
-                userId: userSession.userId,
-                expiresOn: userSession.expiresOn,
-              },
+              userSession,
             });
           })
           .catch((reason) => {
-            // TODO: Fix that is the session is not found
-            // (e.g user has a sessionID cookie but the session is not found in server side
-            // or that a process on server side removes all expired sessions)
+            // TODO: Fix that if the session is not found
+            // (e.g user has a sessionID cookie but the session is not found on server side
+            // or that a process on server side removed all expired sessions),
             // instead of showing the message session not found,
             // the server should redirect the user to the auth page and reset the session
             // cookie with a new id
@@ -109,19 +101,17 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         //    and call callback.
         //
         // https://redis.com/blog/cache-vs-session-store/
-
-        fastify.redisClient.get(sessionId).then((storedSession) => {
+        fastify.redisClient.get<UserSession>(sessionId).then((storedSession) => {
           if (storedSession) {
-            // TODO: Replace JSON parse and stringify methods
-            const storedSessionJSON = JSON.parse(storedSession);
-            const userSessionJSON = JSON.stringify({
-              ...storedSessionJSON,
+            const updatedUserSession: UserSession = ({
+              ...storedSession,
               userId: userSession?.userId,
               csrfToken: sessionCsrfToken,
-              expiresOn: session.cookie.expires,
+              expiresOn: session.cookie.expires ?? null,
             });
 
-            fastify.redisClient.set(sessionId, userSessionJSON)
+            fastify.redisClient
+              .set<UserSession>(sessionId, updatedUserSession)
               .then(() => {
                 callback();
               });
@@ -148,22 +138,12 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
                 },
               })
               .then((userSession) => {
-                // The session type retrived from the session storage is not the same
-                // as the type retrived from the persistent storage
-                const {
+                return fastify.redisClient.set<UserSession>(sessionId, ({
                   id: sessionId,
-                  csrfToken,
-                  userId,
-                  expiresOn,
-                } = userSession;
-                const userSessionJSON = JSON.stringify({
-                  id: sessionId,
-                  csrfToken,
-                  userId,
-                  expiresOn,
-                });
-
-                return fastify.redisClient.set(sessionId, userSessionJSON);
+                  csrfToken: userSession.csrfToken,
+                  userId: userSession.userId,
+                  expiresOn: userSession.expiresOn,
+                }));
               })
               .then(() => {
                 callback(undefined);

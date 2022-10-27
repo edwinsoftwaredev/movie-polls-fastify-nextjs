@@ -1,8 +1,8 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import Fastify from "fastify";
-
 import * as dotenv from 'dotenv';
 dotenv.config();
+
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import Fastify from "fastify";
 
 const app = Fastify({
   logger: true
