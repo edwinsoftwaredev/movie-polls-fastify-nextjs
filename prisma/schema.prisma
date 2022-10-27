@@ -1,12 +1,18 @@
+// Enabling Prisma to do Referential Integrity so MySQL doesn't to.
+// https://www.prisma.io/docs/concepts/components/prisma-schema/relations/referential-integrity 
+//
+// In order to revert changes that cannot be rolled back(e.g migration deployment cannot move forward), follow:
+// https://www.prisma.io/docs/guides/database/production-troubleshooting#moving-backwards-and-reverting-all-changes
+
 generator client {
-  provider = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  provider          = "prisma-client-js"
+  previewFeatures   = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  relationMode      = "prisma"
 }
 
 model User {
