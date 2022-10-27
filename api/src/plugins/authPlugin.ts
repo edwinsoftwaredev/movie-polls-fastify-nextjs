@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { auth } from 'services';
+import { auth } from '../services';
 import googleOAuth2Client from './googleOAuth2Client';
 import prismaClient from './prismaClient';
 import redisClient from './redisClient';

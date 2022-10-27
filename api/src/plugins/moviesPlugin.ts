@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from 'fastify';
-import { movies } from 'services';
+import { movies } from '../services';
 import prismaClient from './prismaClient';
 
 const moviesPlugin: FastifyPluginAsync = async (fastify) => {
