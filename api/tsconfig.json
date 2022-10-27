@@ -3,6 +3,8 @@
     "require": ["tsconfig-paths/register"]
   },
   "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
     "noEmit": true,
     "sourceMap": true,
     "outDir": "dist",
