@@ -47,13 +47,13 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.log.info('Getting session...');
         fastify.redisClient
           .get<UserSession>(sessionId)
-          .then((userSession) => {
+          .then(userSession => {
             // NOTE that a userSession is returned which is part
             // of the session object. also the _csrf token in session is
             // overwritten.
             fastify.log.info(`Session found.`);
             callback(undefined, {
-              _csrf: userSession?.csrfToken,
+              ...(userSession ? { _csrf: userSession.csrfToken } : {}),
               userSession,
             });
           })
