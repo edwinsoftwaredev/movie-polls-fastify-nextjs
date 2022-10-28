@@ -15,6 +15,8 @@ const redisClient: FastifyPluginAsync<RedisClientPluginOptions> = async (
   if (fastify.redisClient) return;
   const { url, token } = opts;
 
+  console.log(`Has URL: ${!!url}`, `Has token: ${!!token}`);
+
   const redisClient = new Redis({
     token,
     url,
