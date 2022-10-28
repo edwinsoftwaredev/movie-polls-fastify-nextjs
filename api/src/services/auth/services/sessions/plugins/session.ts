@@ -90,7 +90,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             csrfToken: sessionCsrfToken,
             expiresOn: session.cookie.expires ?? null,
           }, { 
-            ex: session.cookie.maxAge || 0,
+            px: session.cookie.maxAge || 0,
           })
           .then(_ => {
             fastify.log.info('Session updated.')
