@@ -3,7 +3,6 @@ import fastifyPlugin from 'fastify-plugin';
 import fastifySession from '@fastify/session';
 import fastifyCookie from '@fastify/cookie';
 import { UserSession } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 interface SessionPluginOptions extends FastifyPluginOptions {
   sessionSecret: string;
@@ -53,6 +52,9 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             // overwritten.
             fastify.log.info(`Session found.`);
             callback(undefined, {
+              // in case the userSession is not defined
+              // this validation will prevent setting the _csrf
+              // to undefined
               ...(userSession ? { _csrf: userSession.csrfToken } : {}),
               userSession,
             });
@@ -82,12 +84,14 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
 
         fastify.log.info('Session upsert...');
         fastify.redisClient
-          .set<UserSession>(sessionId, ({
+          .set<UserSession>(sessionId, {
             ...(userSession || { userId: null }),
             id: sessionId,
             csrfToken: sessionCsrfToken,
-            expiresOn: session.cookie.expires ?? null
-          }))
+            expiresOn: session.cookie.expires ?? null,
+          }, { 
+            ex: session.cookie.maxAge || 0,
+          })
           .then(_ => {
             fastify.log.info('Session updated.')
             callback();
