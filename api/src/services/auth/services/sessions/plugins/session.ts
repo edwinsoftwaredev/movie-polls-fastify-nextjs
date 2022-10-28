@@ -83,7 +83,8 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.log.info('Session upsert...');
         fastify.redisClient
           .set<UserSession>(sessionId, ({
-            ...userSession,
+            ...(userSession || { userId: null }),
+            id: sessionId,
             csrfToken: sessionCsrfToken,
             expiresOn: session.cookie.expires ?? null
           }))

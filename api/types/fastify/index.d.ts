@@ -31,7 +31,7 @@ declare module 'fastify' {
   }
 
   interface Session {
-    userSession: UserSession;
+    userSession?: UserSession | null;
     verifyGoogleIdToken: (idToken: string) => Promise<LoginTicket>;
   }
 }
