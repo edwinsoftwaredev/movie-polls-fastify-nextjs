@@ -129,6 +129,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
                 callback(reason);
               });
           } else {
+            fastify.log.info('Session create...')
             // If user was removed from database but from redis
             // the userId constraint will fail
             fastify.prismaClient.userSession
