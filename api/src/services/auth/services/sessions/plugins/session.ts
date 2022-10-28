@@ -29,7 +29,6 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
     req.session.verifyGoogleIdToken = fastify.verifyGoogleIdToken;
   });
 
-  // TODO: Remove database query
   fastify.register(fastifySession, {
     secret: sessionSecret,
     cookie: {
@@ -39,6 +38,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
       maxAge: 15 * 60 * 1000,
     },
     rolling: false,
+    // https://redis.com/blog/cache-vs-session-store/
     store: {
       // Adding "workaround" type to callback param,
       // this is due to stores(express.js like stores) compatability issues on the
@@ -48,35 +48,16 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.redisClient
           .get<UserSession>(sessionId)
           .then((userSession) => {
-            if (userSession) return userSession;
-            // If session not found in cache
-            // search session in persistent storage
-            return fastify.prismaClient.userSession.findUniqueOrThrow({
-              where: {
-                id: sessionId,
-              },
-            });
-          })
-          .then((userSession) => {
             // NOTE that a userSession is returned which is part
             // of the session object. also the _csrf token in session is
             // overwritten.
-            // TODO: validate when should the csrfToken should be recreated
-
-            fastify.log.info(`Session found.`)
+            fastify.log.info(`Session found.`);
             callback(undefined, {
-              _csrf: userSession.csrfToken,
+              _csrf: userSession?.csrfToken,
               userSession,
             });
           })
           .catch((reason) => {
-            // TODO: Fix that if the session is not found
-            // (e.g user has a sessionID cookie but the session is not found on server side
-            // or that a process on server side removed all expired sessions),
-            // instead of showing the message session not found,
-            // the server should redirect the user to the auth page and reset the session
-            // cookie with a new id
-
             fastify.log.error(reason);
             callback(reason);
           });
@@ -98,126 +79,35 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
 
         const { userSession } = session;
         const sessionCsrfToken = session.get<string>('_csrf') || '';
-        // 1. Check that session exists in session storage
-        // 2. If session exists in session storage save/update session
-        //    in session storage and call callback.
-        // 2. If session does not exists in session storage
-        //    save session in persistent storage and then in session storage
-        //    and call callback.
-        //
-        // https://redis.com/blog/cache-vs-session-store/
 
         fastify.log.info('Session upsert...');
-        fastify.redisClient.get<UserSession>(sessionId).then((storedSession) => {
-          if (storedSession) {
-            fastify.log.info('Session update...');
-            const updatedUserSession: UserSession = ({
-              ...storedSession,
-              userId: userSession?.userId,
-              csrfToken: sessionCsrfToken,
-              expiresOn: session.cookie.expires ?? null,
-            });
-
-            fastify.redisClient
-              .set<UserSession>(sessionId, updatedUserSession)
-              .then(() => {
-                fastify.log.info('Session updated.')
-                callback();
-              })
-              .catch(reason => {
-                fastify.log.error(reason);
-                callback(reason);
-              });
-          } else {
-            fastify.log.info('Session create...')
-            // If user was removed from database but from redis
-            // the userId constraint will fail
-            fastify.prismaClient.userSession
-              .upsert({
-                where: {
-                  id: sessionId,
-                },
-                update: {
-                  csrfToken: sessionCsrfToken,
-                  // TODO: validate that the user's id is the same
-                  // on every update
-                  userId: userSession?.userId,
-                  expiresOn: session.cookie.expires,
-                },
-                create: {
-                  id: sessionId,
-                  csrfToken: sessionCsrfToken,
-                  userId: userSession?.userId,
-                  expiresOn: session.cookie.expires,
-                },
-              })
-              .then((userSession) => {
-                return fastify.redisClient.set<UserSession>(sessionId, ({
-                  id: sessionId,
-                  csrfToken: userSession.csrfToken,
-                  userId: userSession.userId,
-                  expiresOn: userSession.expiresOn,
-                }));
-              })
-              .then(() => {
-                fastify.log.info('Session updated.')
-                callback(undefined);
-              })
-              .catch((reason) => {
-                fastify.log.error(reason);
-                if (reason instanceof PrismaClientKnownRequestError) {
-                  // checks that error is produced by the userId constraint
-                  // failing. If that is the case remove the session from redis
-                  if (
-                    reason.code === 'P2003' &&
-                    reason.meta &&
-                    reason.meta['field_name'] === 'userId'
-                  )
-                    fastify.redisClient.del(sessionId);
-
-                  callback(reason);
-                } else {
-                  callback(reason);
-                }
-              });
-          }
-        })
-        .catch(reason => {
-          fastify.log.error(reason);
-          callback(reason);
-        });
+        fastify.redisClient
+          .set<UserSession>(sessionId, ({
+            ...userSession,
+            csrfToken: sessionCsrfToken,
+            expiresOn: session.cookie.expires ?? null
+          }))
+          .then(_ => {
+            fastify.log.info('Session updated.')
+            callback();
+          })
+          .catch(reason => {
+            callback(reason);
+          });
       },
       destroy(sessionId, callback) {
-        // 1. Remove session from session storage
-        // 2. Remove session from persistent storage
-        //
-        // https://redis.com/blog/cache-vs-session-store/
         fastify.log.info('Session destroy...');
         fastify.redisClient
           .del(sessionId)
-          .then(() =>
-            fastify.prismaClient.userSession.delete({
-              where: {
-                id: sessionId,
-              },
-            })
-          )
           .then(() => {
             fastify.log.info('Session destroyed.');
             callback();
           })
           .catch((reason) => {
-            fastify.log.error(reason);
             callback(reason);
           });
       },
     },
-  });
-
-  fastify.addHook('preHandler', async (req, res) => {
-    if (!req.session.userSession?.userId) {
-      // res.redirect(301, '/');
-    }
   });
 };
 

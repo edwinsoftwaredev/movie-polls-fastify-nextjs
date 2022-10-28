@@ -10,13 +10,9 @@ const session = createRouter().query('getSession', {
 
     fastify.log.info('Routing session...');
     
-    const csrfToken: string = await res.generateCsrf();
+    const csrfToken: string = session.userSession.csrfToken || await res.generateCsrf();
 
-    const { userSession } = session;
-
-    if (!userSession) return { csrfToken };
-
-    const { userId } = userSession;
+    const { userSession: { userId } } = session;
 
     return { csrfToken, isAuthenticated: !!userId };
   },
