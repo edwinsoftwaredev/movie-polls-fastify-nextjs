@@ -44,6 +44,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
       // this is due to stores(express.js like stores) compatability issues on the
       // @fastify/session plugin
       get(sessionId, callback: (...args: Array<any>) => void) {
+        fastify.log.info('Getting session...');
         fastify.redisClient
           .get<UserSession>(sessionId)
           .then((userSession) => {
@@ -61,6 +62,8 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             // of the session object. also the _csrf token in session is
             // overwritten.
             // TODO: validate when should the csrfToken should be recreated
+
+            fastify.log.info(`Session found.`)
             callback(undefined, {
               _csrf: userSession.csrfToken,
               userSession,
@@ -73,6 +76,8 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             // instead of showing the message session not found,
             // the server should redirect the user to the auth page and reset the session
             // cookie with a new id
+
+            fastify.log.error(reason);
             callback(reason);
           });
       },
@@ -101,6 +106,8 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         //    and call callback.
         //
         // https://redis.com/blog/cache-vs-session-store/
+
+        fastify.log.info('Session upsert...');
         fastify.redisClient.get<UserSession>(sessionId).then((storedSession) => {
           if (storedSession) {
             const updatedUserSession: UserSession = ({
@@ -146,9 +153,11 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
                 }));
               })
               .then(() => {
+                fastify.log.info('Session updated.')
                 callback(undefined);
               })
               .catch((reason) => {
+                fastify.log.error(reason);
                 if (reason instanceof PrismaClientKnownRequestError) {
                   // checks that error is produced by the userId constraint
                   // failing. If that is the case remove the session from redis
@@ -170,6 +179,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         // 2. Remove session from persistent storage
         //
         // https://redis.com/blog/cache-vs-session-store/
+        fastify.log.info('Session destroy...');
         fastify.redisClient
           .del(sessionId)
           .then(() =>
@@ -180,9 +190,11 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             })
           )
           .then(() => {
+            fastify.log.info('Session destroyed.');
             callback();
           })
           .catch((reason) => {
+            fastify.log.error(reason);
             callback(reason);
           });
       },
