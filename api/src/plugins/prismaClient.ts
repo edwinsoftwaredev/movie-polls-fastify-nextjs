@@ -11,6 +11,8 @@ const prismaClient: FastifyPluginAsync<PrismaClientPluginOptions> = async (
   opts
 ) => {
   const { databaseUrl: url } = opts;
+
+  fastify.log.info('Configuring Prisma client...');
   const prisma = new PrismaClient({
     datasources: {
       db: {
@@ -19,6 +21,7 @@ const prismaClient: FastifyPluginAsync<PrismaClientPluginOptions> = async (
     },
   });
 
+  fastify.log.info('Prisma client configured.')
   fastify.decorate('prismaClient', prisma);
 };
 

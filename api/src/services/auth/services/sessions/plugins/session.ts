@@ -157,7 +157,6 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
                 callback(undefined);
               })
               .catch((reason) => {
-                fastify.log.error(reason);
                 if (reason instanceof PrismaClientKnownRequestError) {
                   // checks that error is produced by the userId constraint
                   // failing. If that is the case remove the session from redis
@@ -167,6 +166,8 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
                     reason.meta['field_name'] === 'userId'
                   )
                     fastify.redisClient.del(sessionId);
+
+                  callback(reason);
                 } else {
                   callback(reason);
                 }
