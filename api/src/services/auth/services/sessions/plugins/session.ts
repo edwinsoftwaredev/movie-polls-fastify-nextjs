@@ -107,6 +107,10 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         //
         // https://redis.com/blog/cache-vs-session-store/
 
+        fastify.log.info(
+          `Fastify has redisClient: ${fastify.hasDecorator('redisClient')}`, 
+          !!fastify.redisClient
+        );
         fastify.log.info('Session upsert...');
         fastify.redisClient.get<UserSession>(sessionId).then((storedSession) => {
           if (storedSession) {
