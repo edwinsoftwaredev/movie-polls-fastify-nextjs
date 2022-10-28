@@ -110,6 +110,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.log.info('Session upsert...');
         fastify.redisClient.get<UserSession>(sessionId).then((storedSession) => {
           if (storedSession) {
+            fastify.log.info('Session update...');
             const updatedUserSession: UserSession = ({
               ...storedSession,
               userId: userSession?.userId,
@@ -120,7 +121,12 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
             fastify.redisClient
               .set<UserSession>(sessionId, updatedUserSession)
               .then(() => {
+                fastify.log.info('Session updated.')
                 callback();
+              })
+              .catch(reason => {
+                fastify.log.error(reason);
+                callback(reason);
               });
           } else {
             // If user was removed from database but from redis
@@ -157,6 +163,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
                 callback(undefined);
               })
               .catch((reason) => {
+                fastify.log.error(reason);
                 if (reason instanceof PrismaClientKnownRequestError) {
                   // checks that error is produced by the userId constraint
                   // failing. If that is the case remove the session from redis
@@ -173,6 +180,10 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
                 }
               });
           }
+        })
+        .catch(reason => {
+          fastify.log.error(reason);
+          callback(reason);
         });
       },
       destroy(sessionId, callback) {
