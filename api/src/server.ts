@@ -27,6 +27,7 @@ const serverlessFunc: FastifyPluginAsync = async (fastify) => {
   
   // polls plugin
   // fastify.register(pollsPlugin);
+  
 }
 
 export default serverlessFunc;

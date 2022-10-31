@@ -29,6 +29,6 @@ model UserSession {
   id            String      @id
   user          User?       @relation(fields: [userId], references: [id])
   userId        String?
-  csrfToken     String
+  csrfSecret    String
   expiresOn     DateTime?
 }

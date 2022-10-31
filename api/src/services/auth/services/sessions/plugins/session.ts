@@ -55,7 +55,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
               // in case the userSession is not defined
               // this validation will prevent setting the _csrf
               // to undefined
-              ...(userSession ? { _csrf: userSession.csrfToken } : {}),
+              ...(userSession ? { _csrf: userSession.csrfSecret } : {}),
               userSession,
             });
           })
@@ -80,14 +80,14 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         }
 
         const { userSession } = session;
-        const sessionCsrfToken = session.get<string>('_csrf') || '';
+        const csrfSecret = session.get<string>('_csrf') || '';
 
         fastify.log.info('Session upsert...');
         fastify.redisClient
           .set<UserSession>(sessionId, {
             ...(userSession || { userId: null }),
             id: sessionId,
-            csrfToken: sessionCsrfToken,
+            csrfSecret,
             expiresOn: session.cookie.expires ?? null,
           }, { 
             px: session.cookie.expires?.getTime() || 0,

@@ -11,6 +11,18 @@ const app = Fastify({
 
 app.register(serverlessFunc);
 
+// In the case where the application is not running as 
+// a serverless function, a server has to be spawned.
+if (require.main === module) {
+  const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 8080;
+  app.listen({port}, err => {
+    if (err) {
+      app.log.error(err);
+      process.exit();
+    } 
+  });
+}
+
 export default async (req: VercelRequest, res: VercelResponse) => {
   await app.ready();
   app.server.emit('request', req, res);
