@@ -8,7 +8,7 @@
   "scripts": {
     "api:dev": "yarn workspace api dev",
     "web:dev": "yarn workspace web-client dev",
-    "trpc:generate": "yarn workspace trpc generate",
+    "trpc:generate": "yarn workspace trpc generate"
   },
   "devDependencies": {
     "prisma": "^4.5.0"
