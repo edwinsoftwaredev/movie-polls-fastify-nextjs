@@ -9,12 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/font": "^13.0.0",
     "@trpc/client": "^9.27.4",
     "@trpc/react": "^9.27.4",
     "@trpc/server": "^9.27.4",
-    "next": "12.3.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
     "react-query": "3",
     "trpc": "1.0.0"
   },
@@ -24,7 +25,7 @@
     "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
     "eslint": "8.23.1",
-    "eslint-config-next": "12.3.0",
+    "eslint-config-next": "latest",
     "sass": "^1.55.0",
     "typescript": "^4.8.4"
   }
