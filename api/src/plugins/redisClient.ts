@@ -1,9 +1,11 @@
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis/with-fetch';
+import https from 'https';
 
 interface RedisClientPluginOptions extends FastifyPluginOptions {
   url: string;
+  token: string; // should be optional
 }
 
 const redisClient: FastifyPluginAsync<RedisClientPluginOptions> = async (
@@ -11,17 +13,17 @@ const redisClient: FastifyPluginAsync<RedisClientPluginOptions> = async (
   opts
 ) => {
   if (fastify.redisClient) return;
-  const { url } = opts;
+  const { url, token } = opts;
 
-  const redisClient = createClient({
+  fastify.log.info('Configuring Redis client...');
+
+  const redisClient = new Redis({
+    token,
     url,
+    agent: new https.Agent({ keepAlive: true })
   });
 
-  redisClient.on('error', (err) => {
-    fastify.log.error(`Redis Client: ${err}`);
-  });
-
-  await redisClient.connect();
+  fastify.log.info('Redis client configured.');
 
   fastify.decorate('redisClient', redisClient);
 };

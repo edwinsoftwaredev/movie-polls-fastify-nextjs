@@ -5,15 +5,15 @@ const session = createRouter().query('getSession', {
     const {
       req: { session },
       res,
+      fastify
     } = ctx;
+
+    fastify.log.info('Routing session...');
     
     const csrfToken: string = await res.generateCsrf();
 
     const { userSession } = session;
-
-    if (!userSession) return { csrfToken };
-
-    const { userId } = userSession;
+    const { userId } = userSession || {};
 
     return { csrfToken, isAuthenticated: !!userId };
   },
