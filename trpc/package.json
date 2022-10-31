@@ -1,6 +1,9 @@
 {
   "name": "trpc",
   "version": "1.0.0",
+  "scripts": {
+    "generate": "prisma generate --schema ../prisma/schema.prisma"
+  },
   "devDependencies": {
     "typescript": "^4.8.4"
   },

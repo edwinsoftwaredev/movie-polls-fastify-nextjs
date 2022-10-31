@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate --schema ../prisma/schema.prisma && next build",
+    "build": "yarn trpc:generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
