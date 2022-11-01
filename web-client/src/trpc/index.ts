@@ -100,6 +100,9 @@ export const getTRPCClient = (ctx?: {req?: IncomingMessage}) =>
         });
 
         return res;
+      }).catch(err => {
+        console.log(err);
+        return err;
       });
     },
     headers: () => {
