@@ -1,4 +1,4 @@
-import { createReactQueryHooks, createTRPCClient, CreateTRPCClientOptions } from '@trpc/react';
+import { createReactQueryHooks, createTRPCClient } from '@trpc/react';
 import { AppRouter } from 'trpc/client';
 import { httpLink } from '@trpc/client/links/httpLink';
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink';

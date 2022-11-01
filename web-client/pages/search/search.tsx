@@ -1,18 +1,18 @@
 import { NextPageWithLayout } from "pages/_app";
 import { ReactElement } from "react";
 import Layout from "src/components/layout";
-import style from './Contact.module.scss';
+import style from './search.module.scss';
 
-const Contact: NextPageWithLayout = () => {
+const Search: NextPageWithLayout = () => {
   return (
     <div className={style['main']}>
-      <span>Contact</span>
+      <span>Search</span>
     </div>
   );
-}
+};
 
-Contact.getLayout = function getLayout(page: ReactElement) {
+Search.getLayout = function getLayout(page: ReactElement) {
   return (<Layout>{page}</Layout>);
 }
 
-export default Contact;
+export default Search;

@@ -44,17 +44,17 @@ const NavOptions: React.FC = () => (
       </Link>
     </li>
     <li>
-      <Link href='/top-movies'>
+      <Link href='/topmovies'>
         Top Movies
       </Link>
     </li>
     <li>
-      <Link href='/trending-movies'>
+      <Link href='/trendingmovies'>
         Trending Movies
       </Link>
     </li>
     <li>
-      <Link href='/my-polls'>
+      <Link href='/mypolls'>
         My Polls
       </Link>
     </li>

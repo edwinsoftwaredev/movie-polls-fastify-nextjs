@@ -1,18 +1,18 @@
 import { NextPageWithLayout } from "pages/_app";
 import { ReactElement } from "react";
 import Layout from "src/components/layout";
-import style from './MyPolls.module.scss';
+import style from './contact.module.scss';
 
-const MyPolls: NextPageWithLayout = () => {
+const Contact: NextPageWithLayout = () => {
   return (
     <div className={style['main']}>
-      <span>MyPolls</span>
+      <span>Contact</span>
     </div>
   );
 }
 
-MyPolls.getLayout = function getLayout(page: ReactElement) {
+Contact.getLayout = function getLayout(page: ReactElement) {
   return (<Layout>{page}</Layout>);
 }
 
-export default MyPolls;
+export default Contact;

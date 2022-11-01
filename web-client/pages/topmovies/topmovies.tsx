@@ -1,7 +1,7 @@
 import { NextPageWithLayout } from "pages/_app";
 import { ReactElement } from "react";
 import Layout from "src/components/layout";
-import style from './TopMovies.module.scss';
+import style from './topmovies.module.scss';
 
 const TopMovies: NextPageWithLayout = () => {
   return (

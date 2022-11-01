@@ -5,7 +5,7 @@ import { ReactElement } from "react";
 import { dehydrate, QueryClient } from "react-query";
 import Layout from "src/components/layout";
 import { getTRPCClient, trpc } from "src/trpc";
-import style from './SignIn.module.scss';
+import style from './signin.module.scss';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const trpcClient = getTRPCClient({ req }); 
@@ -29,6 +29,8 @@ const SignIn: NextPageWithLayout = () => {
   });
 
   const { whoami } = whoamiData || {};
+
+  style;
 
   return (
     <section>
