@@ -70,6 +70,7 @@ export const trpcClient = trpc.createClient({
   url: `${apiURL}/trpc`,
   links: routerLinks,
   fetch: async (url, options) => {
+    console.log('URL', url, 'OPTIONS': options);
     const csrftoken = isWebView ? document
       .querySelector("meta[name='csrf-token']")
       ?.getAttribute('content') : null;
