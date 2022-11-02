@@ -9,12 +9,14 @@ const googleURLs = 'https://accounts.google.com';
 
 const googleFontsURL = 'https://fonts.googleapis.com https://fonts.gstatic.com';
 
+const vercelInsights = 'https://vitals.vercel-insights.com';
+
 // TODO: review headers in prod
 const ContentSecurityPolicy = `
   base-uri 'self';
   default-src 'self';
   script-src 'self' ${googleURLs} 'unsafe-eval';
-  connect-src 'self' ${apiURL};
+  connect-src 'self' ${apiURL} ${vercelInsights};
   child-src 'self';
   frame-src 'self' ${googleURLs};
   frame-ancestors 'self';

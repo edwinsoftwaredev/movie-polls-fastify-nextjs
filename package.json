@@ -8,6 +8,8 @@
   "scripts": {
     "api:dev": "yarn workspace api dev",
     "web:dev": "yarn workspace web-client dev",
+    "web:build": "yarn workspace web-client build",
+    "web:start": "yarn workspace web-client start",
     "trpc:generate": "yarn workspace trpc generate"
   },
   "devDependencies": {
