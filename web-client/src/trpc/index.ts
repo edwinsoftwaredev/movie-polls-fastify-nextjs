@@ -96,12 +96,12 @@ export const getTRPCClient = (ctx?: {req?: IncomingMessage}) =>
         ...options,
       }).then(res => {
         res.clone().text().then(text => {
-          console.log(text);
+          console.log('fetch resolved', text);
         });
 
         return res;
       }).catch(err => {
-        console.log(err);
+        console.log('fetch throw', err);
         return err;
       });
     },

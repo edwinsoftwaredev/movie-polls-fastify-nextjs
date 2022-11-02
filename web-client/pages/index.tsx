@@ -9,15 +9,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const trpcClient = getTRPCClient({ req });
   const queryClient = new QueryClient();
   const whoamiQueryData = await trpcClient.query('account:whoami').catch(err => {
-    console.log(err);
+    console.log('index.ts', err);
     return { whoami: null };
   });
   queryClient.setQueryData('account:whoami', whoamiQueryData);
-
-  console.log('trpcClient', trpcClient);
-  console.log('queryClient', queryClient);
-  console.log('whoamiQueryData', whoamiQueryData);
-  console.log('req', req);
 
   return {
     props: {
