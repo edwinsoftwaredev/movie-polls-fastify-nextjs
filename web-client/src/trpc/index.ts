@@ -91,18 +91,8 @@ export const getTRPCClient = (ctx?: {req?: IncomingMessage}) =>
     url: `${apiURL}/trpc`,
     links: routerLinks,
     fetch: async (url, options) => {
-      console.log('URL', url, 'OPTIONS', options);
       return fetch(url, {
         ...options,
-      }).then(res => {
-        res.clone().text().then(text => {
-          console.log('fetch resolved', text);
-        });
-
-        return res;
-      }).catch(err => {
-        console.log('fetch throw', err);
-        return err;
       });
     },
     headers: () => {
