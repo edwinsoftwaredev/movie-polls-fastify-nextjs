@@ -3,7 +3,7 @@
     "source": "/(.*)",
     "destination": "/api/serverless.ts"
   }, {
-    "source": "/api/(.*)",
+    "source": "/(.*)",
     "destination": "/api/404.ts"
   }]
 }
