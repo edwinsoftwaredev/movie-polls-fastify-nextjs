@@ -100,7 +100,7 @@ export const getTRPCClient = (ctx?: {req?: IncomingMessage}) =>
       const { headers } = ctx.req;
       return {
         ...headers,
-        Origin: process.env.HOST_URL,
+        'origin': process.env.HOST_URL,
         'x-ssr': '1'
       }
     }
