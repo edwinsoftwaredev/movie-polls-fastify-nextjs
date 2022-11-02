@@ -1,7 +1,7 @@
 import { NextPageWithLayout } from "pages/_app";
 import { ReactElement } from "react";
 import Layout from "src/components/layout";
-import style from './About.module.scss';
+import style from './about.module.scss';
 
 const About: NextPageWithLayout = () => {
   return (

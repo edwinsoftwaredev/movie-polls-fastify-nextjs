@@ -82,6 +82,11 @@ const nextConfig = {
       source: '/:path*',
       headers: securityHeaders
     }]
+  },
+  experimental: {
+    fontLoaders: [
+      { loader: '@next/font/google', options: { subsets: ['latin'] } }
+    ],
   }
 };
 

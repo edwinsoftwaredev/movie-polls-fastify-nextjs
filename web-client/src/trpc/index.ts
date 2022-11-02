@@ -1,4 +1,4 @@
-import { createReactQueryHooks, createTRPCClient, CreateTRPCClientOptions } from '@trpc/react';
+import { createReactQueryHooks, createTRPCClient } from '@trpc/react';
 import { AppRouter } from 'trpc/client';
 import { httpLink } from '@trpc/client/links/httpLink';
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
@@ -69,7 +69,7 @@ export const trpc = createReactQueryHooks<AppRouter>();
 export const trpcClient = trpc.createClient({
   url: `${apiURL}/trpc`,
   links: routerLinks,
-  fetch: (url, options) => {
+  fetch: async (url, options) => {
     const csrftoken = isWebView ? document
       .querySelector("meta[name='csrf-token']")
       ?.getAttribute('content') : null;
@@ -90,6 +90,11 @@ export const getTRPCClient = (ctx?: {req?: IncomingMessage}) =>
   createTRPCClient<AppRouter>({
     url: `${apiURL}/trpc`,
     links: routerLinks,
+    fetch: async (url, options) => {
+      return fetch(url, {
+        ...options,
+      });
+    },
     headers: () => {
       if (!ctx?.req) return {};
       const { headers } = ctx.req;

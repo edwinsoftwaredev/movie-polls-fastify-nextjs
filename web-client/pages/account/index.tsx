@@ -1,7 +1,7 @@
 import { NextPageWithLayout } from 'pages/_app';
 import { ReactElement } from 'react';
 import Layout from 'src/components/layout';
-import style from './Account.module.scss';
+import style from './account.module.scss';
 import { GetServerSideProps } from 'next';
 import { getTRPCClient, trpc } from 'src/trpc';
 import { dehydrate, QueryClient } from 'react-query';

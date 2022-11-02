@@ -2,6 +2,11 @@ import React from 'react';
 import TMBDLogo from 'public/tmdb-logos/blue_short.svg'
 import Link from 'next/link';
 import style from './Footer.module.scss';
+import { Voltaire } from '@next/font/google';
+
+const voltaire = Voltaire({
+  weight: '400'
+});
 
 const Footer: React.FC = () => {
   return (
@@ -15,9 +20,7 @@ const Footer: React.FC = () => {
               <Link
                 href={'/'}
               >
-                <a>
-                  <h1 className={'app-title'}>Movie Polls</h1>
-                </a>
+                <h1 className={`${voltaire.className} app-title`}>Movie Polls</h1>
               </Link>
               <p>Movie polls Made Easy.</p>
             </div>
@@ -27,12 +30,12 @@ const Footer: React.FC = () => {
               <ul>
                 <li>
                   <Link href={'/about'}>
-                    <a>About</a>
+                    About
                   </Link>
                 </li>
                 <li>
                   <Link href={'/contact'}>
-                    <a>Contact</a>
+                    Contact
                   </Link>
                 </li>
               </ul>
