@@ -6,12 +6,13 @@ import sessions from './services/sessions';
 interface AuthPluginOptions extends FastifyPluginOptions {
   sessionSecret: string;
   isDevEnv: boolean;
+  domain: string;
 }
 
 // auth plugin
 const auth: FastifyPluginAsync<AuthPluginOptions> = async (fastify, opts) => {
-  const { sessionSecret, isDevEnv } = opts;
-  fastify.register(sessions, { sessionSecret, isDevEnv });
+  const { sessionSecret, isDevEnv, domain } = opts;
+  fastify.register(sessions, { sessionSecret, isDevEnv, domain });
   fastify.register(account);
 };
 

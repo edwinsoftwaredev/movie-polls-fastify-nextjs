@@ -76,7 +76,6 @@ export const trpcClient = trpc.createClient({
 
     return fetch(url, {
       ...options,
-      credentials: 'include',
       headers: {
         ...options?.headers,
         ...(csrftoken ? { 'csrf-token': csrftoken } : {}),
@@ -90,17 +89,15 @@ export const getTRPCClient = (ctx?: {req?: IncomingMessage}) =>
   createTRPCClient<AppRouter>({
     url: `${apiURL}/trpc`,
     links: routerLinks,
-    fetch: async (url, options) => {
-      console.log(options?.headers)
-      return fetch(url, {
-        ...options,
-      });
-    },
     headers: () => {
       if (!ctx?.req) return {};
       const { headers } = ctx.req;
       return {
         ...headers,
+        // (when proxying)
+        // DO NOT set the host from the request's url.
+        // VALIDATE that the host
+        // in the request url is a valid host!
         'host': new URL(`${apiURL}`).host,
         'origin': process.env.HOST_URL,
         'x-ssr': '1'

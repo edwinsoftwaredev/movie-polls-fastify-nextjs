@@ -7,20 +7,21 @@ import session from './plugins/session';
 interface SessionPluginOptions extends FastifyPluginOptions {
   sessionSecret: string;
   isDevEnv: boolean;
+  domain: string;
 }
 
 const sessions: FastifyPluginAsync<SessionPluginOptions> = async (
   fastify,
   opts
 ) => {
-  const { sessionSecret, isDevEnv } = opts;
+  const { sessionSecret, isDevEnv, domain } = opts;
 
   // Making use of fastify-plugin due to the csrfToken
   // plugin decorators.
   //
   // IMPORTANT: fastify and fastify-plugin will just allow
   // notify changes to parent not the other ancestors
-  fastify.register(session, { sessionSecret, isDevEnv });
+  fastify.register(session, { sessionSecret, isDevEnv, domain });
   fastify.register(csrfToken);
   fastify.register(routes, { prefix: '/trpc/sessionRoutes' });
 };

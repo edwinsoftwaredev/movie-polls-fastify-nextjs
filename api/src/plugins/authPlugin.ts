@@ -12,11 +12,12 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
   const isDevEnv = process.env.NODE_ENV === 'development';
   const databaseUrl = process.env.DATABASE_URL || '';
   const googleClientID = process.env.GOOGLE_OAUTH2_CLIENT_ID || '';
+  const domain = process.env.APP_DOMAIN || '';
 
   fastify.register(prismaClient, { databaseUrl });
   fastify.register(redisClient, { url: redisConnectionString, token: redisConnectionToken });
   fastify.register(googleOAuth2Client, { clientId: googleClientID });
-  fastify.register(auth, { sessionSecret, isDevEnv });
+  fastify.register(auth, { sessionSecret, isDevEnv, domain });
 };
 
 export default fastifyPlugin(authPlugin);

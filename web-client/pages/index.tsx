@@ -8,9 +8,7 @@ import { dehydrate, QueryClient } from 'react-query';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const trpcClient = getTRPCClient({ req });
   const queryClient = new QueryClient();
-  const whoamiQueryData = await trpcClient.query('account:whoami').catch(err => {
-    return { whoami: null };
-  });
+  const whoamiQueryData = await trpcClient.query('account:whoami');  
   queryClient.setQueryData('account:whoami', whoamiQueryData);
 
   return {
