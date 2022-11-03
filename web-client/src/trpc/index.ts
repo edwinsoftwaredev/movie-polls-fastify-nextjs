@@ -90,10 +90,15 @@ export const getTRPCClient = (ctx?: {req?: IncomingMessage}) =>
   createTRPCClient<AppRouter>({
     url: `${apiURL}/trpc`,
     links: routerLinks,
+    fetch: async (url, options) => {
+      console.log(options?.headers)
+      return fetch(url, {
+        ...options,
+      });
+    },
     headers: () => {
       if (!ctx?.req) return {};
       const { headers } = ctx.req;
-      console.log(headers);
       return {
         ...headers,
         'origin': process.env.HOST_URL,
