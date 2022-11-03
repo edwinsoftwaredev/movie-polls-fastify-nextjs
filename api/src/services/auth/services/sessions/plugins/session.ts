@@ -7,13 +7,14 @@ import { UserSession } from '@prisma/client';
 interface SessionPluginOptions extends FastifyPluginOptions {
   sessionSecret: string;
   isDevEnv: boolean;
+  domain: string;
 }
 
 const session: FastifyPluginAsync<SessionPluginOptions> = async (
   fastify,
   opts
 ) => {
-  const { sessionSecret, isDevEnv } = opts;
+  const { sessionSecret, isDevEnv, domain } = opts;
 
   fastify.register(fastifyCookie);
 
@@ -35,6 +36,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
       httpOnly: true,
       secure: !isDevEnv,
       maxAge: 15 * 60 * 1000,
+      domain 
     },
     rolling: false,
     // https://redis.com/blog/cache-vs-session-store/
