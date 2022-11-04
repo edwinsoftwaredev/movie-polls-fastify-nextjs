@@ -76,6 +76,7 @@ export const trpcClient = trpc.createClient({
 
     return fetch(url, {
       ...options,
+      credentials: 'include',
       headers: {
         ...options?.headers,
         ...(csrftoken ? { 'csrf-token': csrftoken } : {}),
