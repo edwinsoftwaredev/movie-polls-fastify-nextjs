@@ -1,0 +1,9 @@
+{
+  "rewrites": [{
+    "source": "/(.*)",
+    "destination": "/api/serverless.ts"
+  }, {
+    "source": "/(.*)",
+    "destination": "/api/404.ts"
+  }]
+}

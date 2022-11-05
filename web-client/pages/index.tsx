@@ -1,5 +1,4 @@
-import { getTRPCClient, trpc } from 'src/trpc';
-import { NextPageWithLayout } from './_app';
+import { getTRPCClient, trpc } from 'src/trpc'; import { NextPageWithLayout } from './_app';
 import { ReactElement } from 'react';
 import Layout from 'src/components/layout';
 import { GetServerSideProps } from 'next';
@@ -8,8 +7,14 @@ import { dehydrate, QueryClient } from 'react-query';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const trpcClient = getTRPCClient({ req });
   const queryClient = new QueryClient();
-  const whoamiQueryData = await trpcClient.query('account:whoami');  
+
+  // TODO: Refactor
+  const sessionQueryData = await trpcClient.query('session:getSession');
+  const whoamiQueryData = sessionQueryData.isAuthenticated ? 
+      await trpcClient.query('account:whoami') : undefined;  
+
   queryClient.setQueryData('account:whoami', whoamiQueryData);
+  queryClient.setQueryData('session:getSession', sessionQueryData);
 
   return {
     props: {
