@@ -1,6 +1,6 @@
 {
   "rewrites": [{
-    "source": "/api/inngest/(.*)",
+    "source": "/api/inngest",
     "destination": "/api/inngest/serverless.ts"
   }, {
     "source": "/(.*)",

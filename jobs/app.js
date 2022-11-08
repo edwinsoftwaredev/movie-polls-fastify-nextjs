@@ -19,6 +19,6 @@ app.use(
 app.use(express.json());
 
 const inngestMiddleware = serve('Movie Polls Jobs', [fetchMoviesScheduledJob]);
-app.use('/api/inngest', inngestMiddleware);
+app.use(inngestMiddleware);
 
 export default app;
