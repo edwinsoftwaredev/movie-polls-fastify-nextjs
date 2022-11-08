@@ -7,6 +7,9 @@ const fetchMovies = async () => {
   const redisConnectionString = process.env.UPSTASH_REDIS_REST_URL || '';
   const redisConnectionToken = process.env.UPSTASH_REDIS_REST_TOKEN || '';
 
+  console.log('fetching movies...');
+  console.log('movies fetched')
+
   return;
 }
 

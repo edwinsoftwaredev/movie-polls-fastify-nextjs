@@ -11,14 +11,6 @@
     "strict": true,
     "lib": ["esnext"],
     "esModuleInterop": true,
-    "baseUrl": ".",
-    // Path Mappings are not supported by Vercel
-    // "paths": {
-    //   "decorators": ["src/decorators"],
-    //   "hooks": ["src/hooks"],
-    //   "plugins": ["src/plugins"],
-    //   "routes": ["src/routes"],
-    //   "services": ["src/services"]
-    // }
-  }
+    "baseUrl": "."
+  },
 }

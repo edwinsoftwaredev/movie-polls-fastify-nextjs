@@ -14,7 +14,7 @@
     "trpc:generate": "yarn workspace trpc generate"
   },
   "devDependencies": {
-    "prisma": "^4.5.0"
+    "prisma": "latest"
   },
   "resolutions": {
     "@types/react": "^18.0.20"

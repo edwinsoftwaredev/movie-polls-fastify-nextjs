@@ -1,5 +1,8 @@
 {
   "rewrites": [{
+    "source": "/api/inngest/(.*)",
+    "destination": "/api/inngest/serverless.ts"
+  }, {
     "source": "/(.*)",
     "destination": "/api/serverless.ts"
   }, {
