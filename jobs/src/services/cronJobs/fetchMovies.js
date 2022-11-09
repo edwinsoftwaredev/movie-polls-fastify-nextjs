@@ -16,6 +16,6 @@ const fetchMovies = async () => {
 
 module.exports = createScheduledFunction(
   'Fetch Movies',
-  '*/5 * * * *',
+  '* 12 * * *',
   fetchMovies,
 );
