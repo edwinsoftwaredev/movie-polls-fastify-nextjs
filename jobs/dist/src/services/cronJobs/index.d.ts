@@ -1,3 +1,3 @@
 export { fetchMoviesScheduledJob };
-import fetchMoviesScheduledJob from "./fetchMovies";
+import fetchMoviesScheduledJob = require("./fetchMovies.js");
 //# sourceMappingURL=index.d.ts.map

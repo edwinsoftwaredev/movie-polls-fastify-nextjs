@@ -1,14 +1,20 @@
-import cors from 'cors';
-import express from 'express';
+'use strict';
+const cors = require('cors');
+const express = require('express');
 
-import helmet from 'helmet';
+const helmet = require('helmet');
+const { serve } = require('inngest/express');
 
-import { serve } from 'inngest/express';
-import { fetchMoviesScheduledJob } from './src/services/cronJobs';
+const { fetchMoviesScheduledJob } = require('./src/services/cronJobs');
 const app = express();
 
 // security middlewares
 app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    "script-src": ["'self'", "'unsafe-inline'"],
+  }
+}));
 app.disable('x-powered-by');
 app.use(
   cors({
@@ -21,4 +27,4 @@ app.use(express.json());
 const inngestMiddleware = serve('Movie Polls Jobs', [fetchMoviesScheduledJob]);
 app.use(inngestMiddleware);
 
-export default app;
+module.exports = app;

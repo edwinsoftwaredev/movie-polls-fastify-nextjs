@@ -1,4 +1,5 @@
-import { createScheduledFunction } from 'inngest';
+'use strict';
+const { createScheduledFunction } = require('inngest');
 
 const fetchMovies = async () => {
   const tmdbKey = `${process.env.TMDB_API_KEY}`;
@@ -13,7 +14,7 @@ const fetchMovies = async () => {
   return;
 }
 
-export default createScheduledFunction(
+module.exports = createScheduledFunction(
   'Fetch Movies',
   '*/5 * * * *',
   fetchMovies,

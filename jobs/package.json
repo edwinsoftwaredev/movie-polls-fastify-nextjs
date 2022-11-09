@@ -1,6 +1,5 @@
 {
   "name": "jobs",
-  "type": "module",
   "version": "1.0.0",
   "packageManager": "yarn@3.2.4",
   "dependencies": {
@@ -18,5 +17,6 @@
     "@types/node": "^18.11.9",
     "typescript": "^4.8.4"
   },
-  "main": "./dist/app.d.ts"
+  "main": "./app.js",
+  "types": "./dist/app.d.ts"
 }

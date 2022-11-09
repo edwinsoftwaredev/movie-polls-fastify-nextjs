@@ -3,13 +3,14 @@
     "require": ["tsconfig-paths/register"]
   },
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2022",
     "module": "commonjs",
+    "moduleResolution": "node",
     "noEmit": true,
     "sourceMap": true,
     "outDir": "dist",
     "strict": true,
-    "lib": ["esnext"],
+    "lib": ["es2022"],
     "esModuleInterop": true,
     "baseUrl": "."
   },

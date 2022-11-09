@@ -1,3 +1,3 @@
-declare const _default: import("inngest/components/InngestFunction").InngestFunction<any>;
-export default _default;
+declare const _exports: import("inngest/components/InngestFunction").InngestFunction<any>;
+export = _exports;
 //# sourceMappingURL=fetchMovies.d.ts.map
