@@ -1,5 +1,3 @@
-import serverless from 'serverless-http';
-
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -10,4 +8,4 @@ if (require.main === module) {
   serverlessFunc.listen(port);
 }
 
-module.exports.handlers = serverless(serverlessFunc);
+export default serverlessFunc;
