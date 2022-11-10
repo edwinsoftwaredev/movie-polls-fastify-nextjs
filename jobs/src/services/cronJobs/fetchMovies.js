@@ -149,7 +149,7 @@ const fetchTrendingMoviesByGenres = async () => {
       params.set('with_genres', `${genre.id}`);
       return axios
         .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
-        .then((res) => res.json())
+        .then((res) => res.data)
         .then((data) => {
           // Adds genre names to each movie
           const movies = data.results.map((movie) => ({
