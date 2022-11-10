@@ -186,6 +186,7 @@ const fetchMovies = async () => {
   await fetchGenres();
 
   const p1 = fetchTrendingMoviesByGenres()
+    .then((promises) => Promise.all(promises))
     .then((movies) => {
       return redis.set(moviesType.TrendingMoviesByGenre, movies);
     })

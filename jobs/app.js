@@ -10,11 +10,13 @@ const app = express();
 
 // security middlewares
 app.use(helmet());
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    "script-src": ["'self'", "'unsafe-inline'"],
-  }
-}));
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      'script-src': ["'self'", "'unsafe-inline'"],
+    },
+  })
+);
 app.disable('x-powered-by');
 app.use(
   cors({
