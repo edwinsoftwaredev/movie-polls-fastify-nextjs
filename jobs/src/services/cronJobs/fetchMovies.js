@@ -2,7 +2,7 @@
 const { createScheduledFunction } = require('inngest');
 const { Redis } = require('@upstash/redis');
 const https = require('https');
-const axios = require('axios').default;
+const axios = require('axios');
 
 const moviesType = {
   TopPopularMovies: 'TopPopularMovies',
