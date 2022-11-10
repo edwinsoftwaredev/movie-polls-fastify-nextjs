@@ -2,6 +2,7 @@
 const { createScheduledFunction } = require('inngest');
 const { Redis } = require('@upstash/redis');
 const https = require('https');
+const axios = require('axios').default;
 
 const moviesType = {
   TopPopularMovies: 'TopPopularMovies',
@@ -22,8 +23,9 @@ const fetchGenres = async () => {
   params.append('api_key', tmdbKey);
   params.append('language', 'en-US');
 
-  return fetch(`${tmdbUrl}/genre/movie/list?${params.toString()}`)
-    .then((res) => res.json())
+  return axios
+    .get(`${tmdbUrl}/genre/movie/list?${params.toString()}`)
+    .then((res) => res.data)
     .then((data) => {
       genres = data.genres;
       return genres;
@@ -46,9 +48,9 @@ const fetchTopPopularMovies = async () => {
   params.append('vote_average.gte', '7');
   params.append('vote_count.gte', 1000);
 
-  const res = await fetch(
-    `${tmdbUrl}/discover/movie?${params.toString()}`
-  ).then((res) => res.json());
+  const res = await axios
+    .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
+    .then((res) => res.data);
 
   const movies = res.results
     .map((movie) => ({
@@ -81,9 +83,9 @@ const fetchTopTrendingMovies = async () => {
   params.append('vote_average.gte', 7);
   params.append('vote_count.gte', 50);
 
-  const res = await fetch(`${tmdbUrl}/discover/movie?${params}`).then((res) =>
-    res.json()
-  );
+  const res = await axios
+    .get(`${tmdbUrl}/discover/movie?${params}`)
+    .then((res) => res.data);
 
   const movies = res.results
     .map((movie) => ({
@@ -112,9 +114,9 @@ const fetchNowPlayingMovies = async () => {
   params.append('vote_average.gte', 1);
   params.append('vote_count.gte', 50);
 
-  const res = fetch(`${tmdbUrl}/discover/movie?${params}`).then((res) =>
-    res.json()
-  );
+  const res = axios
+    .get(`${tmdbUrl}/discover/movie?${params}`)
+    .then((res) => res.data);
 
   const movies = res.results.map((movie) => ({
     ...movie,
@@ -145,7 +147,8 @@ const fetchTrendingMoviesByGenres = async () => {
     ?.filter((genre) => genre.name !== 'Documentary')
     .map((genre) => {
       params.set('with_genres', `${genre.id}`);
-      return fetch(`${tmdbUrl}/discover/movie?${params.toString()}`)
+      return axios
+        .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
         .then((res) => res.json())
         .then((data) => {
           // Adds genre names to each movie
