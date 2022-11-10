@@ -114,7 +114,7 @@ const fetchNowPlayingMovies = async () => {
   params.append('vote_average.gte', 1);
   params.append('vote_count.gte', 50);
 
-  const res = axios
+  const res = await axios
     .get(`${tmdbUrl}/discover/movie?${params}`)
     .then((res) => res.data);
 
@@ -185,7 +185,7 @@ const fetchMovies = async () => {
 
   await fetchGenres();
 
-  fetchTrendingMoviesByGenres()
+  const p1 = fetchTrendingMoviesByGenres()
     .then((movies) => {
       return redis.set(moviesType.TrendingMoviesByGenre, movies);
     })
@@ -193,10 +193,10 @@ const fetchMovies = async () => {
       console.log('Error when fetching: Trending movies by genre');
     })
     .finally(() => {
-      console.log('Trending movies by genre fetching finished.');
+      console.log('Trending movies by genre fetch finished.');
     });
 
-  fetchNowPlayingMovies()
+  const p2 = fetchNowPlayingMovies()
     .then((movies) => {
       return redis.set(moviesType.NowPlayingMovies, movies);
     })
@@ -204,10 +204,10 @@ const fetchMovies = async () => {
       console.log('Error when fetching: Now Playing movies.');
     })
     .finally(() => {
-      console.log('Now Playing movies fetching finished.');
+      console.log('Now Playing movies fetch finished.');
     });
 
-  fetchTopPopularMovies()
+  const p3 = fetchTopPopularMovies()
     .then((movies) => {
       return redis.set(moviesType.TopPopularMovies, movies);
     })
@@ -215,10 +215,10 @@ const fetchMovies = async () => {
       console.log('Error when fetching: Top Popular movies.');
     })
     .finally(() => {
-      console.log('Top Popular movies fetching finished.');
+      console.log('Top Popular movies fetch finished.');
     });
 
-  fetchTopTrendingMovies()
+  const p4 = fetchTopTrendingMovies()
     .then((movies) => {
       return redis.set(moviesType.TopTrendingMovies, movies);
     })
@@ -226,8 +226,10 @@ const fetchMovies = async () => {
       console.log('Error when fetching: Top Trending movies.');
     })
     .finally(() => {
-      console.log('Top Trending movies fetching finished.');
+      console.log('Top Trending movies fetch finished.');
     });
+
+  await Promise.allSettled([p1, p2, p3, p4]);
 
   return;
 };
