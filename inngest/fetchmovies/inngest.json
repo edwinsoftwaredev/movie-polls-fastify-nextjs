@@ -1,0 +1,16 @@
+{
+  "name": "fetchMovies",
+  "id": "refined-bunny-9b1619",
+  "triggers": [
+    {
+      "cron": "0 12 * * *"
+    }
+  ],
+  "steps": {
+    "step-1": {
+      "id": "step-1",
+      "path": "file://./steps/step-1",
+      "name": "fetchMovies"
+    }
+  }
+}

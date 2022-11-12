@@ -128,7 +128,7 @@ const fetchNowPlayingMovies = async () => {
   return movies;
 };
 
-const fetchTrendingMoviesByGenres = async () => {
+const fetchTrendingMoviesByGenre = async () => {
   const now = new Date(Date.now());
   const fromDate = new Date(now.setFullYear(now.getFullYear() - 1));
 
@@ -185,7 +185,7 @@ const fetchMovies = async () => {
 
   await fetchGenres();
 
-  const p1 = fetchTrendingMoviesByGenres()
+  const p1 = fetchTrendingMoviesByGenre()
     .then((promises) => Promise.all(promises))
     .then((movies) => {
       return redis.set(moviesType.TrendingMoviesByGenre, movies);

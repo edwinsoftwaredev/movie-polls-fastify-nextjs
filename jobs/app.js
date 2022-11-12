@@ -5,7 +5,7 @@ const express = require('express');
 const helmet = require('helmet');
 const { serve } = require('inngest/express');
 
-const { fetchMoviesScheduledJob } = require('./src/services/cronJobs');
+const { fetchMoviesScheduledJob } = require('./src/cronJobs');
 const app = express();
 
 // security middlewares
