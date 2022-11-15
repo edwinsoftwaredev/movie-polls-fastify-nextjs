@@ -1,5 +1,5 @@
 'use strict';
-const { Redis } = require('@upstash/redis');
+const { Redis } = require('@upstash/redis/with-fetch');
 const https = require('https');
 const axios = require('axios');
 const dopplerSecrets = require('./doppler-secrets');
@@ -171,8 +171,6 @@ const fetchTrendingMoviesByGenre = async (tmdbUrl, tmdbKey) => {
 const fetchMovies = async () => {
   const secrets = await dopplerSecrets.getSecrets();
 
-  console.log(secrets);
-
   const {
     UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN,
@@ -193,7 +191,7 @@ const fetchMovies = async () => {
 
   console.log('fetching movies...');
 
-  await fetchGenres();
+  await fetchGenres(tmdbUrl, tmdbKey);
 
   const p1 = fetchTrendingMoviesByGenre(tmdbUrl, tmdbKey)
     .then((promises) => Promise.all(promises))
