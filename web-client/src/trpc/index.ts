@@ -43,6 +43,10 @@ const mappedRouters: Array<MappedRouterRoutesType> = [
     prefix: 'googleAuth:',
     url: `${apiURL}/trpc/googleAuthRoutes`,
   },
+  {
+    prefix: 'movies:',
+    url: `${apiURL}/trpc/moviesRoutes`
+  }
 ];
 
 const routerLinks = [

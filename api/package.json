@@ -2,7 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "scripts": {
-    "dev": "npx nodemon api/inngest/serverless.ts",
+    "dev": "npx nodemon api/serverless.ts",
     "build": "prisma generate --schema ../prisma/schema.prisma && prisma migrate deploy --schema ../prisma/schema.prisma && tsc -p tsconfig.json"
   },
   "dependencies": {
@@ -16,11 +16,9 @@
     "@trpc/server": "^9.27.4",
     "@upstash/redis": "^1.16.0",
     "dotenv": "^16.0.3",
-    "fastify": "^4.8.1",
-    "fastify-plugin": "^4.2.1",
+    "fastify": "^4.10.0",
+    "fastify-plugin": "^4.3.0",
     "google-auth-library": "^8.5.2",
-    "jobs": "1.0.0",
-    "redis": "^4.3.1",
     "trpc": "1.0.0"
   },
   "packageManager": "yarn@3.2.3",

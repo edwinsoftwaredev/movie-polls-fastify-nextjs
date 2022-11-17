@@ -23,7 +23,7 @@ const serverlessFunc: FastifyPluginAsync = async (fastify) => {
   fastify.register(authPlugin);
   
   // movies plugin
-  // fastify.register(moviesPlugin);
+  fastify.register(moviesPlugin);
   
   // polls plugin
   // fastify.register(pollsPlugin);
