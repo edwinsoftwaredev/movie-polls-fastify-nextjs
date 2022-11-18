@@ -1,4 +1,5 @@
-import { getTRPCClient, trpc } from 'src/trpc'; import { NextPageWithLayout } from './_app';
+import { getTRPCClient, trpc } from 'src/trpc'; 
+import { NextPageWithLayout } from './_app';
 import { ReactElement } from 'react';
 import Layout from 'src/components/layout';
 import { GetServerSideProps } from 'next';
@@ -11,14 +12,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   // TODO: Refactor
   const sessionQueryData = await trpcClient.query('session:getSession');
   const whoamiQueryData = sessionQueryData.isAuthenticated ? 
-    await trpcClient.query('account:whoami') : undefined;  
+    await trpcClient.query('account:whoami') : null;  
 
   const nowPlayingMoviesData = sessionQueryData.isAuthenticated ? 
-    await trpcClient.query('movies:nowPlaying') : undefined;
+    await trpcClient.query('movies:homeMovies') : null;
 
   queryClient.setQueryData('account:whoami', whoamiQueryData);
   queryClient.setQueryData('session:getSession', sessionQueryData);
-  queryClient.setQueryData('movies:nowPlaying', nowPlayingMoviesData);
+  queryClient.setQueryData('movies:homeMovies', nowPlayingMoviesData);
 
   return {
     props: {
@@ -31,8 +32,14 @@ const Home: NextPageWithLayout = () => {
   const { data: whoamiData } = trpc.useQuery(['account:whoami']);
   const { whoami } = whoamiData || {};
 
-  const { data: nowPlayingData } = trpc.useQuery(['movies:nowPlaying']);
-  const { nowPlaying } = nowPlayingData || {};
+  const { data: nowPlayingData } = trpc.useQuery(['movies:homeMovies'], {
+    enabled: !!whoami,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const { popular, trending, nowPlaying } = nowPlayingData || {};
 
   return (
     <>
@@ -56,7 +63,19 @@ const Home: NextPageWithLayout = () => {
               </article>
 
               {/** slider */}
-              <section />
+              <section>
+                <article>
+                  <ul>
+                    {
+                      popular?.map(movie => (
+                        <li key={movie.id}>
+                          <span>{movie.title}</span>
+                        </li>
+                      )) ?? null
+                    }
+                  </ul>
+                </article>
+              </section>
             </section>
 
             {/** Trending Movies */}
@@ -66,7 +85,19 @@ const Home: NextPageWithLayout = () => {
               </article>
 
               {/** slider*/}
-              <section />
+              <section>
+                <article>
+                  <ul>
+                    {
+                      trending?.map(movie => (
+                        <li key={movie.id}>
+                          <span>{movie.title}</span>
+                        </li>
+                      )) ?? null
+                    }
+                  </ul>
+                </article>
+              </section>
             </section>
 
             {/** Now Playing */}
@@ -78,13 +109,15 @@ const Home: NextPageWithLayout = () => {
               {/** slider */}
               <section>
                 <article>
-                  {
-                    nowPlaying?.map(movie => (
-                      <li key={movie.id}>
-                        <span>{movie.title}</span>
-                      </li>
-                    )) ?? null
-                  }
+                  <ul>
+                    {
+                      nowPlaying?.map(movie => (
+                        <li key={movie.id}>
+                          <span>{movie.title}</span>
+                        </li>
+                      )) ?? null
+                    }
+                  </ul>
                 </article>
               </section>
             </section>

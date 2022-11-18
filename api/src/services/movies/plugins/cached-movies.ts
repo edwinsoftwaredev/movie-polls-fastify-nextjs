@@ -1,3 +1,4 @@
+import { Pipeline } from '@upstash/redis/types/pkg/pipeline';
 import { FastifyPluginAsync } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import { Movie, MoviesByGenre } from '../types';
@@ -10,20 +11,20 @@ const enum CachedMoviesKeys {
 }
 
 const cachedMovies: FastifyPluginAsync = async (fastify) => {
-  const nowPlaying = async () => {
-    return fastify.redisClient.get<Array<Movie>>(CachedMoviesKeys.NowPlayingMovies);
+  const nowPlaying = async (redisPipeline?: Pipeline) => {
+    return (redisPipeline ?? fastify.redisClient).get<Array<Movie>>(CachedMoviesKeys.NowPlayingMovies);
   }
 
-  const popular = async () => {
-    return fastify.redisClient.get<Array<Movie>>(CachedMoviesKeys.TopPopularMovies);
+  const popular = async (redisPipeline?: Pipeline) => {
+    return (redisPipeline ?? fastify.redisClient).get<Array<Movie>>(CachedMoviesKeys.TopPopularMovies);
   }
 
-  const trending = async () => {
-    return fastify.redisClient.get<Array<Movie>>(CachedMoviesKeys.TopTrendingMovies);
+  const trending = async (redisPipeline?: Pipeline) => {
+    return (redisPipeline ?? fastify.redisClient).get<Array<Movie>>(CachedMoviesKeys.TopTrendingMovies);
   }
 
-  const trendingByGenre = async () => {
-    return fastify.redisClient.get<Array<MoviesByGenre>>(CachedMoviesKeys.TrendingMoviesByGenre);
+  const trendingByGenre = async (redisPipeline?: Pipeline) => {
+    return (redisPipeline ?? fastify.redisClient).get<Array<MoviesByGenre>>(CachedMoviesKeys.TrendingMoviesByGenre);
   }
 
   fastify.decorate('movies', {

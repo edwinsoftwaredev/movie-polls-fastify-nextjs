@@ -17,6 +17,7 @@ import { Movie, MovieDetail, MoviesByGenre } from '../../src/services/movies/typ
 import type * as FastifySession from '@fastify/session';
 import type * as FastifyCsrf from '@fastify/csrf-protection';
 import type * as Fastify from 'fastify';
+import { Pipeline } from '@upstash/redis/types/pkg/pipeline';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -33,10 +34,11 @@ declare module 'fastify' {
     };
 
     movies: {
-      nowPlaying: () => Promise<Array<Movie>>;
-      popular: () => Promise<Array<Movie>>;
-      trending: () => Promise<Array<Movie>>;
-      trendingByGenre: () => Promise<Array<MoviesByGenre>>
+      nowPlaying: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
+      popular: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
+      trending: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
+      trendingByGenre: () => Promise<Array<MoviesByGenre>>;
+      popularByYear: (year: string) => Promise<Array<Movie>>;
       search: (text: string) => Promise<Array<Movie>>;
       providersByMovieId: (movieId: number) => Promise<{id: number, results: any}>; 
       detailsByMovieId: (movieId: number) => Promise<MovieDetail>;

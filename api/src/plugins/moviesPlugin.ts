@@ -1,11 +1,12 @@
 import { FastifyPluginAsync } from 'fastify';
 import { movies } from '../services';
-import prismaClient from './prismaClient';
+import redisClient from './redisClient';
 
 const moviesPlugin: FastifyPluginAsync = async (fastify) => {
-  const databaseUrl = process.env.DATABASE_URL || '';
+  const redisConnectionString = process.env.UPSTASH_REDIS_REST_URL || '';
+  const redisConnectionToken = process.env.UPSTASH_REDIS_REST_TOKEN || '';
 
-  fastify.register(prismaClient, { databaseUrl });
+  fastify.register(redisClient, { url: redisConnectionString, token: redisConnectionToken });
   fastify.register(movies);
 };
 
