@@ -27,12 +27,17 @@ const cachedMovies: FastifyPluginAsync = async (fastify) => {
     return (redisPipeline ?? fastify.redisClient).get<Array<MoviesByGenre>>(CachedMoviesKeys.TrendingMoviesByGenre);
   }
 
+  const popularByDecadeAndGenre = async (decade: number, redisPipeline?: Pipeline) => {
+    return (redisPipeline ?? fastify.redisClient).get<Array<MoviesByGenre>>(`movies_${decade}`);
+  }
+
   fastify.decorate('movies', {
     ...fastify.movies,
     nowPlaying,
     popular,
     trending,
-    trendingByGenre
+    trendingByGenre,
+    popularByDecadeAndGenre
   });
 }
 

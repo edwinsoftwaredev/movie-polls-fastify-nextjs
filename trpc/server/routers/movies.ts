@@ -1,4 +1,5 @@
 import createRouter from "../createRouter";
+import { z } from 'zod';
 
 const movies = createRouter().query('homeMovies', {
   resolve: async ({ctx}) => {
@@ -26,6 +27,17 @@ const movies = createRouter().query('homeMovies', {
     const { fastify } = ctx;
     const trendingByGenre = await fastify.movies.trendingByGenre();
     return { trendingByGenre };
+  }
+}).query('popularByDecadeAndGenre', {
+  input: z.object({
+    decade: z.number(),
+  }),
+  resolve: async ({ ctx, input }) => {
+    const { fastify } = ctx;
+    const { decade } = input;
+    const popularByGenre = await fastify.movies.popularByDecadeAndGenre(decade);
+
+    return { popularByGenre };
   }
 });
 

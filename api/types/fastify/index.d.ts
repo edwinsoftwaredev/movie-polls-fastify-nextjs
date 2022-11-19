@@ -38,7 +38,7 @@ declare module 'fastify' {
       popular: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
       trending: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
       trendingByGenre: () => Promise<Array<MoviesByGenre>>;
-      popularByYear: (year: string) => Promise<Array<Movie>>;
+      popularByDecadeAndGenre: (decade: number) => Promise<Array<MoviesByGenre>>;
       search: (text: string) => Promise<Array<Movie>>;
       providersByMovieId: (movieId: number) => Promise<{id: number, results: any}>; 
       detailsByMovieId: (movieId: number) => Promise<MovieDetail>;
