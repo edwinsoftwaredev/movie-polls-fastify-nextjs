@@ -16,7 +16,7 @@
     "@trpc/server": "^9.27.4",
     "@upstash/redis": "^1.16.0",
     "dotenv": "^16.0.3",
-    "fastify": "^4.10.0",
+    "fastify": "^4.10.2",
     "fastify-plugin": "^4.3.0",
     "google-auth-library": "^8.5.2",
     "trpc": "1.0.0"
