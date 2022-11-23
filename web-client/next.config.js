@@ -5,7 +5,7 @@
 
 const apiURL = process.env.NEXT_PUBLIC_API_HOST_URL || '';
 // https://cloud.google.com/identity-platform/docs/web/chrome-extension
-const googleURLs = 'https://accounts.google.com'; 
+const googleURLs = 'https://accounts.google.com';
 
 const googleFontsURL = 'https://fonts.googleapis.com https://fonts.gstatic.com';
 
@@ -15,7 +15,7 @@ const vercelInsights = 'https://vitals.vercel-insights.com';
 const ContentSecurityPolicy = `
   base-uri 'self';
   default-src 'self';
-  script-src 'self' ${googleURLs} 'unsafe-eval';
+  script-src 'self' ${googleURLs} 'unsafe-eval' 'unsafe-inline';
   connect-src 'self' ${apiURL} ${vercelInsights};
   child-src 'self';
   frame-src 'self' ${googleURLs};
@@ -29,67 +29,68 @@ const ContentSecurityPolicy = `
   upgrade-insecure-requests 
 `;
 
-const securityHeaders = [{
-  key: 'Content-Security-Policy',
-  value: ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim()
-}, {
-  key: 'X-Content-Type-Options',
-  value: 'nosniff'
-}, {
-  key: 'Referrer-Policy',
-  value: 'strict-origin-when-cross-origin'
-},{
-  key: 'Cross-Origin-Opener-Policy',
-  value: 'same-origin-allow-popups' // allow-popups will allow the Google Sign In With Pop Up to render
-}, {
-  key: 'Origin-Agent-Cluster',
-  value: '?1'
-}, {
-  key: 'X-Frame-Options',
-  value: 'SAMEORIGIN'
-}, {
-  key: 'X-Permitted-Cross-Domain-Policies',
-  value: 'none'
-}, {
-  key: 'Strict-Transport-Security',
-  value: 'max-age=15552000; includeSubDomains'
-}];
+const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim(),
+  },
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
+  },
+  {
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin',
+  },
+  {
+    key: 'Cross-Origin-Opener-Policy',
+    value: 'same-origin-allow-popups', // allow-popups will allow the Google Sign In With Pop Up to render
+  },
+  {
+    key: 'Origin-Agent-Cluster',
+    value: '?1',
+  },
+  {
+    key: 'X-Frame-Options',
+    value: 'SAMEORIGIN',
+  },
+  {
+    key: 'X-Permitted-Cross-Domain-Policies',
+    value: 'none',
+  },
+  {
+    key: 'Strict-Transport-Security',
+    value: 'max-age=15552000; includeSubDomains',
+  },
+];
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // In case the source code in the trpc package is needed, uncomment:
-  // webpack: (config, options) => {
-  //   // Adding ../trpc ts files
-  //   config.module.rules.push({
-  //     test: /\.(ts)$/,
-  //     include: [path.resolve(__dirname, '../trpc/')],
-  //     use: [options.defaultLoaders.babel]
-  //   });
-
-  //   return config;
-  // },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.module.rules.push({
       test: /\.svg$/,
       issuer: /\.[jt]sx?$/,
-      resourceQuery: { not: [/url/]  },
+      resourceQuery: { not: [/url/] },
       use: ['@svgr/webpack'],
     });
     return config;
   },
   async headers() {
-    return [{
-      source: '/:path*',
-      headers: securityHeaders
-    }]
+    return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+    ];
   },
   experimental: {
+    appDir: true,
     fontLoaders: [
-      { loader: '@next/font/google', options: { subsets: ['latin'] } }
+      { loader: '@next/font/google', options: { subsets: ['latin'] } },
     ],
-  }
+  },
 };
 
 module.exports = nextConfig;

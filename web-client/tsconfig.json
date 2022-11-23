@@ -18,10 +18,16 @@
     "paths": {
       "components": ["src/components"],
       "services": ["src/services"],
+      "src/trpc": ["src/trpc"],
       "types": ["src/types"],
       "styles": ["styles"],
       "public": ["public"]
-    }
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
@@ -30,6 +36,7 @@
     // If this file is not included the fastify decorated types
     // will not be inferred by tRPC
     "../api/types/fastify/index.d.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
