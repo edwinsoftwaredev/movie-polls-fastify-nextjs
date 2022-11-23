@@ -1,3 +1,4 @@
-import * as Account from './account';
+import Button from './Button';
+import Input from './Input';
 
-export { Account };
+export { Button, Input };
