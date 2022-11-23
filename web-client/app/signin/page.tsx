@@ -1,7 +1,10 @@
-import trpc from 'src/trpc/server';
+import { headers } from 'next/headers';
+import trpcClient from 'src/trpc/server';
 import SignIn from './SignIn';
 
 export default async function Page() {
+  const reqHeaders = headers();
+  const trpc = trpcClient(reqHeaders);
   const { whoami } = await trpc.query('account:whoami');
 
   return (

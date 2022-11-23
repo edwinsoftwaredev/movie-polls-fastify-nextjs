@@ -1,7 +1,10 @@
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import trpc from 'src/trpc/server';
+import trpcClient from 'src/trpc/server';
 
 export default async function Page() {
+  const reqHeaders = headers();
+  const trpc =  trpcClient(reqHeaders);
   const session = await trpc.query('session:getSession');
   const { isAuthenticated } = session;
 

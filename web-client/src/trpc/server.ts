@@ -1,7 +1,7 @@
 import { AppRouter } from 'trpc/client';
 import { createTRPCClient } from '@trpc/client';
 import routerLinks from './links';
-import { headers as nextHeaders } from 'next/headers';
+import { ReadonlyHeaders } from 'next/dist/server/app-render';
 
 // TODO: Install server-only package
 const isWebView = typeof window !== 'undefined';
@@ -10,16 +10,16 @@ const apiURL = !isWebView ?
   process.env.API_HOST_URL : undefined;
 
 // NOTE: Use this function only works on server side
-const trpcServerClient = createTRPCClient<AppRouter>({
+const trpcServerClient = (headers: ReadonlyHeaders) => createTRPCClient<AppRouter>({
   url: `${apiURL}/trpc`,
   links: routerLinks,
   // TODO: Validate that the correct fetch API is being used
   fetch: fetch,
   headers: () => {
-    const headersList = nextHeaders(); 
+    const cookies = headers.get('Cookie');
     
     return {
-      'cookie': headersList.get('Cookie') || '', 
+      ...(cookies ? {'cookie': cookies} : {}),
       // (when proxying)
       // DO NOT set the host from the request's url.
       // VALIDATE that the host

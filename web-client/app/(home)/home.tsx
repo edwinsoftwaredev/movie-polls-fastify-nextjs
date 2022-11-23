@@ -1,7 +1,10 @@
-import trpc from 'src/trpc/server';
+import trpcClient from 'src/trpc/server';
 import * as React from 'react';
+import { headers } from 'next/headers';
 
 export default async function Home() {
+  const reqHeaders = headers();
+  const trpc = trpcClient(reqHeaders);
   const homeMovies = await trpc.query('movies:homeMovies');
 
   const { popular, trending, nowPlaying } = homeMovies;
