@@ -1,6 +1,8 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import trpcClient from 'src/trpc/server';
+import TrendingMovies from './TrendingMovies';
 
 export default async function Page() {
   const reqHeaders = headers();
@@ -12,8 +14,6 @@ export default async function Page() {
     redirect('/');
   }
 
-  const { trendingByGenre } = await trpc.query('movies:trendingByGenre');
-
   return (
     <>
       <section>
@@ -24,16 +24,10 @@ export default async function Page() {
         {/** slider*/}
         <section>
           <article>
-            {trendingByGenre?.map((genre) => (
-              <div key={genre.genre_name}>
-                <h3>{genre.genre_name}</h3>
-                <ul>
-                  {genre.results.map((movie) => (
-                    <li key={movie.id}>{movie.title}</li>
-                  ))}
-                </ul>
-              </div>
-            )) ?? null}
+            <Suspense fallback={<p>Loading...</p>}>
+              {/* @ts-expect-error Server Component */}
+              <TrendingMovies />
+            </Suspense>
           </article>
         </section>
       </section>

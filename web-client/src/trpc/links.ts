@@ -53,9 +53,7 @@ const routerLinks = [
         return op.path.startsWith(router.prefix);
       },
       // TODO: Validate trpc batching -> fetch/cache API 
-      true: isWebView ? 
-        httpBatchLink<AppRouter>({ url: router.url }) : 
-        httpLink<AppRouter>({ url: router.url }),
+      true: httpBatchLink<AppRouter>({ url: router.url }), 
       false: nextLink,
     })
   ),

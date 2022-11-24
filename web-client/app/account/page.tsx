@@ -1,4 +1,4 @@
-import style from './account.module.scss';
+import style from './Account.module.scss';
 import trpcClient from 'src/trpc/server';
 import { headers } from 'next/headers';
 

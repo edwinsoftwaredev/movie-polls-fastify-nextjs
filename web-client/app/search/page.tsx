@@ -1,4 +1,4 @@
-import style from './search.module.scss';
+import style from './Search.module.scss';
 
 export default async function Page() {
   return (

@@ -1,4 +1,4 @@
-import style from './about.module.scss';
+import style from './About.module.scss';
 
 export default async function Page() {
   return (

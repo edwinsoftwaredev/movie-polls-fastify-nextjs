@@ -1,4 +1,4 @@
-import style from './mypolls.module.scss';
+import style from './MyPolls.module.scss';
 
 export default async function Page() {
   return (
