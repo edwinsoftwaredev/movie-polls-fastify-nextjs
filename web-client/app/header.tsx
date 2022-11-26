@@ -1,4 +1,4 @@
-import trpcClient from 'src/trpc/server';
+import { trpc } from 'src/trpc/server';
 import style from './header.module.scss';
 import SearchVector from 'public/vectors/search.svg';
 import Link from 'next/link';
@@ -59,8 +59,7 @@ const NavOptions: React.FC = () => (
 
 export default async function Header() {
   const reqHeaders = headers();
-  const trpc = trpcClient(reqHeaders);
-  const session = await trpc.query('session:getSession');
+  const session = await trpc.query('session:getSession', reqHeaders);
 
   const { isAuthenticated } = session;
 
@@ -68,7 +67,7 @@ export default async function Header() {
     <div className={style['container']}>
       <header className={style['header']}>
         <Link href={'/'}>
-          <h1 className={`${voltaire.className} app-title`}>Movie Polls</h1>
+          <h1 className={`app-title ${voltaire.className}`}>Movie Polls</h1>
         </Link>
         <div />
         {

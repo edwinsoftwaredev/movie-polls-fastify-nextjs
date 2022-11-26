@@ -1,21 +1,18 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import trpcClient from 'src/trpc/server';
+import { Suspense } from 'react';
+import { trpc } from 'src/trpc/server';
+import TopMovies from './TopMovies';
 
 export default async function Page() {
   const reqHeaders = headers();
-  const trpc =  trpcClient(reqHeaders);
-  const session = await trpc.query('session:getSession');
+  const session = await trpc.query('session:getSession', reqHeaders);
+
   const { isAuthenticated } = session;
 
   if (!isAuthenticated) {
     redirect('/');
   }
-
-  const { popularByGenre } = await trpc.query(
-    'movies:popularByDecadeAndGenre',
-    { decade: 2020 }
-  );
 
   return (
     <>
@@ -27,16 +24,10 @@ export default async function Page() {
         {/** slider*/}
         <section>
           <article>
-            {popularByGenre?.map((genre) => (
-              <div key={genre.genre_name}>
-                <h3>{genre.genre_name}</h3>
-                <ul>
-                  {genre.results.map((movie) => (
-                    <li key={movie.id}>{movie.title}</li>
-                  ))}
-                </ul>
-              </div>
-            )) ?? null}
+            <Suspense fallback={<p>Loading...</p>}>
+              {/* @ts-expect-error Server Component */}
+              <TopMovies />
+            </Suspense>
           </article>
         </section>
       </section>

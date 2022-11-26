@@ -1,14 +1,42 @@
-import trpcClient from 'src/trpc/server';
-import * as React from 'react';
 import { headers } from 'next/headers';
+import { Suspense } from 'react';
+import Slider from 'src/components/Slider';
+import { trpc } from 'src/trpc/server';
+
+async function PopularSlider() {
+  const reqHeaders = headers();
+  const { popular } = await trpc.query('movies:homeMovies', reqHeaders);
+
+  return (
+    <>
+      <Slider movies={popular} />
+    </>
+  );
+}
+
+async function TrendingSlider() {
+  const reqHeaders = headers();
+  const { trending } = await trpc.query('movies:homeMovies', reqHeaders);
+
+  return (
+    <>
+      <Slider movies={trending} />
+    </>
+  );
+}
+
+async function NowPlayingSlider() {
+  const reqHeaders = headers();
+  const { nowPlaying } = await trpc.query('movies:homeMovies', reqHeaders);
+
+  return (
+    <>
+      <Slider movies={nowPlaying} />
+    </>
+  );
+}
 
 export default async function Home() {
-  const reqHeaders = headers();
-  const trpc = trpcClient(reqHeaders);
-  const homeMovies = await trpc.query('movies:homeMovies');
-
-  const { popular, trending, nowPlaying } = homeMovies;
-
   return (
     <>
       {/** Current polls section */}
@@ -30,13 +58,10 @@ export default async function Home() {
         {/** slider */}
         <section>
           <article>
-            <ul>
-              {popular?.map((movie) => (
-                <li key={movie.id}>
-                  <span>{movie.title}</span>
-                </li>
-              )) ?? null}
-            </ul>
+            <Suspense fallback={<p>Loading...</p>}>
+              {/* @ts-expect-error Server Component */}
+              <PopularSlider />
+            </Suspense>
           </article>
         </section>
       </section>
@@ -50,13 +75,10 @@ export default async function Home() {
         {/** slider*/}
         <section>
           <article>
-            <ul>
-              {trending?.map((movie) => (
-                <li key={movie.id}>
-                  <span>{movie.title}</span>
-                </li>
-              )) ?? null}
-            </ul>
+            <Suspense fallback={<p>Loading...</p>}>
+              {/* @ts-expect-error Server Component */}
+              <TrendingSlider />
+            </Suspense>
           </article>
         </section>
       </section>
@@ -70,13 +92,10 @@ export default async function Home() {
         {/** slider */}
         <section>
           <article>
-            <ul>
-              {nowPlaying?.map((movie) => (
-                <li key={movie.id}>
-                  <span>{movie.title}</span>
-                </li>
-              )) ?? null}
-            </ul>
+            <Suspense fallback={<p>Loading...</p>}>
+              {/* @ts-expect-error Server Component */}
+              <NowPlayingSlider />
+            </Suspense>
           </article>
         </section>
       </section>

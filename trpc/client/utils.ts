@@ -3,6 +3,7 @@ import type {
   inferProcedureOutput,
   inferProcedureInput,
   inferSubscriptionOutput,
+  inferHandlerInput,
 } from '@trpc/server';
 
 /**
@@ -19,6 +20,10 @@ export type TMutation = keyof AppRouter['_def']['mutations'];
  * Enum containing all api subscription paths
  */
 export type TSubscription = keyof AppRouter['_def']['subscriptions'];
+
+export type InferHandlerInput<TRouteKey extends TQuery> = inferHandlerInput<
+  AppRouter['_def']['queries'][TRouteKey]
+>;
 
 /**
  * This is a helper method to infer the output of a query resolver

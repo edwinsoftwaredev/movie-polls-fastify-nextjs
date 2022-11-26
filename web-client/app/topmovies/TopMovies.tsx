@@ -2,18 +2,22 @@ import { headers } from 'next/headers';
 import Slider from 'src/components/Slider';
 import { trpc } from 'src/trpc/server';
 
-export default async function TrendingMovies() {
+export default async function TopMovies() {
   const reqHeaders = headers();
-  const { trendingByGenre } = await trpc.query('movies:trendingByGenre', reqHeaders);
+  const { popularByGenre } = await trpc.query(
+    'movies:popularByDecadeAndGenre',
+    reqHeaders,
+    { decade: 2020 },
+  );
 
   return (
     <>
-      {trendingByGenre?.map((genre) => (
+      {popularByGenre.map((genre) => (
         <div key={genre.genre_name}>
           <h3>{genre.genre_name}</h3>
           <Slider movies={genre.results} />
         </div>
-      )) ?? null}
+      ))}
     </>
   );
 }

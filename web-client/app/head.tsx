@@ -1,10 +1,9 @@
 import { headers } from 'next/headers';
-import trpcClient from 'src/trpc/server';
+import { trpc } from 'src/trpc/server';
 
 export default async function Head() {
   const reqHeaders = headers();
-  const trpc = trpcClient(reqHeaders);
-  const { csrfToken } = await trpc.query('session:getSession');
+  const { csrfToken } = await trpc.query('session:getSession', reqHeaders);
 
   return (
     <>

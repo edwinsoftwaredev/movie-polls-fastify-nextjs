@@ -1,13 +1,12 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import trpcClient from 'src/trpc/server';
+import { trpc } from 'src/trpc/server';
 import TrendingMovies from './TrendingMovies';
 
 export default async function Page() {
   const reqHeaders = headers();
-  const trpc = trpcClient(reqHeaders);
-  const session = await trpc.query('session:getSession');
+  const session = await trpc.query('session:getSession', reqHeaders);
   const { isAuthenticated } = session;
 
   if (!isAuthenticated) {
