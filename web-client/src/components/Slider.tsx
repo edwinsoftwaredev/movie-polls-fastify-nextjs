@@ -1,9 +1,8 @@
 'use client';
 
-import type { InferQueryOutput } from 'trpc/client/utils';
-
-type Movies =
-  InferQueryOutput<'movies:trendingByGenre'>['trendingByGenre'][0]['results'];
+import { Movies } from 'types';
+import Slide from './Slide';
+import styles from './Slider.module.scss';
 
 interface SliderProps {
   movies: Movies;
@@ -11,11 +10,9 @@ interface SliderProps {
 
 const Slider: React.FC<SliderProps> = ({ movies }) => {
   return (
-    <ul>
-      {movies.map((movie) => (
-        <li key={movie.id}>{movie.title}</li>
-      ))}
-    </ul>
+    <div className={styles['slider']}>
+      <Slide movies={movies}/> 
+    </div>
   );
 };
 

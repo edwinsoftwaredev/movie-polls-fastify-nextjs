@@ -1,0 +1,38 @@
+.movie-card {
+  [class~='overlay'] {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-column: auto 1fr;
+    padding: 0.5rem;
+    z-index: 10;
+
+    [class~='title'] {
+      padding: 0.5rem;
+      background-color: rgba($color: #ffffff, $alpha: 0.2);
+      backdrop-filter: blur(4px);
+      width: fit-content;
+      border-radius: 2px;
+
+      p {
+        display: inline;
+        color: rgba($color: #000000, $alpha: 0.8);
+        font-weight: 500;
+        font-size: clamp(0.2rem, 1.4rem + 0.2vw, 1rem);
+      }
+    }
+  }
+
+  img {
+    object-fit: cover;
+    max-inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 1.85 / 1;
+    display: block;
+    border-radius: 2px;
+  }
+}

@@ -14,7 +14,9 @@ export default async function TopMovies() {
     <>
       {popularByGenre.map((genre) => (
         <div key={genre.genre_name}>
-          <h3>{genre.genre_name}</h3>
+          <article>
+            <h2>{genre.genre_name}</h2>
+          </article>
           <Slider movies={genre.results} />
         </div>
       ))}

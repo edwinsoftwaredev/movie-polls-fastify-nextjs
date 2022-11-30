@@ -22,12 +22,10 @@ export default async function Page() {
 
         {/** slider*/}
         <section>
-          <article>
-            <Suspense fallback={<p>Loading...</p>}>
-              {/* @ts-expect-error Server Component */}
-              <TrendingMovies />
-            </Suspense>
-          </article>
+          <Suspense fallback={<p>Loading...</p>}>
+            {/* @ts-expect-error Server Component */}
+            <TrendingMovies />
+          </Suspense>
         </section>
       </section>
     </>

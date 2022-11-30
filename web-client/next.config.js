@@ -11,6 +11,8 @@ const googleFontsURL = 'https://fonts.googleapis.com https://fonts.gstatic.com';
 
 const vercelInsights = 'https://vitals.vercel-insights.com';
 
+const TMDBImagesUrl = 'https://image.tmdb.org';
+
 // TODO: review headers in prod
 const ContentSecurityPolicy = `
   base-uri 'self';
@@ -22,7 +24,7 @@ const ContentSecurityPolicy = `
   frame-ancestors 'self';
   style-src 'self' ${googleURLs} ${googleFontsURL} 'unsafe-inline';
   font-src 'self' ${googleFontsURL};
-  img-src 'self' data:;
+  img-src 'self' ${TMDBImagesUrl} data:;
   form-action 'self' ${apiURL};
   object-src 'none';
   script-src-attr 'none';

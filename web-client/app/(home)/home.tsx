@@ -57,12 +57,10 @@ export default async function Home() {
 
         {/** slider */}
         <section>
-          <article>
-            <Suspense fallback={<p>Loading...</p>}>
-              {/* @ts-expect-error Server Component */}
-              <PopularSlider />
-            </Suspense>
-          </article>
+          <Suspense fallback={<p>Loading...</p>}>
+            {/* @ts-expect-error Server Component */}
+            <PopularSlider />
+          </Suspense>
         </section>
       </section>
 
@@ -74,12 +72,10 @@ export default async function Home() {
 
         {/** slider*/}
         <section>
-          <article>
-            <Suspense fallback={<p>Loading...</p>}>
-              {/* @ts-expect-error Server Component */}
-              <TrendingSlider />
-            </Suspense>
-          </article>
+          <Suspense fallback={<p>Loading...</p>}>
+            {/* @ts-expect-error Server Component */}
+            <TrendingSlider />
+          </Suspense>
         </section>
       </section>
 
@@ -91,12 +87,10 @@ export default async function Home() {
 
         {/** slider */}
         <section>
-          <article>
-            <Suspense fallback={<p>Loading...</p>}>
-              {/* @ts-expect-error Server Component */}
-              <NowPlayingSlider />
-            </Suspense>
-          </article>
+          <Suspense fallback={<p>Loading...</p>}>
+            {/* @ts-expect-error Server Component */}
+            <NowPlayingSlider />
+          </Suspense>
         </section>
       </section>
     </>
