@@ -7,31 +7,42 @@ export interface MovieRequest {
 
 export interface Movie {
   adult: boolean;
-  backdrop_path: string;
-  genre_ids: number[];
-  genre_names?: string[]; // this is a custom property
   id: number;
   original_language: string;
   original_title: string;
   overview: string;
-  popularity: number;
-  poster_path: string;
+  vote_average: number;
   release_date: string;
   title: string;
-  video: boolean;
-  vote_average: number;
-  vote_count: number;
+  genres: [
+    {
+      id: number;
+      name: string;
+    }
+  ];
+  images: {
+    backdrops: [
+      {
+        width: number;
+        height: number;
+        file_path: string;
+      }
+    ];
+    posters: [
+      {
+        width: number;
+        height: number;
+        file_path: string;
+      }
+    ];
+  };
 }
 
 export interface MovieDetail extends Movie {
   homepage: string;
-  genres: {
-    id: number,
-    name: string,
-  }[],
   production_countries: {
     iso_3166_1: string;
-    name: string
+    name: string;
   }[];
   credits: {
     cast: {
@@ -39,7 +50,7 @@ export interface MovieDetail extends Movie {
     }[];
     crew: {
       job: string;
-      name: string
+      name: string;
     }[];
   };
   release_dates: {
@@ -50,8 +61,8 @@ export interface MovieDetail extends Movie {
       }[];
     }[];
   };
-  runtime: number;
   providers: any;
+  runtime: number;
 }
 
 export interface GenreRequest {
@@ -71,19 +82,14 @@ export interface MoviesByGenre {
 export const getMovieFromMovieDetails = (movie: MovieDetail): Movie => {
   return {
     adult: movie.adult,
-    backdrop_path: movie.backdrop_path,
-    genre_ids: movie.genres.map(genre => genre.id),
+    images: movie.images,
+    genres: movie.genres,
     id: movie.id,
     original_language: movie.original_language,
     original_title: movie.original_title,
     overview: movie.overview,
-    popularity: movie.popularity,
-    poster_path: movie.poster_path,
     release_date: movie.release_date,
     title: movie.title,
-    video: movie.video,
     vote_average: movie.vote_average,
-    vote_count: movie.vote_count,
-    genre_names: movie.genres.map(genre => genre.name)
-  }
+  };
 };

@@ -12,6 +12,7 @@ const moviesType = {
 };
 
 let genres = undefined;
+const fetchedMovies = {};
 
 const fetchGenres = async (tmdbUrl, tmdbKey) => {
   if (genres) return Promise.resolve(genres);
@@ -29,6 +30,82 @@ const fetchGenres = async (tmdbUrl, tmdbKey) => {
     });
 };
 
+const fetchMovieDetails = async (tmdbUrl, tmdbKey, movieId) => {
+  if (fetchedMovies[`${movieId}`]) return fetchedMovies[`${movieId}`];
+
+  const params = new URLSearchParams();
+  params.append('api_key', tmdbKey);
+  params.append('language', 'en-US');
+  params.append('append_to_response', 'images');
+  params.append('include_image_language', 'en,null');
+
+  const details = await axios
+    .get(`${tmdbUrl}/movie/${movieId}?${params.toString()}`)
+    .then((res) => res.data)
+    .then((data) => {
+      // filtering properties.
+      const { genres, id } = data;
+
+      const backdrops = data.images.backdrops
+        .sort((a, b) => b.width - a.width)
+        .slice(0, 1)
+        .map((backdrop) => ({
+          width: backdrop.width,
+          file_path: backdrop.file_path,
+          height: backdrop.height,
+        }));
+
+      const posters = data.images.posters.slice(0, 1).map((backdrop) => ({
+        width: backdrop.width,
+        file_path: backdrop.file_path,
+        height: backdrop.height,
+      }));
+
+      const result = {
+        genres,
+        id,
+        images: {
+          backdrops,
+          posters,
+        },
+      };
+
+      fetchedMovies[`${id}`] = result;
+
+      return result;
+    });
+
+  return details;
+};
+
+const fetchMoviesDetails = async (tmdbUrl, tmdbKey, movies) =>
+  Promise.all(
+    movies.map(async (movie) => {
+      const {
+        adult,
+        overview,
+        release_date,
+        id,
+        original_title,
+        original_language,
+        title,
+        vote_average,
+      } = movie;
+      const details = await fetchMovieDetails(tmdbUrl, tmdbKey, movie.id);
+      return {
+        adult,
+        overview,
+        release_date,
+        id,
+        original_title,
+        original_language,
+        title,
+        vote_average,
+        ...details,
+      };
+    })
+  );
+
 const fetchTopPopularMovies = async (tmdbUrl, tmdbKey) => {
   const now = new Date(Date.now());
   const fromDate = new Date(now.setFullYear(now.getFullYear() - 1));
@@ -36,6 +113,7 @@ const fetchTopPopularMovies = async (tmdbUrl, tmdbKey) => {
   // Top Popular movies params
   const params = new URLSearchParams();
   params.append('api_key', tmdbKey);
+  params.append('language', 'en-US');
   params.append('sort_by', 'vote_average.desc');
   params.append('page', '1');
   params.append(
@@ -47,15 +125,10 @@ const fetchTopPopularMovies = async (tmdbUrl, tmdbKey) => {
 
   const res = await axios
     .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results));
 
-  const movies = res.results
-    .map((movie) => ({
-      ...movie,
-      genre_names: movie.genre_ids.map(
-        (id) => genres?.find((item) => item.id === id)?.name ?? ''
-      ),
-    }))
+  const movies = res
     .sort((a, b) => b.vote_count - a.vote_count)
     .slice(0, 10)
     .sort((a, b) => b.vote_average - a.vote_average);
@@ -71,6 +144,7 @@ const fetchTopTrendingMovies = async (tmdbUrl, tmdbKey) => {
   // "Trending": relatively new movies with a vote avg > 7 and votes > 50
   const params = new URLSearchParams();
   params.append('api_key', tmdbKey);
+  params.append('language', 'en-US');
   params.append('sort_by', 'primary_release_date.desc');
   params.append('page', 1);
   params.append(
@@ -81,16 +155,11 @@ const fetchTopTrendingMovies = async (tmdbUrl, tmdbKey) => {
   params.append('vote_count.gte', 50);
 
   const res = await axios
-    .get(`${tmdbUrl}/discover/movie?${params}`)
-    .then((res) => res.data);
+    .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
+    .then((res) => res.data)
+    .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results));
 
-  const movies = res.results
-    .map((movie) => ({
-      ...movie,
-      genre_names: movie.genre_ids.map(
-        (id) => genres?.find((item) => item.id === id)?.name ?? ''
-      ),
-    }))
+  const movies = res
     // .sort((a, b) => new Date(b.release_date) >= new Date(a.release_date) ? 1 : -1)
     .slice(0, 10)
     .sort((a, b) => b.vote_average - a.vote_average);
@@ -102,6 +171,7 @@ const fetchNowPlayingMovies = async (tmdbUrl, tmdbKey) => {
   // Now Playing movies params
   const params = new URLSearchParams();
   params.append('api_key', tmdbKey);
+  params.append('language', 'en-US');
   params.append('sort_by', 'primary_release_date.desc');
   params.append('page', 1);
   params.append(
@@ -111,16 +181,10 @@ const fetchNowPlayingMovies = async (tmdbUrl, tmdbKey) => {
   params.append('vote_average.gte', 1);
   params.append('vote_count.gte', 50);
 
-  const res = await axios
-    .get(`${tmdbUrl}/discover/movie?${params}`)
-    .then((res) => res.data);
-
-  const movies = res.results.map((movie) => ({
-    ...movie,
-    genre_names: movie.genre_ids.map(
-      (id) => genres?.find((item) => item.id === id)?.name ?? ''
-    ),
-  }));
+  const movies = await axios
+    .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
+    .then((res) => res.data)
+    .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results));
 
   return movies;
 };
@@ -131,6 +195,7 @@ const fetchTrendingMoviesByGenre = (tmdbUrl, tmdbKey) => {
 
   const params = new URLSearchParams();
   params.append('api_key', tmdbKey);
+  params.append('language', 'en-US');
   params.append('sort_by', 'popularity.desc');
   params.append('page', 1);
   params.append(
@@ -147,15 +212,8 @@ const fetchTrendingMoviesByGenre = (tmdbUrl, tmdbKey) => {
       return axios
         .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
         .then((res) => res.data)
-        .then((data) => {
-          // Adds genre names to each movie
-          const movies = data.results.map((movie) => ({
-            ...movie,
-            genre_names: movie.genre_ids.map(
-              (id) => genres.find((item) => item.id === genre.id)?.name ?? ''
-            ),
-          }));
-
+        .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results))
+        .then((movies) => {
           // Adds genre name for the currernt genre
           const result = {
             genre_name: genres.find((item) => item.id === genre.id)?.name ?? '',
@@ -174,6 +232,7 @@ const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
 
   const params = new URLSearchParams();
   params.append('api_key', tmdbKey);
+  params.append('language', 'en-US');
   params.append('sort_by', 'vote_average.desc');
   params.append('page', 1);
   params.append('vote_count.gte', 500);
@@ -186,7 +245,7 @@ const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
 
     resultArr.push({
       decade: currentDecade,
-      moviesByGenrePromises:
+      moviesByGenrePromise: Promise.allSettled(
         genres
           ?.filter((genre) => genre.name !== 'Documentary')
           .map((genre) => {
@@ -195,16 +254,8 @@ const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
             return axios
               .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
               .then((res) => res.data)
-              .then((data) => {
-                // Adds genre names to each movie
-                const movies = data.results.map((movie) => ({
-                  ...movie,
-                  genre_names: movie.genre_ids.map(
-                    (id) =>
-                      genres.find((item) => item.id === genre.id)?.name ?? ''
-                  ),
-                }));
-
+              .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results))
+              .then((movies) => {
                 // Adds genre name for the currernt genre
                 const result = {
                   genre_name:
@@ -215,7 +266,8 @@ const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
                 return result;
               })
               .catch(() => ({}));
-          }) ?? [],
+          }) ?? []
+      ).then((values) => values.map((res) => res.value ?? {})),
     });
 
     currentDecade += 10;
@@ -245,74 +297,46 @@ const fetchMovies = async () => {
     agent: new https.Agent({ keepAlive: true }),
   });
 
-  // console.log('fetching movies...');
-
   await fetchGenres(tmdbUrl, tmdbKey);
 
-  const p1 = Promise.all(fetchTrendingMoviesByGenre(tmdbUrl, tmdbKey))
-    .then((movies) => {
+  const p1 = Promise.all(fetchTrendingMoviesByGenre(tmdbUrl, tmdbKey)).then(
+    (movies) => {
       return redis.set(moviesType.TrendingMoviesByGenre, movies);
-    })
-    .catch(() => {
-      console.log('Error when fetching: Trending movies by genre');
-    })
-    .finally(() => {
-      // process.stdout.write('Trending movies by genre fetch finished.');
-    });
+    }
+  );
 
-  const p2 = fetchNowPlayingMovies(tmdbUrl, tmdbKey)
-    .then((movies) => {
-      return redis.set(moviesType.NowPlayingMovies, movies);
-    })
-    .catch(() => {
-      console.log('Error when fetching: Now Playing movies.');
-    })
-    .finally(() => {
-      // process.stdout.write('Now Playing movies fetch finished.');
-    });
+  const p2 = fetchNowPlayingMovies(tmdbUrl, tmdbKey).then((movies) => {
+    return redis.set(moviesType.NowPlayingMovies, movies);
+  });
 
-  const p3 = fetchTopPopularMovies(tmdbUrl, tmdbKey)
-    .then((movies) => {
-      return redis.set(moviesType.TopPopularMovies, movies);
-    })
-    .catch(() => {
-      console.log('Error when fetching: Top Popular movies.');
-    })
-    .finally(() => {
-      // process.stdout.write('Top Popular movies fetch finished.');
-    });
+  const p3 = fetchTopPopularMovies(tmdbUrl, tmdbKey).then((movies) => {
+    return redis.set(moviesType.TopPopularMovies, movies);
+  });
 
-  const p4 = fetchTopTrendingMovies(tmdbUrl, tmdbKey)
-    .then((movies) => {
-      return redis.set(moviesType.TopTrendingMovies, movies);
-    })
-    .catch(() => {
-      console.log('Error when fetching: Top Trending movies.');
-    })
-    .finally(() => {
-      // process.stdout.write('Top Trending movies fetch finished.');
-    });
+  const p4 = fetchTopTrendingMovies(tmdbUrl, tmdbKey).then((movies) => {
+    return redis.set(moviesType.TopTrendingMovies, movies);
+  });
 
   const p5 = Promise.all(
     fetchPopularMoviesByGenreAndDecade(tmdbUrl, tmdbKey).map(async (obj) => {
-      const moviesByGenre = await Promise.allSettled(
-        obj.moviesByGenrePromises
-      ).then((values) => values.map((res) => res.value ?? {}));
+      const moviesByGenre = await obj.moviesByGenrePromise;
       return redis.set(`movies_${obj.decade}`, moviesByGenre);
     })
-  )
-    .catch(() => {
-      console.log('Error when fetching: Popular movies by genre and decade');
-    })
-    .finally(() => {
-      // process.stdout.write(
-      //   'Popular movies by genre and decade fetch finished.'
-      // );
-    });
+  );
 
-  await Promise.allSettled([p1, p2, p3, p4, p5]);
+  const status = await Promise.allSettled([p1, p2, p3, p4, p5]).then(
+    (results) =>
+      results.map((result, index) =>
+        JSON.stringify({
+          [index]: {
+            status: result.status,
+            reason: result.reason,
+          },
+        })
+      )
+  );
 
-  return;
+  return status;
 };
 
 module.exports = fetchMovies;

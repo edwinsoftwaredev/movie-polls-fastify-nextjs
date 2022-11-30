@@ -4,13 +4,13 @@ const fetchMovies = require('./fetchMovies');
 async function run({ event }) {
   // Your logic goes here.
   return fetchMovies()
-    .then((_) => ({
+    .then((status) => ({
       status: 200,
-      body: `Received "${event.name}" event`,
+      body: `${status}`,
     }))
-    .catch((er) => ({
+    .catch((status) => ({
       status: 500,
-      body: `Received "${event.name}" event. Error: ${er}}`,
+      body: `${status}`,
     }));
 }
 
