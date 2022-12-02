@@ -7,7 +7,7 @@ export default async function TopMovies() {
   const { popularByGenre } = await trpc.query(
     'movies:popularByDecadeAndGenre',
     reqHeaders,
-    { decade: 2020 },
+    { decade: 2010 }
   );
 
   return (
@@ -17,7 +17,7 @@ export default async function TopMovies() {
           <article>
             <h2>{genre.genre_name}</h2>
           </article>
-          <Slider movies={genre.results} />
+          <Slider items={genre.results} slideSize={5} />
         </div>
       ))}
     </>

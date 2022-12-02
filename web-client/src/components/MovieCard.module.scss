@@ -1,38 +1,98 @@
 .movie-card {
-  [class~='overlay'] {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    position: absolute;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    grid-column: auto 1fr;
-    padding: 0.5rem;
-    z-index: 10;
+  // header is the "preview" of the movie card
+  header {
+    position: relative;
+    display: block;
 
-    [class~='title'] {
+    // in preview
+    aspect-ratio: 1.77 / 1;
+
+    img {
+      object-fit: cover;
+      max-inline-size: 100%;
+      block-size: auto;
+      aspect-ratio: 1.77 / 1;
+      display: block;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+    }
+
+    [class~='header-body'] {
+      position: relative;
+      display: grid;
+      grid-template-rows: 1fr auto auto;
+      grid-template-columns: 1fr auto;
       padding: 0.5rem;
-      background-color: rgba($color: #ffffff, $alpha: 0.2);
-      backdrop-filter: blur(4px);
-      width: fit-content;
-      border-radius: 2px;
+      z-index: 20;
+      row-gap: 0.5rem;
+      column-gap: 0.5rem;
+      z-index: 20;
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
 
-      p {
-        display: inline;
-        color: rgba($color: #000000, $alpha: 0.8);
+      h3 {
+        padding: 0.5rem;
+        background-color: rgba($color: #ffffff, $alpha: 0.2);
+        backdrop-filter: blur(4px);
+        border-radius: 2px;
+        color: rgba($color: #000000, $alpha: 0.85);
         font-weight: 500;
-        font-size: clamp(0.2rem, 1.4rem + 0.2vw, 1rem);
+        // font-size: clamp(0.2rem, 1.4rem + 0.2vw, 1rem);
+        margin-block-end: 0;
+        margin-block-start: 0;
+        width: fit-content;
+        grid-column: 1 / span 2;
+        grid-row: 2;
+      }
+
+      [class~='genres-label'] {
+        grid-column: 1;
+        grid-row: 3;
+        height: auto;
+        box-sizing: border-box;
+        padding: 0 0.25rem;
+        border: 1px solid rgba($color: #ffffff, $alpha: 0.85);
+        width: fit-content;
+
+        span {
+          display: inline;
+          color: rgba($color: #ffffff, $alpha: 0.85);
+        }
+      }
+
+      [class~='popularity'] {
+        grid-column: 2;
+        grid-row: 3;
+
+        span {
+          color: rgba($color: #ffffff, $alpha: 0.85);
+        }
+      }
+
+      [class~='header-desc'] {
+        opacity: 0;
+        font-size: 0;
+        transition-property: font-size, opacity;
+        transition-delay: 250ms, 0ms;
+        transition-duration: 150ms, 250ms;
+      }
+
+      &:hover {
+        [class~='header-desc'] {
+          opacity: 1;
+          font-size: inherit;
+          transition-property: font-size, opacity;
+          transition-delay: 0ms, 250ms;
+          transition-duration: 150ms, 250ms;
+        }
       }
     }
-  }
-
-  img {
-    object-fit: cover;
-    max-inline-size: 100%;
-    block-size: auto;
-    aspect-ratio: 1.85 / 1;
-    display: block;
-    border-radius: 2px;
   }
 }

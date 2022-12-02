@@ -1,17 +1,10 @@
 import style from './Card.module.scss';
-import { PropsWithChildren } from "react";
+import { PropsWithChildren } from 'react';
 
-interface CardProps extends PropsWithChildren {
-}
+interface CardProps extends PropsWithChildren {}
 
-const Card: React.FC<CardProps> = ({children}) => {
-  return (
-    <div 
-      className={style['card']}
-    >
-      {children}
-    </div>
-  ); 
-}
+const Card: React.FC<CardProps> = ({ children }) => {
+  return <article className={`${style['card']}`}>{children}</article>;
+};
 
 export default Card;

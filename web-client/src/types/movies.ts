@@ -1,4 +1,4 @@
-import { InferQueryOutput } from "trpc/client/utils";
+import { InferQueryOutput } from 'trpc/client/utils';
 
 export type Movies =
   InferQueryOutput<'movies:trendingByGenre'>['trendingByGenre'][0]['results'];

@@ -1,3 +1,41 @@
 .slider {
+  width: 100%;
+  position: relative;
   overflow: hidden;
+
+  [class~='slider-interface'] {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: auto 1fr auto;
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+
+    [class~='slider-ctrl'] {
+      position: relative;
+      z-index: 10;
+      background-color: rgba($color: #ffffff, $alpha: 0.2);
+      cursor: pointer;
+      backdrop-filter: blur(2px);
+      box-sizing: border-box;
+    }
+
+    [class~='backward-ctrl'] {
+      border-radius: 0 2px 2px 0;
+      grid-column: 1;
+    }
+
+    [class~='forward-ctrl'] {
+      border-radius: 2px 0 0 2px;
+      grid-column: 3;
+    }
+  }
+
+  [class~='slide-container'] {
+    position: relative;
+    width: 100%;
+  }
 }

@@ -1,7 +1,9 @@
 .card {
+  background-color: rgba($color: #ffffff, $alpha: 0.2);
   position: relative;
   border-radius: 2px;
   z-index: 1;
-  overflow: visible;
+  overflow: hidden;
   box-sizing: border-box;
+  padding: 0;
 }

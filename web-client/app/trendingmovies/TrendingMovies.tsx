@@ -4,7 +4,10 @@ import { trpc } from 'src/trpc/server';
 
 export default async function TrendingMovies() {
   const reqHeaders = headers();
-  const { trendingByGenre } = await trpc.query('movies:trendingByGenre', reqHeaders);
+  const { trendingByGenre } = await trpc.query(
+    'movies:trendingByGenre',
+    reqHeaders
+  );
 
   return (
     <>
@@ -13,7 +16,7 @@ export default async function TrendingMovies() {
           <article>
             <h2>{genre.genre_name}</h2>
           </article>
-          <Slider movies={genre.results} />
+          <Slider items={genre.results} slideSize={5} />
         </div>
       )) ?? null}
     </>

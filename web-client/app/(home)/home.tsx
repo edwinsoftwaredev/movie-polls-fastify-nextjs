@@ -9,7 +9,7 @@ async function PopularSlider() {
 
   return (
     <>
-      <Slider movies={popular} />
+      <Slider items={popular.slice(0, 10)} slideSize={5} />
     </>
   );
 }
@@ -20,7 +20,7 @@ async function TrendingSlider() {
 
   return (
     <>
-      <Slider movies={trending} />
+      <Slider items={trending} slideSize={5} />
     </>
   );
 }
@@ -31,7 +31,7 @@ async function NowPlayingSlider() {
 
   return (
     <>
-      <Slider movies={nowPlaying} />
+      <Slider items={nowPlaying} slideSize={5} />
     </>
   );
 }
@@ -70,7 +70,7 @@ export default async function Home() {
           <h2>Trending Movies</h2>
         </article>
 
-        {/** slider*/}
+        {/** slider */}
         <section>
           <Suspense fallback={<p>Loading...</p>}>
             {/* @ts-expect-error Server Component */}
