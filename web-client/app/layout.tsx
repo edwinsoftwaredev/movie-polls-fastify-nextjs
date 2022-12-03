@@ -1,4 +1,5 @@
 import 'styles/globals.scss';
+import AppProvider from './AppProvider';
 import Footer from './footer';
 import Head from './head';
 import Header from './header';
@@ -13,10 +14,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       {/* @ts-expect-error Server Component */}
       <Head />
       <body>
-        {/* @ts-expect-error Server Component */}
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <AppProvider>
+          {/* @ts-expect-error Server Component */}
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </AppProvider>
       </body>
     </html>
   );

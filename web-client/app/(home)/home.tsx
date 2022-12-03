@@ -9,7 +9,7 @@ async function PopularSlider() {
 
   return (
     <>
-      <Slider items={popular.slice(0, 10)} slideSize={5} />
+      <Slider items={popular} slideSize={3} />
     </>
   );
 }
@@ -20,7 +20,7 @@ async function TrendingSlider() {
 
   return (
     <>
-      <Slider items={trending} slideSize={5} />
+      <Slider items={trending} slideSize={4} />
     </>
   );
 }

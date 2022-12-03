@@ -8,8 +8,6 @@
   overflow: visible;
   box-sizing: border-box;
 
-  // transform: translateX($slider-ctrl-size);
-
   @media (min-width: 1024px) {
     [class~='slide-item'] {
       height: 100%;

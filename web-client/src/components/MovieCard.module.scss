@@ -5,13 +5,13 @@
     display: block;
 
     // in preview
-    aspect-ratio: 1.77 / 1;
+    aspect-ratio: calc(16 * (1 / 9)) / 1;
 
     img {
       object-fit: cover;
       max-inline-size: 100%;
       block-size: auto;
-      aspect-ratio: 1.77 / 1;
+      aspect-ratio: calc(16 * (1 / 9)) / 1;
       display: block;
       height: 100%;
       width: 100%;

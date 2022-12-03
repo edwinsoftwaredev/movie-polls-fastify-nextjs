@@ -8,6 +8,7 @@ interface SlideProps extends PropsWithChildren {
   itemSize: number;
   translateX?: number;
   slideItemsGap: number;
+  itemAspectRatio: number;
 }
 
 const Slide: React.FC<SlideProps> = ({
@@ -15,8 +16,8 @@ const Slide: React.FC<SlideProps> = ({
   itemSize,
   slideItemsGap,
   translateX,
+  itemAspectRatio
 }) => {
-  const itemWidth = `${itemSize}px`;
   const slideTranslateX = `translateX(${translateX || 0}px)`;
 
   const [posX, setPosX] = useState(0);
@@ -25,20 +26,21 @@ const Slide: React.FC<SlideProps> = ({
     <div
       className={`${style['slide']} slide`}
       style={{
-        gap: slideItemsGap,
         transform: slideTranslateX,
-        padding: `${0}px ${slideItemsGap}px`,
       }}
     >
-      {items.map((item) => (
+      {items.map((item, idx) => (
         <div
           key={item.id}
           className="slide-item"
           style={{
-            width: itemWidth,
-            // paddingRight: `${slideFlexGap}px`,
+            width: itemSize,
+            paddingLeft: idx === 0 || idx !== items.length - 1 ? `${slideItemsGap}px` : '0',
+            paddingRight: idx === 1 && idx === items.length - 1 ? `${slideItemsGap}px` : '0'
           }}
         >
+          {/* TODO: pass itemAspectRatio to Card component */}
+          {/* TODO: default cards in Slide to preview mode */}
           <MovieCard movie={item} />
         </div>
       ))}

@@ -1,3 +1,3 @@
-// export hooks here
+import useEventListener from './useEventListener';
 
-export {};
+export { useEventListener };
