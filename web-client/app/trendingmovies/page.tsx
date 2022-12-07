@@ -1,6 +1,5 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 import { trpc } from 'src/trpc/server';
 import TrendingMovies from './TrendingMovies';
 
@@ -22,10 +21,8 @@ export default async function Page() {
 
         {/** slider*/}
         <section>
-          <Suspense fallback={<p>Loading...</p>}>
-            {/* @ts-expect-error Server Component */}
-            <TrendingMovies />
-          </Suspense>
+          {/* @ts-expect-error Server Component */}
+          <TrendingMovies />
         </section>
       </section>
     </>

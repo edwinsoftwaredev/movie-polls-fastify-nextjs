@@ -1,37 +1,54 @@
 import { headers } from 'next/headers';
-import { Suspense } from 'react';
 import Slider from 'src/components/Slider';
 import { trpc } from 'src/trpc/server';
 
 async function PopularSlider() {
-  const reqHeaders = headers();
-  const { popular } = await trpc.query('movies:homeMovies', reqHeaders);
-
   return (
     <>
-      <Slider items={popular} slideSize={3} />
+      <Slider
+        fetchItems={async () => {
+          const reqHeaders = headers();
+          const { popular } = await trpc.query('movies:homeMovies', reqHeaders);
+          return popular;
+        }}
+        slideSize={3}
+      />
     </>
   );
 }
 
 async function TrendingSlider() {
-  const reqHeaders = headers();
-  const { trending } = await trpc.query('movies:homeMovies', reqHeaders);
-
   return (
     <>
-      <Slider items={trending} slideSize={4} />
+      <Slider
+        fetchItems={async () => {
+          const reqHeaders = headers();
+          const { trending } = await trpc.query(
+            'movies:homeMovies',
+            reqHeaders
+          );
+          return trending;
+        }}
+        slideSize={4}
+      />
     </>
   );
 }
 
 async function NowPlayingSlider() {
-  const reqHeaders = headers();
-  const { nowPlaying } = await trpc.query('movies:homeMovies', reqHeaders);
-
   return (
     <>
-      <Slider items={nowPlaying} slideSize={5} />
+      <Slider
+        fetchItems={async () => {
+          const reqHeaders = headers();
+          const { nowPlaying } = await trpc.query(
+            'movies:homeMovies',
+            reqHeaders
+          );
+          return nowPlaying;
+        }}
+        slideSize={5}
+      />
     </>
   );
 }
@@ -57,10 +74,8 @@ export default async function Home() {
 
         {/** slider */}
         <section>
-          <Suspense fallback={<p>Loading...</p>}>
-            {/* @ts-expect-error Server Component */}
-            <PopularSlider />
-          </Suspense>
+          {/* @ts-expect-error Server Component */}
+          <PopularSlider />
         </section>
       </section>
 
@@ -72,10 +87,8 @@ export default async function Home() {
 
         {/** slider */}
         <section>
-          <Suspense fallback={<p>Loading...</p>}>
-            {/* @ts-expect-error Server Component */}
-            <TrendingSlider />
-          </Suspense>
+          {/* @ts-expect-error Server Component */}
+          <TrendingSlider />
         </section>
       </section>
 
@@ -87,10 +100,8 @@ export default async function Home() {
 
         {/** slider */}
         <section>
-          <Suspense fallback={<p>Loading...</p>}>
-            {/* @ts-expect-error Server Component */}
-            <NowPlayingSlider />
-          </Suspense>
+          {/* @ts-expect-error Server Component */}
+          <NowPlayingSlider />
         </section>
       </section>
     </>

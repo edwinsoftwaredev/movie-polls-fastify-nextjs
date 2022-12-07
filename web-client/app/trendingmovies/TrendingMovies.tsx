@@ -16,7 +16,10 @@ export default async function TrendingMovies() {
           <article>
             <h2>{genre.genre_name}</h2>
           </article>
-          <Slider items={genre.results} slideSize={5} />
+          <Slider
+            fetchItems={async () => genre.results} 
+            slideSize={5} 
+          />
         </div>
       )) ?? null}
     </>

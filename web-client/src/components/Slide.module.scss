@@ -1,12 +1,26 @@
+.slide-container {
+  position: relative;
+  width: 100%;
+}
+
 .slide {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: space-evenly;
   align-items: center;
   width: fit-content;
   overflow: visible;
   box-sizing: border-box;
+  min-width: 100%;
+
+  transition-property: transform;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(1, 0, 0, 1);
+
+  [class~='slide-item'] {
+    box-sizing: content-box;
+    flex-shrink: 0;
+  }
 
   @media (min-width: 1024px) {
     [class~='slide-item'] {
