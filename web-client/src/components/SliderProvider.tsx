@@ -36,7 +36,7 @@ const SliderProvider: React.FC<SliderProviderProps> = ({ children }) => {
     >
       {children}
     </SliderContext.Provider>
-  )
+  );
 }
 
 export default SliderProvider;

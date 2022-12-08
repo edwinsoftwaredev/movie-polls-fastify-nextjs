@@ -21,7 +21,7 @@ const Slider: React.FC<SliderProps> = ({
   slideItemAspectRatio,
   slideItemsGap,
 }) => {
-  const { sliderCtrlSize, translateXSlide } = getInitialSliderProps(
+  const { sliderCtrlSize } = getInitialSliderProps(
     slideSize,
     slideItemsGap,
     slideItemAspectRatio
@@ -34,8 +34,6 @@ const Slider: React.FC<SliderProps> = ({
       <Slide
         items={items}
         slideSize={slideSize}
-        slideItemsGap={slideItemsGap || 7}
-        translateX={translateXSlide}
       />
     );
   };

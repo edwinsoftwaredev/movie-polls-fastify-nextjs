@@ -3,13 +3,25 @@
   width: 100%;
 }
 
+$slider-ctrl-size: calc((100% * (1 / 25)) * 2);
+@function get-slide-item-size($slide-size, $slide-item-padding) {
+  @return calc(
+    (100% - $slider-ctrl-size) * (1 / $slide-size) - $slide-item-padding *
+      (($slide-size + 1) / $slide-size)
+  );
+}
+
 .slide {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  align-items: center;
+  align-items: stretch;
   width: fit-content;
   overflow: visible;
+  overflow-x: scroll;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: calc($slider-ctrl-size * (1 / 2));
   box-sizing: border-box;
   min-width: 100%;
 
@@ -20,6 +32,24 @@
   [class~='slide-item'] {
     box-sizing: content-box;
     flex-shrink: 0;
+    aspect-ratio: 16 / 9;
+    padding-left: 7px;
+
+    &:first-of-type {
+      scroll-snap-stop: always;
+      scroll-snap-align: start;
+      padding-left: calc($slider-ctrl-size * (1 / 2) + 7px);
+    }
+
+    &:last-of-type {
+      scroll-snap-stop: always;
+      scroll-snap-align: start;
+      padding-right: calc($slider-ctrl-size * (1 / 2) + 7px);
+    }
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 
   @media (min-width: 1024px) {
@@ -32,6 +62,39 @@
     [class~='card'] {
       height: 100%;
       width: calc(100vw * (1 / 3) - 0.5rem - (0.5rem * (1 / 3)));
+    }
+  }
+}
+
+.slide-s-3 {
+  [class~='slide-item'] {
+    width: get-slide-item-size(3, 7px);
+
+    &:nth-of-type(3n + 4) {
+      scroll-snap-stop: always;
+      scroll-snap-align: start;
+    }
+  }
+}
+
+.slide-s-4 {
+  [class~='slide-item'] {
+    width: get-slide-item-size(4, 7px);
+
+    &:nth-of-type(4n + 5) {
+      scroll-snap-stop: always;
+      scroll-snap-align: start;
+    }
+  }
+}
+
+.slide-s-5 {
+  [class~='slide-item'] {
+    width: get-slide-item-size(5, 7px);
+
+    &:nth-of-type(5n + 6) {
+      scroll-snap-stop: always;
+      scroll-snap-align: start;
     }
   }
 }

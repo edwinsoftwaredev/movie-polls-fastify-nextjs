@@ -4,45 +4,18 @@ import style from './Slide.module.scss';
 
 interface SlideSkeletonProps {
   slideSize: 3 | 4 | 5;
-  slideItemsGap?: 7;
 }
 
-const SlideSkeleton: React.FC<SlideSkeletonProps> = ({
-  slideSize,
-  slideItemsGap,
-}) => {
-  const defaultItemSlideItemGap = slideItemsGap || 7;
-
-  const { translateXSlide, slideItemSize } = getInitialSliderProps(
-    slideSize,
-    defaultItemSlideItemGap
-  );
+const SlideSkeleton: React.FC<SlideSkeletonProps> = ({ slideSize }) => {
+  const { translateXSlide } = getInitialSliderProps(slideSize);
 
   const items = new Array(slideSize).fill(0);
 
   return (
     <div className={style['slide-container']}>
-      <div
-        className={`${style['slide']} slide`}
-        style={{
-          transform: `translateX(${translateXSlide || 0}%)`,
-        }}
-      >
+      <div className={`${style['slide']} ${style[`slide-s-${slideSize}`]}`}>
         {items.map((_item, idx) => (
-          <div
-            key={idx}
-            className="slide-item"
-            style={{
-              aspectRatio: '16 / 9',
-              width: slideItemSize,
-              paddingLeft: `${defaultItemSlideItemGap}px`,
-              ...(idx === items.length - 1
-                ? {
-                    marginRight: `${defaultItemSlideItemGap}px`,
-                  }
-                : {}),
-            }}
-          >
+          <div key={idx} className="slide-item">
             <Card />
           </div>
         ))}

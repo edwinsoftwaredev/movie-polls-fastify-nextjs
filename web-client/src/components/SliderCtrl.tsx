@@ -1,20 +1,19 @@
 'use client';
 
-import { PropsWithChildren, useContext } from "react";
-import { SliderContext, SliderCtrlEventType } from "./SliderProvider";
+import { PropsWithChildren, useContext } from 'react';
+import { SliderContext, SliderCtrlEventType } from './SliderProvider';
+import style from './Slider.module.scss';
 
 interface SliderCtrlProps extends PropsWithChildren {
   ctrlType: SliderCtrlEventType;
 }
 
-const SliderCtrl: React.FC<SliderCtrlProps> = ({
-  ctrlType,
-  children
-}) => {
+const SliderCtrl: React.FC<SliderCtrlProps> = ({ ctrlType, children }) => {
   const { onCtrlClick } = useContext(SliderContext);
 
   return (
     <button
+      className={`${style['ctrl']}`}
       onClick={() => {
         onCtrlClick(ctrlType);
       }}
@@ -22,6 +21,6 @@ const SliderCtrl: React.FC<SliderCtrlProps> = ({
       {children}
     </button>
   );
-}
+};
 
 export default SliderCtrl;
