@@ -16,7 +16,7 @@ const SlideSkeleton: React.FC<SlideSkeletonProps> = ({ slideSize }) => {
       <div className={`${style['slide']} ${style[`slide-s-${slideSize}`]}`}>
         {items.map((_item, idx) => (
           <div key={idx} className="slide-item">
-            <Card />
+            <Card header={{ content: <></> }} />
           </div>
         ))}
       </div>

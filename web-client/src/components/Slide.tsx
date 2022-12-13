@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { getInitialSliderProps } from 'src/utils/slider';
+import { PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import { Movies } from 'types';
 import MovieCard from './MovieCard';
 import style from './Slide.module.scss';

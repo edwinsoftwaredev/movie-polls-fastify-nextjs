@@ -1,6 +1,8 @@
 .movie-card {
-  display: inline;
-  // header is the "preview" of the movie card
+  display: block;
+  width: 100%;
+  height: 100%;
+
   header {
     position: relative;
 
@@ -91,4 +93,8 @@
       }
     }
   }
+}
+
+.details-view {
+  background-color: #202122;
 }
