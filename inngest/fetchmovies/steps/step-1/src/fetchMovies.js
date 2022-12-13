@@ -326,14 +326,16 @@ const fetchMovies = async () => {
 
   const status = await Promise.allSettled([p1, p2, p3, p4, p5]).then(
     (results) =>
-      results.map((result, index) =>
-        JSON.stringify({
-          [index]: {
-            status: result.status,
-            reason: result.reason,
-          },
-        })
-      )
+      results
+        .map((result, index) =>
+          JSON.stringify({
+            [index]: {
+              status: result.status,
+              reason: result.reason,
+            },
+          })
+        )
+        .join(', ')
   );
 
   return status;
