@@ -97,4 +97,10 @@
 
 .details-view {
   background-color: #202122;
+  // background-color: rgba($color: #ffffff, $alpha: 0.2);
+
+  header {
+    aspect-ratio: 16/9;
+    height: auto;
+  }
 }

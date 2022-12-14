@@ -35,6 +35,8 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
     <div
       ref={movieCardRef}
       onClick={() => {
+        if (!isPreview) return;
+
         setIsPreview(false);
 
         if (movieCardRef.current && cardRef.current) {
@@ -43,63 +45,95 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
           const posX = movieCardRef.current.getBoundingClientRect().x;
           const posY = movieCardRef.current.getBoundingClientRect().y;
 
-          cardRef.current.animate(
-            [
-              {
-                position: 'fixed',
-                width: `${cw}px`,
-                height: `${ch}px`,
-                top: `${posY}px`,
-                left: `${posX}px`,
-                zIndex: '30',
-              },
-              {
-                position: 'fixed',
-                width: `${cw}px`,
-                height: `${ch}px`,
-                top: `${posY}px`,
-                left: `${posX}px`,
-                zIndex: '30',
-              },
-            ],
-            {
-              direction: 'normal',
-              duration: 300,
-              fill: 'forwards',
-              composite: 'replace',
-            }
-          );
+          const cardFrame1: Keyframe = {
+            position: 'fixed',
+            width: `${cw}px`,
+            height: `${ch}px`,
+            top: `${posY}px`,
+            left: `${posX}px`,
+            zIndex: '30',
+          };
 
-          movieCardRef.current.animate(
-            [
-              {
-                position: 'fixed',
-                width: `${cw}px`,
-                height: `${ch}px`,
-                top: `${posY}px`,
-                left: `${posX}px`,
-                borderRadius: '2px',
-                zIndex: '30',
-              },
-              {
-                position: 'fixed',
-                top: '0px',
-                left: '0px',
-                right: '0px',
-                bottom: '0px',
-                width: '100vw',
-                height: '100vh',
-                borderRadius: '2px',
-                zIndex: '30',
-              },
-            ],
-            {
+          const cardFrame2: Keyframe = {
+            position: 'fixed',
+            width: `55%`,
+            height: 'auto',
+            top: `6rem`,
+            left: `calc(50% - 50% * 0.5)`,
+            zIndex: '30',
+          };
+
+          const movieCardFrame1: Keyframe = {
+            position: 'fixed',
+            width: `${cw}px`,
+            height: `${ch}px`,
+            top: `${posY}px`,
+            left: `${posX}px`,
+            borderRadius: '2px',
+            zIndex: '30',
+          };
+
+          const movieCardFrame2: Keyframe = {
+            position: 'fixed',
+            top: '0px',
+            left: '0px',
+            right: '0px',
+            bottom: '0px',
+            width: '100vw',
+            height: '100vh',
+            borderRadius: '50px',
+            zIndex: '30',
+          };
+
+          cardRef.current
+            .animate([cardFrame1, cardFrame1], {
               direction: 'normal',
               duration: 300,
               fill: 'forwards',
-              composite: 'replace',
-            }
-          );
+            })
+            .finished.then(() => {
+              return cardRef.current?.animate(
+                [
+                  {
+                    ...cardFrame1,
+                    height: 'auto',
+                  },
+                  cardFrame2,
+                ],
+                {
+                  delay: 100,
+                  direction: 'normal',
+                  duration: 1600,
+                  fill: 'forwards',
+                  easing: 'cubic-bezier(1, 0, 0, 1)',
+                }
+              );
+            });
+
+          movieCardRef.current
+            .animate([movieCardFrame1, movieCardFrame2], {
+              direction: 'normal',
+              duration: 1600,
+              fill: 'forwards',
+              easing: 'cubic-bezier(1, 0, 0, 1)',
+            })
+            .finished.then(() => {
+              return movieCardRef.current?.animate(
+                [
+                  movieCardFrame2,
+                  {
+                    ...movieCardFrame2,
+                    borderRadius: '0px',
+                  },
+                ],
+                {
+                  direction: 'normal',
+                  duration: 200,
+                  fill: 'forwards',
+                  easing: 'ease-out',
+                }
+              );
+            });
         }
       }}
       className={`${styles['movie-card']} ${
