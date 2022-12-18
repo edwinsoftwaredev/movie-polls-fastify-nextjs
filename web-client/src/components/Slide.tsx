@@ -31,19 +31,18 @@ const Slide: React.FC<SlideProps> = ({ items, slideSize }) => {
   }, []);
 
   return (
-    <div className={style['slide-container']}>
-      <div
-        ref={slideRef}
-        className={`${style['slide']} ${style[`slide-s-${slideSize}`]}`}
-      >
-        {items.map((item) => (
-          <div key={item.id} className="slide-item">
-            {/* TODO: pass itemAspectRatio to Card component */}
-            {/* TODO: default cards in Slide to preview mode */}
-            <MovieCard movie={item} />
-          </div>
-        ))}
-      </div>
+    <div
+      ref={slideRef}
+      // TODO: defined the slide size using css variables
+      className={`${style['slide']} ${style[`slide-s-${slideSize}`]}`}
+    >
+      {items.map((item) => (
+        <div key={item.id} className="slide-item">
+          {/* TODO: pass itemAspectRatio to Card component */}
+          {/* TODO: default cards in Slide to preview mode */}
+          <MovieCard movie={item} />
+        </div>
+      ))}
     </div>
   );
 };

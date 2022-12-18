@@ -7,6 +7,8 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  width: 100%;
+  position: relative;
 }
 
 a {
@@ -34,6 +36,7 @@ header {
 }
 
 main {
+  width: 100%;
   min-height: 100vh;
   padding: 4rem 0;
   flex: 1;
@@ -63,6 +66,7 @@ article {
 }
 
 footer {
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.65);
   padding: 1rem 2rem;
   backdrop-filter: contrast(0.5);
@@ -105,12 +109,22 @@ svg {
 }
 
 // TODO: Update light color scheme
-// @media (prefers-color-scheme: light) {
-//   html {
-//     color-scheme: light;
-//   }
-//   body {
-//     color: white;
-//     background: black;
-//   }
-// }
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: light;
+  }
+  body {
+    color: $dark-color;
+    background: black;
+    font-size: clamp(0.3rem, 0.55rem + 0.2vw, 2.5rem);
+    font-weight: normal;
+  }
+
+  a,
+  button,
+  svg {
+    &:hover {
+      color: $dark-hover-color;
+    }
+  }
+}

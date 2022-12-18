@@ -1,21 +1,15 @@
+$slider-ctrl-size: calc((100% * (1 / 25)));
+
 .slider {
   width: 100%;
-  position: relative;
-  overflow: hidden;
 
   [class~='slider-interface'] {
     display: grid;
     grid-template-rows: auto;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: $slider-ctrl-size 1fr $slider-ctrl-size;
     box-sizing: border-box;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
 
     [class~='slider-ctrl'] {
-      position: relative;
       z-index: 10;
       background-color: rgba($color: #ffffff, $alpha: 0.2);
       cursor: pointer;
@@ -42,4 +36,7 @@
   background-color: transparent;
   border: 0;
   cursor: pointer;
+}
+
+.slide-container {
 }

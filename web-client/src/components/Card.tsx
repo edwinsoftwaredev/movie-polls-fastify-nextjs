@@ -11,17 +11,20 @@ interface CardProps extends PropsWithChildren {
   aspectRatio?: number;
 }
 
-const Card = forwardRef<HTMLElement, CardProps>(({ header, children }, ref) => {
-  const { content, backdropImage } = header;
-  return (
-    <article ref={ref} className={`${style['card']}`}>
-      <header className="title">
-        {content}
-        {backdropImage}
-      </header>
-    </article>
-  );
-});
+const Card = forwardRef<HTMLElement, CardProps>(
+  ({ header, children }, ref) => {
+    const { content, backdropImage } = header;
+    return (
+      <article ref={ref} className={`${style['card']}`}>
+        <header className="title">
+          {content}
+          {backdropImage}
+        </header>
+        <section>{children}</section>
+      </article>
+    );
+  }
+);
 
 Card.displayName = 'Card';
 

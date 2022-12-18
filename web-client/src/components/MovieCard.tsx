@@ -12,6 +12,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
   const movieCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLElement>(null);
   const [isPreview, setIsPreview] = useState(true);
+  const [hasTransitionFinished, setHasTransitionFinished] = useState(false);
   const {
     title,
     genres,
@@ -33,6 +34,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
 
   return (
     <div
+      role={!isPreview ? 'dialog' : 'none'}
       ref={movieCardRef}
       onClick={() => {
         if (!isPreview) return;
@@ -44,6 +46,74 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
           const ch = movieCardRef.current.clientHeight;
           const posX = movieCardRef.current.getBoundingClientRect().x;
           const posY = movieCardRef.current.getBoundingClientRect().y;
+
+          const appMain = document.getElementById('app-main');
+          const appFooter = document.getElementById('app-footer');
+
+          const appMainPosY = appMain?.getBoundingClientRect().y;
+          const appFooterPosY = appFooter?.getBoundingClientRect().y;
+
+          const wScrollY = window.scrollY;
+
+          if (window.innerHeight < document.body.clientHeight) {
+            document.body.style.overflowY = 'scroll';
+          }
+
+          document.body?.animate(
+            [
+              {
+                position: 'absolute',
+                top: `-${wScrollY}px`,
+              },
+              {
+                position: 'absolute',
+                top: `-${wScrollY}px`,
+              },
+            ],
+            {
+              fill: 'forwards',
+              duration: 0,
+              direction: 'normal',
+            }
+          );
+
+          appMain?.animate(
+            [
+              {
+                position: 'fixed',
+                top: `${appMainPosY}px`,
+              },
+              {
+                position: 'fixed',
+                top: `${appMainPosY}px`,
+              },
+            ],
+            {
+              fill: 'forwards',
+              duration: 0,
+              direction: 'normal',
+            }
+          );
+
+          appFooter?.animate(
+            [
+              {
+                position: 'fixed',
+                top: `${appFooterPosY || 0}px`,
+                zIndex: '0',
+              },
+              {
+                position: 'fixed',
+                top: `${appFooterPosY || 0}px`,
+                zIndex: '0',
+              },
+            ],
+            {
+              fill: 'forwards',
+              duration: 0,
+              direction: 'normal',
+            }
+          );
 
           const cardFrame1: Keyframe = {
             position: 'fixed',
@@ -59,7 +129,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
             width: `55%`,
             height: 'auto',
             top: `6rem`,
-            left: `calc(50% - 50% * 0.5)`,
+            left: `calc(50% - (50% * 0.5))`,
             zIndex: '30',
           };
 
@@ -78,9 +148,8 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
             top: '0px',
             left: '0px',
             right: '0px',
+            minHeight: '100%',
             bottom: '0px',
-            width: '100vw',
-            height: '100vh',
             borderRadius: '50px',
             zIndex: '30',
           };
@@ -92,22 +161,43 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
               fill: 'forwards',
             })
             .finished.then(() => {
-              return cardRef.current?.animate(
-                [
+              cardRef.current
+                ?.animate(
+                  [
+                    {
+                      ...cardFrame1,
+                      height: 'auto',
+                    },
+                    cardFrame2,
+                  ],
                   {
-                    ...cardFrame1,
-                    height: 'auto',
-                  },
-                  cardFrame2,
-                ],
-                {
-                  delay: 100,
-                  direction: 'normal',
-                  duration: 1600,
-                  fill: 'forwards',
-                  easing: 'cubic-bezier(1, 0, 0, 1)',
-                }
-              );
+                    delay: 100,
+                    direction: 'normal',
+                    duration: 1600,
+                    fill: 'forwards',
+                    easing: 'cubic-bezier(1, 0, 0, 1)',
+                  }
+                )
+                .finished.then(() => {
+                  cardRef.current
+                    ?.animate(
+                      [
+                        cardFrame2,
+                        {
+                          ...cardFrame2,
+                          position: 'relative',
+                        },
+                      ],
+                      {
+                        direction: 'normal',
+                        duration: 0,
+                        fill: 'forwards',
+                      }
+                    )
+                    .finished.then(() => {
+                      setHasTransitionFinished(true);
+                    });
+                });
             });
 
           movieCardRef.current
@@ -117,23 +207,42 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
               fill: 'forwards',
               easing: 'cubic-bezier(1, 0, 0, 1)',
             })
-            .finished.then(() => {
-              return movieCardRef.current?.animate(
-                [
-                  movieCardFrame2,
+            .finished.then(() =>
+              movieCardRef.current
+                ?.animate(
+                  [
+                    movieCardFrame2,
+                    {
+                      ...movieCardFrame2,
+                      borderRadius: '0px',
+                    },
+                  ],
                   {
-                    ...movieCardFrame2,
-                    borderRadius: '0px',
-                  },
-                ],
-                {
-                  direction: 'normal',
-                  duration: 200,
-                  fill: 'forwards',
-                  easing: 'ease-out',
-                }
-              );
-            });
+                    direction: 'normal',
+                    duration: 200,
+                    fill: 'forwards',
+                    easing: 'ease-out',
+                  }
+                )
+                .finished.then(() => {
+                  movieCardRef.current?.animate(
+                    [
+                      movieCardFrame2,
+                      {
+                        ...movieCardFrame2,
+                        position: 'absolute',
+                        top: `${wScrollY}px`,
+                        height: 'fit-content',
+                      },
+                    ],
+                    {
+                      direction: 'normal',
+                      duration: 0,
+                      fill: 'forwards',
+                    }
+                  );
+                })
+            );
         }
       }}
       className={`${styles['movie-card']} ${
@@ -160,7 +269,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
           backdropImage: (
             <Image
               loader={({ src, width }) => {
-                if (width > 2240 && !isPreview)
+                if (width > 1500 && hasTransitionFinished)
                   return `https://image.tmdb.org/t/p/original${src}`;
                 if (width > 780)
                   return `https://image.tmdb.org/t/p/w1280${src}`;
@@ -172,13 +281,25 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
               placeholder={'empty'}
               loading={'lazy'}
               fill={true}
-              sizes="300px, 780px, 1280px"
+              sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1500px) ${
+                !hasTransitionFinished ? '1280px' : '100vw'
+              }, 100vw`}
               quality={100}
               alt={title}
             />
           ),
         }}
-      />
+      >
+        {hasTransitionFinished && (
+          <p
+            style={{
+              fontSize: `clamp(0.3rem, 0.55rem + 5vw, 2.5rem)`,
+            }}
+          >
+            {movie.overview}
+          </p>
+        )}
+      </Card>
     </div>
   );
 };

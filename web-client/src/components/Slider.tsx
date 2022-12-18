@@ -21,66 +21,51 @@ const Slider: React.FC<SliderProps> = ({
   slideItemAspectRatio,
   slideItemsGap,
 }) => {
-  const { sliderCtrlSize } = getInitialSliderProps(
-    slideSize,
-    slideItemsGap,
-    slideItemAspectRatio
-  );
-
   const RenderSlide = async () => {
     const items = await fetchItems();
 
-    return (
-      <Slide
-        items={items}
-        slideSize={slideSize}
-      />
-    );
+    return <Slide items={items} slideSize={slideSize} />;
   };
 
   return (
     <SliderProvider>
       <div className={`${styles['slider']}`}>
-        <div
-          className="slider-interface"
-          style={{
-            gridTemplateColumns: `${sliderCtrlSize}% 1fr ${sliderCtrlSize}%`,
-          }}
-        >
+        <div className="slider-interface">
           <div
             className="backward-ctrl slider-ctrl"
             style={{
               width: `100%`,
             }}
           >
-            <SliderCtrl 
+            <SliderCtrl
               ctrlType={{
-                type: 'backward'
+                type: 'backward',
               }}
             >
               <span>{'-'}</span>
             </SliderCtrl>
           </div>
-          <div />
+          <div className={styles['slide-container']}>
+            <Suspense fallback={<SlideSkeleton slideSize={slideSize} />}>
+              {/* @ts-expect-error Server Component */}
+              <RenderSlide />
+            </Suspense>
+          </div>
           <div
             className="forward-ctrl slider-ctrl"
             style={{
               width: `100%`,
             }}
           >
-            <SliderCtrl 
+            <SliderCtrl
               ctrlType={{
-                type: 'forward'
+                type: 'forward',
               }}
             >
               <span>{'+'}</span>
             </SliderCtrl>
           </div>
         </div>
-        <Suspense fallback={<SlideSkeleton slideSize={slideSize} />}>
-          {/* @ts-expect-error Server Component */}
-          <RenderSlide />
-        </Suspense>
       </div>
     </SliderProvider>
   );

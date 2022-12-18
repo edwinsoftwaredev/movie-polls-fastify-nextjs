@@ -1,12 +1,8 @@
-.slide-container {
-  position: relative;
-  width: 100%;
-}
-
-$slider-ctrl-size: calc((100% * (1 / 25)) * 2);
+$slider-ctrl-size: calc((100% * (1 / 25)));
+$slide-padding: calc((100% * (1 / 23)));
 @function get-slide-item-size($slide-size, $slide-item-padding) {
   @return calc(
-    (100% - $slider-ctrl-size) * (1 / $slide-size) - $slide-item-padding *
+    100% * (1 / $slide-size) - $slide-item-padding *
       (($slide-size + 1) / $slide-size)
   );
 }
@@ -17,19 +13,18 @@ $slider-ctrl-size: calc((100% * (1 / 25)) * 2);
   flex-wrap: nowrap;
   align-items: stretch;
   width: fit-content;
+  padding: 0 $slide-padding;
   overflow: visible;
   overflow-x: scroll;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
-  scroll-padding-left: calc($slider-ctrl-size * (1 / 2));
-  box-sizing: border-box;
+  scroll-padding-left: $slider-ctrl-size;
+  box-sizing: content-box;
   min-width: 100%;
-
-  transition-property: transform;
-  transition-duration: 250ms;
-  transition-timing-function: cubic-bezier(1, 0, 0, 1);
+  margin-left: -$slide-padding;
 
   [class~='slide-item'] {
+    display: inline;
     box-sizing: content-box;
     flex-shrink: 0;
     aspect-ratio: 16 / 9;
@@ -38,13 +33,13 @@ $slider-ctrl-size: calc((100% * (1 / 25)) * 2);
     &:first-of-type {
       scroll-snap-stop: always;
       scroll-snap-align: start;
-      padding-left: calc($slider-ctrl-size * (1 / 2) + 7px);
+      padding-left: 7px;
     }
 
     &:last-of-type {
       scroll-snap-stop: always;
       scroll-snap-align: start;
-      padding-right: calc($slider-ctrl-size * (1 / 2) + 7px);
+      padding-right: 7px;
     }
   }
 
@@ -61,7 +56,6 @@ $slider-ctrl-size: calc((100% * (1 / 25)) * 2);
   @media (max-width: 1023px) {
     [class~='card'] {
       height: 100%;
-      width: calc(100vw * (1 / 3) - 0.5rem - (0.5rem * (1 / 3)));
     }
   }
 }

@@ -10,7 +10,7 @@ const voltaire = Voltaire({
 
 export default function Footer() {
   return (
-    <footer className={style['footer']}>
+    <footer id="app-footer" className={style['footer']}>
       <section>
         <article>
           <div className={style['main-footer']}>

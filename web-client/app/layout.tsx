@@ -8,7 +8,7 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default async function RootLayout({ children }: RootLayoutProps) { 
+export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       {/* @ts-expect-error Server Component */}
@@ -17,10 +17,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <AppProvider>
           {/* @ts-expect-error Server Component */}
           <Header />
-          <main>{children}</main>
+          <main id="app-main">{children}</main>
           <Footer />
         </AppProvider>
       </body>
     </html>
   );
-}; 
+}
