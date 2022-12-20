@@ -2,7 +2,7 @@
 
 import { PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import { Movies } from 'types';
-import MovieCard from './MovieCard';
+import MovieCard from './movie-card/MovieCard';
 import style from './Slide.module.scss';
 import { SliderContext } from './SliderProvider';
 

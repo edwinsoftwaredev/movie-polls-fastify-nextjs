@@ -1,5 +1,4 @@
 import { PropsWithChildren, Suspense } from 'react';
-import { getInitialSliderProps } from 'src/utils/slider';
 import { Movies } from 'types';
 import styles from './Slider.module.scss';
 import SlideSkeleton from './SlideSkeleton';
