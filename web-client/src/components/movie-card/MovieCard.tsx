@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { Movie } from 'types';
 import Card from '../Card';
 import styles from './MovieCard.module.scss';
-import MovieCardPortal from './MovieCardDialog';
+import MovieCardDialog from './MovieCardDialog';
 
 interface MovieCard extends PropsWithChildren {
   movie: Movie;
@@ -80,7 +79,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
         }}
       />
       {!isPreview && movieCardRef.current ? (
-        <MovieCardPortal
+        <MovieCardDialog
           movie={movie}
           posY={movieCardRef.current.getBoundingClientRect().y}
           posX={movieCardRef.current.getBoundingClientRect().x}

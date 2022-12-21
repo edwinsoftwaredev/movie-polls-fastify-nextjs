@@ -6,6 +6,11 @@ import Image from 'next/image';
 import { Movie } from 'types';
 import Card from '../Card';
 import styles from './MovieCard.module.scss';
+import {
+  animateCard,
+  animateDialogBackground,
+  animateMovieCard,
+} from './movieCardDialogAnimateConfigs';
 
 enum TRANSITION_STATUS {
   INITIALIZED,
@@ -42,9 +47,6 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
 
   const movieCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLElement>(null);
-  const appMain = document.getElementById('app-main');
-  const appFooter = document.getElementById('app-footer');
-  const appMainPosY = appMain?.getBoundingClientRect().y;
 
   const [genresLabel, setGenresLabel] = useState(
     genres.map((genres) => genres.name).join(', ')
@@ -56,173 +58,38 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
 
   const hasTransitionEnded = transitionStatus === TRANSITION_STATUS.FINISHED;
 
+  const handleCardAnimate = async (isReverse: boolean) => {
+    if (!cardRef.current) return;
+    await animateCard(
+      cardRef.current,
+      posX,
+      posY,
+      initWidth,
+      initHeight,
+      isReverse
+    );
+  };
+
+  const handleMovieCardAnimate = async (isReverse: boolean) => {
+    if (!movieCardRef.current) return;
+    await animateMovieCard(
+      movieCardRef.current,
+      posX,
+      posY,
+      initWidth,
+      initHeight,
+      isReverse
+    );
+  };
+
   useEffect(() => {
-    if (window.innerHeight < document.body.clientHeight) {
-      document.body.style.overflowY = 'scroll';
-    }
-
-    appMain?.animate(
-      [
-        {
-          position: 'static',
-        },
-        {
-          position: 'fixed',
-          top: `${appMainPosY}px`,
-        },
-      ],
-      {
-        fill: 'forwards',
-        duration: 0,
-        direction: 'normal',
-      }
-    );
-
-    appFooter?.animate(
-      [
-        {
-          visibility: 'visible',
-        },
-        {
-          visibility: 'hidden',
-        },
-      ],
-      {
-        fill: 'forwards',
-        duration: 0,
-        direction: 'normal',
-      }
-    );
-
-    const cardFrame1: Keyframe = {
-      position: 'fixed',
-      width: `${initWidth}px`,
-      height: `${initHeight}px`,
-      top: `${posY}px`,
-      left: `${posX}px`,
-      zIndex: '30',
-    };
-
-    const cardFrame2: Keyframe = {
-      position: 'fixed',
-      width: `55%`,
-      height: 'auto',
-      top: `6rem`,
-      left: `calc(50% - (50% * 0.5))`,
-      zIndex: '30',
-    };
-
-    const movieCardFrame1: Keyframe = {
-      position: 'fixed',
-      width: `${initWidth}px`,
-      height: `${initHeight}px`,
-      top: `${posY}px`,
-      left: `${posX}px`,
-      borderRadius: '2px',
-      zIndex: '30',
-    };
-
-    const movieCardFrame2: Keyframe = {
-      position: 'fixed',
-      top: '0px',
-      left: '0px',
-      right: '0px',
-      bottom: '0px',
-      width: '100%',
-      height: '100%',
-      minHeight: '100vh',
-      maxHeight: 'fit-content',
-      borderRadius: '50px',
-      zIndex: '30',
-    };
-
-    const animateCard = async () => {
-      await cardRef.current?.animate([cardFrame1, cardFrame1], {
-        direction: 'normal',
-        duration: 300,
-        fill: 'forwards',
-      }).finished;
-
-      await cardRef.current?.animate(
-        [
-          {
-            ...cardFrame1,
-            height: 'auto',
-          },
-          cardFrame2,
-        ],
-        {
-          delay: 100,
-          direction: 'normal',
-          duration: 1600,
-          fill: 'forwards',
-          easing: 'cubic-bezier(1, 0, 0, 1)',
-        }
-      ).finished;
-
-      await cardRef.current?.animate(
-        [
-          cardFrame2,
-          {
-            ...cardFrame2,
-            position: 'relative',
-          },
-        ],
-        {
-          direction: 'normal',
-          duration: 0,
-          fill: 'forwards',
-        }
-      ).finished;
-
-      setTransitionStatus(TRANSITION_STATUS.FINISHED);
-    };
-
-    const animateMovieCard = async () => {
-      await movieCardRef.current?.animate([movieCardFrame1, movieCardFrame2], {
-        direction: 'normal',
-        duration: 1600,
-        fill: 'forwards',
-        easing: 'cubic-bezier(1, 0, 0, 1)',
-      }).finished;
-
-      await movieCardRef.current?.animate(
-        [
-          movieCardFrame2,
-          {
-            ...movieCardFrame2,
-            borderRadius: '0px',
-          },
-        ],
-        {
-          direction: 'normal',
-          duration: 200,
-          fill: 'forwards',
-          easing: 'ease-out',
-        }
-      ).finished;
-
-      await movieCardRef.current?.animate(
-        [
-          movieCardFrame2,
-          {
-            ...movieCardFrame2,
-            borderRadius: '0px',
-            position: 'absolute',
-            top: `0px`,
-            height: '100%',
-          },
-        ],
-        {
-          direction: 'normal',
-          duration: 0,
-          fill: 'forwards',
-        }
-      ).finished;
-    };
-
-    animateCard();
-    animateMovieCard();
+    animateDialogBackground(false)
+      .then(() => {
+        Promise.all([handleMovieCardAnimate(false), handleCardAnimate(false)]);
+      })
+      .then(() => {
+        setTransitionStatus(TRANSITION_STATUS.FINISHED);
+      });
   }, []);
 
   // TODO: Create hook
@@ -230,13 +97,21 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
     setGenresLabel(genres.map((genres) => genres.name).join(', '));
   }, [genres]);
 
+  const handleDialogClose = async () => {
+    await Promise.all([handleMovieCardAnimate(true), handleCardAnimate(true)])
+      .then(() => animateDialogBackground(true))
+      .then(() => {
+        onDialogClose();
+      });
+  };
+
   return createPortal(
     <div
       role={'dialog'}
       ref={movieCardRef}
       className={`${styles['movie-card']} ${styles['details-view']}`}
       onClick={() => {
-        onDialogClose();
+        handleDialogClose();
       }}
     >
       <Card
