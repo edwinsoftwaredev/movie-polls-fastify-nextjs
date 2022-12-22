@@ -79,32 +79,39 @@ const fetchMovieDetails = async (tmdbUrl, tmdbKey, movieId) => {
 };
 
 const fetchMoviesDetails = async (tmdbUrl, tmdbKey, movies) =>
-  Promise.all(
-    movies.map(async (movie) => {
-      const {
-        adult,
-        overview,
-        release_date,
-        id,
-        original_title,
-        original_language,
-        title,
-        vote_average,
-      } = movie;
-      const details = await fetchMovieDetails(tmdbUrl, tmdbKey, movie.id);
-      return {
-        adult,
-        overview,
-        release_date,
-        id,
-        original_title,
-        original_language,
-        title,
-        vote_average,
-        ...details,
-      };
-    })
-  );
+  movies.reduce(async (prevPromise, movie) => {
+    const prev = await prevPromise;
+
+    const {
+      adult,
+      overview,
+      release_date,
+      id,
+      original_title,
+      original_language,
+      title,
+      vote_average,
+    } = movie;
+
+    const details = await fetchMovieDetails(tmdbUrl, tmdbKey, movie.id);
+
+    if (!details.images.backdrops.length || !details.images.posters.length)
+      return prev;
+
+    prev.push({
+      adult,
+      overview,
+      release_date,
+      id,
+      original_title,
+      original_language,
+      title,
+      vote_average,
+      ...details,
+    });
+
+    return prev;
+  }, Promise.resolve([]));
 
 const fetchTopPopularMovies = async (tmdbUrl, tmdbKey) => {
   const now = new Date(Date.now());
