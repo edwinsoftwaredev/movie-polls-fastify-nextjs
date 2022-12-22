@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { Movie } from 'types';
@@ -12,6 +14,14 @@ interface MovieCard extends PropsWithChildren {
 const MovieCard: React.FC<MovieCard> = ({ movie }) => {
   const movieCardRef = useRef<HTMLDivElement>(null);
   const [isPreview, setIsPreview] = useState(true);
+  const [movieCardRect, setMovieCardRect] = useState<{
+    x: number;
+    y: number;
+    height: number;
+    width: number;
+  }>();
+
+  const resizeObserverRef = useRef<ResizeObserver>();
 
   const {
     title,
@@ -29,13 +39,45 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
   );
 
   useEffect(() => {
+    resizeObserverRef.current = new window.ResizeObserver(() => {
+      movieCardRef.current &&
+        setMovieCardRect({
+          x: movieCardRef.current.getBoundingClientRect().x,
+          y: movieCardRef.current.getBoundingClientRect().y,
+          height: movieCardRef.current.clientHeight,
+          width: movieCardRef.current.clientWidth,
+        });
+    });
+  }, []);
+
+  useEffect(() => {
     setGenresLabel(genres.map((genres) => genres.name).join(', '));
   }, [genres]);
+
+  useEffect(() => {
+    !isPreview &&
+      movieCardRef.current &&
+      resizeObserverRef.current?.observe(movieCardRef.current);
+
+    if (isPreview) resizeObserverRef.current?.disconnect();
+
+    return () => {
+      resizeObserverRef.current?.disconnect();
+    };
+  }, [isPreview]);
 
   return (
     <div
       ref={movieCardRef}
       onClick={() => {
+        // TODO: Fix
+        movieCardRef.current &&
+          setMovieCardRect({
+            x: movieCardRef.current.getBoundingClientRect().x,
+            y: movieCardRef.current.getBoundingClientRect().y,
+            height: movieCardRef.current.clientHeight,
+            width: movieCardRef.current.clientWidth,
+          });
         setIsPreview(false);
       }}
       className={`${styles['movie-card']}`}
@@ -78,13 +120,13 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
           ),
         }}
       />
-      {!isPreview && movieCardRef.current ? (
+      {!isPreview && movieCardRect ? (
         <MovieCardDialog
           movie={movie}
-          posY={movieCardRef.current.getBoundingClientRect().y}
-          posX={movieCardRef.current.getBoundingClientRect().x}
-          initHeight={movieCardRef.current.clientHeight}
-          initWidth={movieCardRef.current.clientWidth}
+          posY={movieCardRect.y}
+          posX={movieCardRect.x}
+          initHeight={movieCardRect.height}
+          initWidth={movieCardRect.width}
           onDialogClose={() => {
             setIsPreview(true);
           }}

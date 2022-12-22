@@ -1,10 +1,14 @@
+let currentScrollbarPosY: number | undefined = undefined;
+
 // TODO: Refactor into Dialog component
 export const animateDialogBackground = async (isReverse: boolean) => {
   const appMain = document.getElementById('app-main');
   const appFooter = document.getElementById('app-footer');
   const appMainPosY = appMain?.getBoundingClientRect().y;
 
-  if (window.innerHeight < document.body.clientHeight) {
+  if (!isReverse && window.innerHeight < document.body.clientHeight) {
+    typeof currentScrollbarPosY === 'undefined' &&
+      (currentScrollbarPosY = window.scrollY);
     document.body.style.overflowY = 'scroll';
   }
 
@@ -54,7 +58,14 @@ export const animateDialogBackground = async (isReverse: boolean) => {
       appFooterAnimateConfigs[0][0],
       appFooterAnimateConfigs[0][1]
     ).finished,
-  ]);
+  ]).then(() => {
+    if (isReverse) {
+      window.scroll({
+        top: currentScrollbarPosY || 0,
+      });
+      currentScrollbarPosY = undefined;
+    }
+  });
 };
 
 export const animateCard = async (
