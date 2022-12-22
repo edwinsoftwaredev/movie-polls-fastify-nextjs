@@ -43,6 +43,10 @@ const mappedRouters: Array<MappedRouterRoutesType> = [
   {
     prefix: 'movies:',
     url: `${apiURL}/trpc/moviesRoutes`
+  },
+  {
+    prefix: 'publicMovies:',
+    url: `${apiURL}/trpc/publicMoviesRoutes`
   }
 ];
 

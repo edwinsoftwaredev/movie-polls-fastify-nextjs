@@ -8,7 +8,7 @@ async function PopularSlider() {
       <Slider
         fetchItems={async () => {
           const reqHeaders = headers();
-          const { popular } = await trpc.query('movies:homeMovies', reqHeaders);
+          const { popular } = await trpc.query('publicMovies:homeMovies', reqHeaders);
           return popular;
         }}
         slideSize={3}
@@ -24,7 +24,7 @@ async function TrendingSlider() {
         fetchItems={async () => {
           const reqHeaders = headers();
           const { trending } = await trpc.query(
-            'movies:homeMovies',
+            'publicMovies:homeMovies',
             reqHeaders
           );
           return trending;
@@ -42,7 +42,7 @@ async function NowPlayingSlider() {
         fetchItems={async () => {
           const reqHeaders = headers();
           const { nowPlaying } = await trpc.query(
-            'movies:homeMovies',
+            'publicMovies:homeMovies',
             reqHeaders
           );
           return nowPlaying;

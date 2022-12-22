@@ -1,8 +1,7 @@
 import createRouter from '../createRouter';
 import { z } from 'zod';
 
-// TODO: remove routes that are already in the publicMovies router
-const movies = createRouter()
+const publicMovies = createRouter()
   .query('homeMovies', {
     resolve: async ({ ctx }) => {
       const { fastify } = ctx;
@@ -49,5 +48,5 @@ const movies = createRouter()
     },
   });
 
-const moviesRouter = createRouter().merge('movies:', movies);
-export default moviesRouter;
+const publicMoviesRouter = createRouter().merge('publicMovies:', publicMovies);
+export default publicMoviesRouter;

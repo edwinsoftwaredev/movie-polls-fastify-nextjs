@@ -32,6 +32,7 @@ export const getBaseTRPCClientConfig = (
       Host: new URL(`${apiURL}`).host,
       Origin: process.env.HOST_URL,
       'x-ssr': '1',
+      'x-api-key-movies': process.env.MOVIES_API_KEY,
     };
   },
 });

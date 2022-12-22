@@ -5,7 +5,7 @@ import { trpc } from 'src/trpc/server';
 export default async function TopMovies() {
   const reqHeaders = headers();
   const { popularByGenre } = await trpc.query(
-    'movies:popularByDecadeAndGenre',
+    'publicMovies:popularByDecadeAndGenre',
     reqHeaders,
     { decade: 2020 }
   );
