@@ -8,9 +8,9 @@ export default async function Page() {
   const session = await trpc.query('session:getSession', reqHeaders);
   const { isAuthenticated } = session;
 
-  if (!isAuthenticated) {
-    redirect('/');
-  }
+  // if (!isAuthenticated) {
+  //   redirect('/');
+  // }
 
   return (
     <>

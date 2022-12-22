@@ -12,14 +12,23 @@ const voltaire = Voltaire({
 const AnonymousUserNavOptions: React.FC = () => (
   <ul>
     <li>
-      <Link href="/about">About</Link>
+      <Link href="/">Home</Link>
     </li>
     <li>
-      <Link href="/contact">Contact</Link>
+      <Link href="/topmovies">Top Movies</Link>
+    </li>
+    <li>
+      <Link href="/trendingmovies">Trending Movies</Link>
     </li>
     <hr />
     <li>
       <Link href="/signin">Sign In</Link>
+    </li>
+    <li>
+      <Link href="/about">About</Link>
+    </li>
+    <li>
+      <Link href="/contact">Contact</Link>
     </li>
   </ul>
 );
@@ -45,9 +54,7 @@ const NavOptions: React.FC = () => (
     <li>
       <Link href="/mypolls">My Polls</Link>
     </li>
-
     <hr />
-
     <li>
       <Link href="/account">Account</Link>
     </li>

@@ -9,9 +9,9 @@ export default async function Page() {
 
   const { isAuthenticated } = session;
 
-  if (!isAuthenticated) {
-    redirect('/');
-  }
+  // if (!isAuthenticated) {
+  //   redirect('/');
+  // }
 
   return (
     <>
