@@ -20,6 +20,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
     height: number;
     width: number;
   }>();
+  const [isImgLoaded, setIsImgLoaded] = useState(false);
 
   const resizeObserverRef = useRef<ResizeObserver>();
 
@@ -100,8 +101,12 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
           ),
           backdropImage: (
             <Image
+              onLoad={() => {
+                setIsImgLoaded(true);
+              }}
+              style={{opacity: isImgLoaded ? 1 : 0}}
               loader={({ src, width }) => {
-                if (width > 1800)
+                if (width > 1920)
                   return `https://image.tmdb.org/t/p/original${src}`;
                 if (width > 780)
                   return `https://image.tmdb.org/t/p/w1280${src}`;
@@ -113,7 +118,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
               placeholder={'empty'}
               loading={'lazy'}
               fill={true}
-              sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1800px) 100vw, 100vw`}
+              sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1920px) 100vw, 100vw`}
               quality={100}
               alt={title}
             />

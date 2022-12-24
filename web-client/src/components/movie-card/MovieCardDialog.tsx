@@ -13,8 +13,10 @@ import {
 } from './movieCardDialogAnimateConfigs';
 
 enum TRANSITION_STATUS {
-  INITIALIZED,
-  FINISHED,
+  OPEN_STARTED,
+  OPEN_FINISHED,
+  CLOSE_STARTED,
+  CLOSE_FINISHED,
 }
 
 interface MovieCardDialogProps extends PropsWithChildren {
@@ -52,11 +54,9 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
     genres.map((genres) => genres.name).join(', ')
   );
 
-  const [transitionStatus, setTransitionStatus] = useState<TRANSITION_STATUS>(
-    TRANSITION_STATUS.INITIALIZED
+  const [transitionStatus, setTranstionStatus] = useState(
+    TRANSITION_STATUS.OPEN_STARTED
   );
-
-  const hasTransitionEnded = transitionStatus === TRANSITION_STATUS.FINISHED;
 
   const handleCardAnimate = async (isReverse: boolean) => {
     if (!cardRef.current) return;
@@ -82,28 +82,33 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
     );
   };
 
-  useEffect(() => {
-    animateDialogBackground(false)
-      .then(() => {
-        Promise.all([handleMovieCardAnimate(false), handleCardAnimate(false)]);
-      })
-      .then(() => {
-        setTransitionStatus(TRANSITION_STATUS.FINISHED);
-      });
-  }, []);
-
   // TODO: Create hook
   useEffect(() => {
     setGenresLabel(genres.map((genres) => genres.name).join(', '));
   }, [genres]);
 
-  const handleDialogClose = async () => {
-    await Promise.all([handleMovieCardAnimate(true), handleCardAnimate(true)])
-      .then(() => animateDialogBackground(true))
-      .then(() => {
-        onDialogClose();
-      });
-  };
+  useEffect(() => {
+    if (transitionStatus === TRANSITION_STATUS.OPEN_STARTED) {
+      animateDialogBackground(false)
+        .then(() =>
+          Promise.all([handleMovieCardAnimate(false), handleCardAnimate(false)])
+        )
+        .then(() => {
+          setTranstionStatus(TRANSITION_STATUS.OPEN_FINISHED);
+        });
+    }
+  }, [transitionStatus]);
+
+  useEffect(() => {
+    if (transitionStatus === TRANSITION_STATUS.CLOSE_STARTED) {
+      Promise.all([handleMovieCardAnimate(true), handleCardAnimate(true)])
+        .then(() => animateDialogBackground(true))
+        .then(() => {
+          setTranstionStatus(TRANSITION_STATUS.CLOSE_FINISHED);
+          onDialogClose();
+        });
+    }
+  }, [transitionStatus]);
 
   return createPortal(
     <div
@@ -111,7 +116,12 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
       ref={movieCardRef}
       className={`${styles['movie-card']} ${styles['details-view']}`}
       onClick={() => {
-        handleDialogClose();
+        setTranstionStatus((state) => {
+          if (state === TRANSITION_STATUS.OPEN_FINISHED) {
+            return TRANSITION_STATUS.CLOSE_STARTED;
+          }
+          return state;
+        });
       }}
     >
       <Card
@@ -134,7 +144,10 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
           backdropImage: (
             <Image
               loader={({ src, width }) => {
-                if (width > 1500 && hasTransitionEnded)
+                if (
+                  width > 1500 &&
+                  transitionStatus !== TRANSITION_STATUS.OPEN_STARTED
+                )
                   return `https://image.tmdb.org/t/p/original${src}`;
                 if (width > 780)
                   return `https://image.tmdb.org/t/p/w1280${src}`;
@@ -146,9 +159,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
               placeholder={'empty'}
               loading={'lazy'}
               fill={true}
-              sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1500px) ${
-                !hasTransitionEnded ? '1280px' : '100vw'
-              }, 100vw`}
+              sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1500px) 100vw, 100vw`}
               quality={100}
               alt={title}
             />

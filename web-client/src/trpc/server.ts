@@ -6,7 +6,6 @@ import {
   TRPCRequestOptions,
 } from '@trpc/client';
 import routerLinks from './links';
-import { ReadonlyHeaders } from 'next/dist/server/app-render';
 import { InferHandlerInput, TQuery } from 'trpc/client/utils';
 
 // TODO: Install server-only package
@@ -16,7 +15,7 @@ const apiURL = !isWebView ? process.env.API_HOST_URL : undefined;
 
 // NOTE: Use this function only works on server side
 export const getBaseTRPCClientConfig = (
-  headers: ReadonlyHeaders
+  headers: Headers
 ): CreateTRPCClientOptions<AppRouter> => ({
   url: `${apiURL}/trpc`,
   links: routerLinks,
@@ -38,7 +37,7 @@ export const getBaseTRPCClientConfig = (
 });
 
 export const createTRPCClient = crtTRPCClient<AppRouter>;
-const getTRPCClient = (headers: ReadonlyHeaders) =>
+const getTRPCClient = (headers: Headers) =>
   createTRPCClient(getBaseTRPCClientConfig(headers));
 
 // TODO: Validate that the fetch function in TRPC Client
@@ -47,7 +46,7 @@ export const trpc = {
   query: cache(
     async <T extends TQuery>(
       path: T,
-      headers: ReadonlyHeaders,
+      headers: Headers,
       ...args: [...InferHandlerInput<T>, TRPCRequestOptions?]
     ) => {
       const trpc = getTRPCClient(headers);

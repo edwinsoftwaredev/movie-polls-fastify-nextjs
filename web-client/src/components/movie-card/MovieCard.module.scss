@@ -37,6 +37,11 @@
       cursor: pointer;
 
       h3 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 100%;
+
         padding: 0.5rem;
         background-color: rgba($color: #ffffff, $alpha: 0.2);
         backdrop-filter: blur(4px);
@@ -52,6 +57,12 @@
       }
 
       [class~='genres-label'] {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        color: rgba($color: #ffffff, $alpha: 0.85);
+
         grid-column: 1;
         grid-row: 3;
         height: auto;
@@ -62,7 +73,6 @@
 
         span {
           display: inline;
-          color: rgba($color: #ffffff, $alpha: 0.85);
         }
       }
 
@@ -84,6 +94,11 @@
       }
 
       &:hover {
+        h3 {
+          overflow: visible;
+          white-space: initial;
+        }
+
         [class~='header-desc'] {
           opacity: 1;
           font-size: inherit;
