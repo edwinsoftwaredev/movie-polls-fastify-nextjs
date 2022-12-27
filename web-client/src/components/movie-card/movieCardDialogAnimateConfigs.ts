@@ -92,21 +92,28 @@ export const animateCard = async (
 
   const k3: Keyframe = {
     position: 'fixed',
-    width: `55%`,
+    width: `45%`,
     height: 'auto',
     top: `6rem`,
-    left: `calc(50% - (50% * 0.5))`,
+    left: `calc(50% - (45% * 0.5))`,
     zIndex: '30',
   };
 
   const k4: Keyframe = {
     ...k3,
+    width: '75%',
+    left: `calc(50% - (75% * 0.5))`,
+  };
+
+  const k5: Keyframe = {
+    ...k4,
     position: 'relative',
   };
 
   const a1 = [k1, k1];
   const a2 = [k2, k3];
   const a3 = [k3, k4];
+  const a4 = [k4, k5];
 
   const animateConfigs: Array<[Keyframe[], KeyframeAnimationOptions]> = [
     [
@@ -122,13 +129,23 @@ export const animateCard = async (
       {
         delay: 100,
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: 1600,
+        duration: 1100,
         fill: 'forwards',
         easing: 'cubic-bezier(1, 0, 0, 1)',
       },
     ],
     [
       a3,
+      {
+        ...(!isReverse ? { delay: 150 } : {}),
+        direction: !isReverse ? 'normal' : 'reverse',
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease-out',
+      },
+    ],
+    [
+      a4,
       {
         direction: !isReverse ? 'normal' : 'reverse',
         duration: 0,
@@ -144,6 +161,8 @@ export const animateCard = async (
   await elRef.animate(animateConfigs[1][0], animateConfigs[1][1]).finished;
 
   await elRef.animate(animateConfigs[2][0], animateConfigs[2][1]).finished;
+
+  await elRef.animate(animateConfigs[3][0], animateConfigs[3][1]).finished;
 };
 
 export const animateMovieCard = async (

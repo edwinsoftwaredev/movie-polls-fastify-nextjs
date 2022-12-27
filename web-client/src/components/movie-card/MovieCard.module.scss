@@ -12,7 +12,7 @@
     height: 100%;
 
     img {
-      object-fit: cover;
+      object-fit: contain;
       max-inline-size: 100%;
       block-size: auto;
       display: block;
@@ -113,11 +113,114 @@
 
 .details-view {
   background-color: rgba($color: #000000, $alpha: 0.8);
+  --max-header-height: auto;
   // background-color: rgba($color: #000000, $alpha: 0.8);
   // backdrop-filter: blur(4px);
 
   header {
     aspect-ratio: 16/9;
     height: auto;
+    max-height: var(--max-header-height);
+    min-width: 100%;
+    background-color: rgb(15, 15, 15);
+
+    [class~='header-body'] {
+      height: 100%;
+      width: 70%;
+      left: 30%;
+      margin: 0;
+      padding-left: 10%;
+
+      display: grid;
+      grid-template-columns: 1fr 35%;
+      grid-template-rows: auto;
+
+      background-image: linear-gradient(
+        to right,
+        transparent,
+        rgb(15, 15, 15) 38%
+      );
+
+      opacity: 0;
+      transition: opacity;
+      transition-duration: 130ms;
+      transition-timing-function: ease-out;
+
+      &[class~='open-finished'] {
+        opacity: 1;
+        [class~='movie-details'] {
+          opacity: 1;
+        }
+      }
+    }
   }
+}
+
+.movie-details {
+  opacity: 0;
+  padding: 4% 0;
+  padding-left: 10%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto 1fr auto;
+  font-size: clamp(0.3rem, 0.55rem + 0.35vw, 5rem);
+
+  color: white;
+
+  [class~='movie-title-desc'] {
+    white-space: normal;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    grid-row: 1;
+    gap: 0.5rem;
+
+    [class~='rating'] {
+      padding: 0 0.25rem;
+      border: 1px solid rgba($color: #ffffff, $alpha: 0.85);
+    }
+
+    [class~='release-date-rating'] {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  [class~='movie-overview'] {
+    overflow: auto;
+    grid-row: 2;
+  }
+
+  [class~='movie-credits'] {
+    grid-row: 3;
+  }
+
+  // TODO: Refactor label component
+  [class~='movie-genres-label'] {
+    grid-row: 5;
+    max-width: 100%;
+    color: rgba($color: #ffffff, $alpha: 0.85);
+    font-size: 0.8em;
+
+    height: auto;
+    box-sizing: border-box;
+    padding: 0 0.25rem;
+    border: 1px solid rgba($color: #ffffff, $alpha: 0.85);
+    width: fit-content;
+
+    span {
+      display: inline;
+    }
+  }
+}
+
+.movie-action-panel {
+  opacity: 0;
+
+  visibility: hidden;
 }

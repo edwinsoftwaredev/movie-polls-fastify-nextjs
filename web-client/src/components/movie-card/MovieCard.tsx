@@ -104,7 +104,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
               onLoad={() => {
                 setIsImgLoaded(true);
               }}
-              style={{opacity: isImgLoaded ? 1 : 0}}
+              style={{ opacity: isImgLoaded ? 1 : 0 }}
               loader={({ src, width }) => {
                 if (width > 1920)
                   return `https://image.tmdb.org/t/p/original${src}`;

@@ -40,6 +40,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
     title,
     genres,
     vote_average,
+    overview,
     images: {
       backdrops: {
         '0': { file_path },
@@ -56,6 +57,10 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
 
   const [transitionStatus, setTranstionStatus] = useState(
     TRANSITION_STATUS.OPEN_STARTED
+  );
+
+  const [headerImgWidth, setHeaderImgWidth] = useState(
+    document.body.clientWidth * 0.45
   );
 
   const handleCardAnimate = async (isReverse: boolean) => {
@@ -110,6 +115,14 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
     }
   }, [transitionStatus]);
 
+  useEffect(() => {
+    setHeaderImgWidth(document.body.clientWidth * 0.45);
+    movieCardRef.current?.style.setProperty(
+      '--max-header-height',
+      `${document.body.clientWidth * 0.45 * (9 / 16)}px`
+    );
+  }, [initWidth, initHeight]);
+
   return createPortal(
     <div
       role={'dialog'}
@@ -128,18 +141,44 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
         ref={cardRef}
         header={{
           content: (
-            <div className="header-body">
-              <div />
-              <h3>
-                <span>{title}</span>
-              </h3>
-              <div className="genres-label header-desc">
-                <span>{genresLabel}</span>
-              </div>
-              <div className="popularity header-desc">
-                <span>{`${vote_average * 10}%`}</span>
-              </div>
-            </div>
+            <article
+              className={`${
+                transitionStatus === TRANSITION_STATUS.OPEN_FINISHED
+                  ? `open-finished header-body`
+                  : 'header-body'
+              }`}
+            >
+              <section className={`${styles['movie-details']} movie-details`}>
+                <div className={'movie-title-desc'}>
+                  <h3>{title}</h3>
+                  <div className="release-date-rating">
+                    <span className="year">(2022)</span>
+                    <span className="rating">RT-00</span>
+                  </div>
+                </div>
+                <div className={'movie-overview'}>
+                  <p>{movie.overview}</p>
+                </div>
+                <div className={'movie-credits'}>
+                  <div>
+                    <b>Director: </b>
+                    {'The Director'}
+                  </div>
+                  <div>
+                    <b>Cast: </b>
+                    {'The Cast'}
+                  </div>
+                  <div>
+                    <b>Duration: </b>
+                    {'2h 49m'}
+                  </div>
+                </div>
+                <div className={'movie-genres-label'}>
+                  <span>{genresLabel}</span>
+                </div>
+              </section>
+              <section className={`${styles['movie-action-panel']}`}></section>
+            </article>
           ),
           backdropImage: (
             <Image
@@ -162,6 +201,9 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
               sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1500px) 100vw, 100vw`}
               quality={100}
               alt={title}
+              style={{
+                maxWidth: `${headerImgWidth}px`,
+              }}
             />
           ),
         }}
