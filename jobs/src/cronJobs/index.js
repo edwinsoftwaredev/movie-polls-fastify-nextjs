@@ -1,3 +1,3 @@
 'use strict';
-const fetchMoviesScheduledJob = require('./fetchMovies.js');
+const fetchMoviesScheduledJob = require('./fetch-movies.js/index.js');
 module.exports = { fetchMoviesScheduledJob };

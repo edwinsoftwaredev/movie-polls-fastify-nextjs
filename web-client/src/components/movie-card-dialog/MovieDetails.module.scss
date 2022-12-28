@@ -1,0 +1,88 @@
+.header-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 100%;
+  width: 70%;
+  left: 30%;
+  margin: 0;
+  padding: 0.5rem;
+  padding-left: 10%;
+
+  display: grid;
+  grid-template-columns: 1fr 35%;
+  grid-template-rows: minmax(0, auto);
+  row-gap: 0.5rem;
+  column-gap: 0.5rem;
+
+  background-image: linear-gradient(to right, transparent, rgb(15, 15, 15) 38%);
+
+  opacity: 0;
+  transition: opacity;
+  transition-duration: 200ms;
+  transition-timing-function: ease-out;
+
+  z-index: 20;
+}
+
+.movie-details {
+  padding: 4% 0;
+  padding-left: 10%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto 1fr auto;
+  row-gap: 1em;
+
+  color: white;
+}
+
+.movie-title-desc {
+  white-space: normal;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  grid-row: 1;
+  gap: 0.5rem;
+
+  h3 {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+  }
+}
+
+.release-date-rating {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.movie-overview {
+  overflow: auto;
+  grid-row: 2;
+
+  p {
+    margin-block: 0.25em;
+    margin-inline: 0;
+    margin-inline-end: 0.25em;
+  }
+}
+
+.movie-credits {
+  grid-row: 3;
+}
+
+.movie-genres-label {
+  grid-row: 5;
+}
+
+.movie-action-panel {
+  opacity: 0;
+
+  visibility: hidden;
+}

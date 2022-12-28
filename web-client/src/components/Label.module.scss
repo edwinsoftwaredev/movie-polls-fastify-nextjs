@@ -1,0 +1,23 @@
+.label {
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  padding: 0 0.25rem;
+  font-size: 0.8em;
+
+  // TODO: should be defined from a context
+  color: rgba($color: #ffffff, $alpha: 0.85);
+}
+
+.wrapped {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.outlined {
+  // TODO: should be defined from a context
+  border: 1px solid rgba($color: #ffffff, $alpha: 0.85);
+}

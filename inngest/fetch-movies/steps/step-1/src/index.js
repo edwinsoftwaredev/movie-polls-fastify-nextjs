@@ -1,4 +1,4 @@
-const fetchMovies = require('./fetchMovies');
+const fetchMovies = require('./fetch-movies');
 
 // Events format info: https://www.inngest.com/docs/event-format-and-structure
 async function run({ event }) {

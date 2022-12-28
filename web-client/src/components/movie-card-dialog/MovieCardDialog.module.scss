@@ -1,0 +1,25 @@
+.movie-card-dialog {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba($color: #000000, $alpha: 0.8);
+  --max-header-height: auto;
+
+  header {
+    aspect-ratio: 16/9;
+    height: auto;
+    max-height: var(--max-header-height);
+    min-width: 100%;
+    background-color: rgb(15, 15, 15);
+
+    img {
+      object-fit: contain;
+      max-inline-size: 100%;
+      block-size: auto;
+      display: block;
+      z-index: 10;
+    }
+  }
+}

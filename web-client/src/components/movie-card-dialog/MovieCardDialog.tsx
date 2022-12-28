@@ -5,12 +5,13 @@ import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { Movie } from 'types';
 import Card from '../Card';
-import styles from './MovieCard.module.scss';
+import styles from './MovieCardDialog.module.scss';
 import {
   animateCard,
   animateDialogBackground,
   animateMovieCard,
-} from './movieCardDialogAnimateConfigs';
+} from './movie-card-dialog-animate-configs';
+import MovieDetails from './MovieDetails';
 
 enum TRANSITION_STATUS {
   OPEN_STARTED,
@@ -38,9 +39,6 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
 }) => {
   const {
     title,
-    genres,
-    vote_average,
-    overview,
     images: {
       backdrops: {
         '0': { file_path },
@@ -50,10 +48,6 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
 
   const movieCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLElement>(null);
-
-  const [genresLabel, setGenresLabel] = useState(
-    genres.map((genres) => genres.name).join(', ')
-  );
 
   const [transitionStatus, setTranstionStatus] = useState(
     TRANSITION_STATUS.OPEN_STARTED
@@ -86,11 +80,6 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
       isReverse
     );
   };
-
-  // TODO: Create hook
-  useEffect(() => {
-    setGenresLabel(genres.map((genres) => genres.name).join(', '));
-  }, [genres]);
 
   useEffect(() => {
     if (transitionStatus === TRANSITION_STATUS.OPEN_STARTED) {
@@ -127,7 +116,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
     <div
       role={'dialog'}
       ref={movieCardRef}
-      className={`${styles['movie-card']} ${styles['details-view']}`}
+      className={`${styles['movie-card-dialog']}`}
       onClick={() => {
         setTranstionStatus((state) => {
           if (state === TRANSITION_STATUS.OPEN_FINISHED) {
@@ -140,46 +129,12 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
       <Card
         ref={cardRef}
         header={{
-          content: (
-            <article
-              className={`${
-                transitionStatus === TRANSITION_STATUS.OPEN_FINISHED
-                  ? `open-finished header-body`
-                  : 'header-body'
-              }`}
-            >
-              <section className={`${styles['movie-details']} movie-details`}>
-                <div className={'movie-title-desc'}>
-                  <h3>{title}</h3>
-                  <div className="release-date-rating">
-                    <span className="year">(2022)</span>
-                    <span className="rating">RT-00</span>
-                  </div>
-                </div>
-                <div className={'movie-overview'}>
-                  <p>{movie.overview}</p>
-                </div>
-                <div className={'movie-credits'}>
-                  <div>
-                    <b>Director: </b>
-                    {'The Director'}
-                  </div>
-                  <div>
-                    <b>Cast: </b>
-                    {'The Cast'}
-                  </div>
-                  <div>
-                    <b>Duration: </b>
-                    {'2h 49m'}
-                  </div>
-                </div>
-                <div className={'movie-genres-label'}>
-                  <span>{genresLabel}</span>
-                </div>
-              </section>
-              <section className={`${styles['movie-action-panel']}`}></section>
-            </article>
-          ),
+          content:
+            transitionStatus === TRANSITION_STATUS.OPEN_FINISHED ? (
+              <MovieDetails movie={movie} />
+            ) : (
+              <></>
+            ),
           backdropImage: (
             <Image
               loader={({ src, width }) => {

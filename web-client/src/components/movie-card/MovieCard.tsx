@@ -5,7 +5,8 @@ import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { Movie } from 'types';
 import Card from '../Card';
 import styles from './MovieCard.module.scss';
-import MovieCardDialog from './MovieCardDialog';
+import MovieCardDialog from '../movie-card-dialog/MovieCardDialog';
+import Label from '../Label';
 
 interface MovieCard extends PropsWithChildren {
   movie: Movie;
@@ -86,16 +87,18 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
       <Card
         header={{
           content: (
-            <div className="header-body">
+            <div className={`${styles['header-content']}`}>
               <div />
               <h3>
                 <span>{title}</span>
               </h3>
-              <div className="genres-label header-desc">
-                <span>{genresLabel}</span>
+              <div className={`${styles['genres-label']} header-desc`}>
+                <Label wrapped outlined>
+                  {genresLabel}
+                </Label>
               </div>
-              <div className="popularity header-desc">
-                <span>{`${vote_average * 10}%`}</span>
+              <div className={`${styles['popularity']} header-desc`}>
+                <Label wrapped>{`${vote_average * 10}%`}</Label>
               </div>
             </div>
           ),
