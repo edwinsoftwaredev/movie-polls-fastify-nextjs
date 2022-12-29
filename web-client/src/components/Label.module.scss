@@ -3,14 +3,13 @@
   max-width: 100%;
   height: auto;
   box-sizing: border-box;
-  padding: 0 0.25rem;
   font-size: 0.8em;
 
   // TODO: should be defined from a context
   color: rgba($color: #ffffff, $alpha: 0.85);
 }
 
-.wrapped {
+.nowrap {
   display: block;
   overflow: hidden;
   white-space: nowrap;
@@ -18,6 +17,7 @@
 }
 
 .outlined {
+  padding: 0 0.25rem;
   // TODO: should be defined from a context
   border: 1px solid rgba($color: #ffffff, $alpha: 0.85);
 }

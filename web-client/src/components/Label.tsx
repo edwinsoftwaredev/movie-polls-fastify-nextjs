@@ -3,34 +3,30 @@ import { PropsWithChildren, useEffect, useReducer } from 'react';
 import classNameReducer from './class-name-reducer';
 
 interface LabelProps extends PropsWithChildren {
-  wrapped?: boolean;
+  nowrap?: boolean;
   outlined?: boolean;
 }
 
-const Label: React.FC<LabelProps> = ({ children, wrapped, outlined }) => {
+const Label: React.FC<LabelProps> = ({ children, nowrap, outlined }) => {
   const [classNames, dispatch] = useReducer(
     classNameReducer,
-    `${styles['label']} ${wrapped ? styles['wrapped'] : ''} ${
+    `${styles['label']} ${nowrap ? styles['nowrap'] : ''} ${
       outlined ? styles['outlined'] : ''
     }`
   );
 
   useEffect(() => {
     dispatch({
-      type: wrapped ? 'add' : 'remove',
+      type: nowrap ? 'add' : 'remove',
       className: styles['wrapped'],
     });
     dispatch({
       type: outlined ? 'add' : 'remove',
       className: styles['outlined'],
     });
-  }, [wrapped, outlined]);
+  }, [nowrap, outlined]);
 
-  return (
-    <span className={classNames}>
-      <label>{children}</label>
-    </span>
-  );
+  return <label className={classNames}>{children}</label>;
 };
 
 export default Label;
