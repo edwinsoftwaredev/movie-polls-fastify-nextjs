@@ -36,7 +36,7 @@ const fetchMovieDetails = async (tmdbUrl, tmdbKey, movieId) => {
   const params = new URLSearchParams();
   params.append('api_key', tmdbKey);
   params.append('language', 'en-US');
-  params.append('append_to_response', 'images');
+  params.append('append_to_response', 'images,credits');
   params.append('include_image_language', 'en,null');
 
   const details = await axios
@@ -44,7 +44,7 @@ const fetchMovieDetails = async (tmdbUrl, tmdbKey, movieId) => {
     .then((res) => res.data)
     .then((data) => {
       // filtering properties.
-      const { genres, id } = data;
+      const { genres, id, runtime } = data;
 
       const backdrops = data.images.backdrops
         .sort((a, b) => b.width - a.width)
@@ -61,12 +61,31 @@ const fetchMovieDetails = async (tmdbUrl, tmdbKey, movieId) => {
         height: backdrop.height,
       }));
 
+      const cast = data.credits.cast
+        .slice(0, 8)
+        .filter((c) => !c.adult)
+        .map((c) => ({
+          name: c.name,
+        }));
+
+      const crew = data.credits.crew
+        .filter((c) => c.job === 'Director')
+        .map((c) => ({
+          job: c.job,
+          name: c.name,
+        }));
+
       const result = {
         genres,
         id,
+        runtime,
         images: {
           backdrops,
           posters,
+        },
+        credits: {
+          cast,
+          crew,
         },
       };
 
