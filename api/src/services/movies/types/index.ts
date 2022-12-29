@@ -14,6 +14,7 @@ export interface Movie {
   vote_average: number;
   release_date: string;
   title: string;
+  runtime: number;
   genres: [
     {
       id: number;
@@ -36,33 +37,29 @@ export interface Movie {
       }
     ];
   };
+  credits: {
+    cast: Array<{
+      name: string;
+    }>;
+    crew: Array<{
+      job: string;
+      name: string;
+    }>;
+  }
 }
 
 export interface MovieDetail extends Movie {
   homepage: string;
-  production_countries: {
-    iso_3166_1: string;
-    name: string;
-  }[];
-  credits: {
-    cast: {
-      name: string;
-    }[];
-    crew: {
-      job: string;
-      name: string;
-    }[];
-  };
   release_dates: {
     results: {
       iso_3166_1: string;
       release_dates: {
+        release_date: string;
         certification: string;
       }[];
     }[];
   };
   providers: any;
-  runtime: number;
 }
 
 export interface GenreRequest {
@@ -91,5 +88,7 @@ export const getMovieFromMovieDetails = (movie: MovieDetail): Movie => {
     release_date: movie.release_date,
     title: movie.title,
     vote_average: movie.vote_average,
+    runtime: movie.runtime,
+    credits: movie.credits
   };
 };
