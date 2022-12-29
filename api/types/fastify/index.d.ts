@@ -1,9 +1,13 @@
 import { UserSession, PrismaClient, User } from '@prisma/client';
 import { Redis } from '@upstash/redis';
 import { OAuth2Client, LoginTicket } from 'google-auth-library';
-// Current project configuration requires to define full path 
+// Current project configuration requires to define full path
 // (e.g "paths" is not defined in tsconfig.json)
-import { Movie, MovieDetail, MoviesByGenre } from '../../src/services/movies/types';
+import {
+  Movie,
+  MovieDetail,
+  MoviesByGenre,
+} from '../../src/services/movies/types';
 
 // Importing these type declaration allows the LSP to
 // provide methods and properties from them.
@@ -38,12 +42,17 @@ declare module 'fastify' {
       popular: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
       trending: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
       trendingByGenre: () => Promise<Array<MoviesByGenre>>;
-      popularByDecadeAndGenre: (decade: number) => Promise<Array<MoviesByGenre>>;
+      popularByDecadeAndGenre: (
+        decade: number
+      ) => Promise<Array<MoviesByGenre>>;
       search: (text: string) => Promise<Array<Movie>>;
-      providersByMovieId: (movieId: number) => Promise<{id: number, results: any}>; 
+      providersByMovieId: (
+        movieId: number
+      ) => Promise<{ id: number; results: any }>;
       detailsByMovieId: (movieId: number) => Promise<MovieDetail>;
       genreNamesByIds: (genreIds: Array<number>) => Promise<Array<string>>;
-    }
+      movieDetails: (movieId: number) => Promise<MovieDetail>;
+    };
   }
 
   interface Session {

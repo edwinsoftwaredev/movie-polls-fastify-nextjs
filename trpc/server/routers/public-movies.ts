@@ -46,6 +46,17 @@ const publicMovies = createRouter()
 
       return { popularByGenre };
     },
+  })
+  .query('movieDetails', {
+    input: z.object({
+      movieId: z.number(),
+    }),
+    resolve: async ({ ctx, input }) => {
+      const { fastify } = ctx;
+      const { movieId } = input;
+      const movieDetails = await fastify.movies.movieDetails(movieId);
+      return { movieDetails };
+    },
   });
 
 const publicMoviesRouter = createRouter().merge('publicMovies:', publicMovies);
