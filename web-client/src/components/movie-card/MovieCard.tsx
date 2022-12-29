@@ -7,6 +7,7 @@ import Card from '../Card';
 import styles from './MovieCard.module.scss';
 import MovieCardDialog from '../movie-card-dialog/MovieCardDialog';
 import Label from '../Label';
+import { useMovieDetails } from 'hooks';
 
 interface MovieCard extends PropsWithChildren {
   movie: Movie;
@@ -27,18 +28,14 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
 
   const {
     title,
-    genres,
     vote_average,
+    genresLabel,
     images: {
       backdrops: {
         '0': { file_path },
       },
     },
-  } = movie;
-
-  const [genresLabel, setGenresLabel] = useState(
-    genres.map((genres) => genres.name).join(', ')
-  );
+  } = useMovieDetails(movie);
 
   useEffect(() => {
     resizeObserverRef.current = new window.ResizeObserver(() => {
@@ -51,10 +48,6 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
         });
     });
   }, []);
-
-  useEffect(() => {
-    setGenresLabel(genres.map((genres) => genres.name).join(', '));
-  }, [genres]);
 
   useEffect(() => {
     !isPreview &&
@@ -93,12 +86,12 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
                 <span>{title}</span>
               </h3>
               <div className={`${styles['genres-label']} header-desc`}>
-                <Label wrapped outlined>
+                <Label nowrap outlined>
                   {genresLabel}
                 </Label>
               </div>
               <div className={`${styles['popularity']} header-desc`}>
-                <Label wrapped>{`${vote_average * 10}%`}</Label>
+                <Label nowrap>{`${vote_average * 10}%`}</Label>
               </div>
             </div>
           ),

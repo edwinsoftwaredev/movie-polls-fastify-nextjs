@@ -18,6 +18,7 @@
     "paths": {
       "components": ["src/components"],
       "services": ["src/services"],
+      "hooks": ["src/hooks"],
       "src/trpc": ["src/trpc"],
       "types": ["src/types"],
       "styles": ["styles"],

@@ -12,6 +12,7 @@ import {
   animateMovieCard,
 } from './movie-card-dialog-animate-configs';
 import MovieDetails from './MovieDetails';
+import { useMovieDetails } from 'hooks';
 
 enum TRANSITION_STATUS {
   OPEN_STARTED,
@@ -44,7 +45,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
         '0': { file_path },
       },
     },
-  } = movie;
+  } = useMovieDetails(movie);
 
   const movieCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLElement>(null);
