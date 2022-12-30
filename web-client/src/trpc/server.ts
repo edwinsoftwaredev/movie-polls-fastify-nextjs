@@ -13,7 +13,7 @@ const isWebView = typeof window !== 'undefined';
 
 const apiURL = !isWebView ? process.env.API_HOST_URL : undefined;
 
-// NOTE: Use this function only works on server side
+// NOTE: Use this function on server side
 export const getBaseTRPCClientConfig = (
   headers: Headers
 ): CreateTRPCClientOptions<AppRouter> => ({
@@ -23,6 +23,7 @@ export const getBaseTRPCClientConfig = (
     const cookies = headers.get('Cookie');
 
     return {
+      // TODO: Remove Cookie or auth headers for public routes
       ...(cookies ? { Cookie: cookies } : {}),
       // (when proxying)
       // DO NOT set the host from the request's url.

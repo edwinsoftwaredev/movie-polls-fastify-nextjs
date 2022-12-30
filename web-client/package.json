@@ -9,13 +9,13 @@
   },
   "dependencies": {
     "@next/font": "^13.0.0",
-    "@trpc/client": "^9.27.4",
-    "@trpc/react": "^9.27.4",
-    "@trpc/server": "^9.27.4",
+    "@tanstack/react-query": "^4.20.4",
+    "@trpc/client": "^10.7.0",
+    "@trpc/react-query": "^10.7.0",
+    "@trpc/server": "^10.7.0",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-query": "3",
     "trpc": "1.0.0"
   },
   "devDependencies": {

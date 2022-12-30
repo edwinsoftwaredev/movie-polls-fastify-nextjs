@@ -13,7 +13,7 @@
     "@fastify/helmet": "^10.0.0",
     "@fastify/session": "^10.0.0",
     "@prisma/client": "latest",
-    "@trpc/server": "^9.27.4",
+    "@trpc/server": "^10.7.0",
     "@upstash/redis": "^1.16.0",
     "dotenv": "^16.0.3",
     "fastify": "^4.10.2",
