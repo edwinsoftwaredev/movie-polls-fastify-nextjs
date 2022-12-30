@@ -17,7 +17,8 @@
     "prisma": "latest"
   },
   "resolutions": {
-    "@types/react": "^18.0.20"
+    "@types/react": "^18.0.20",
+    "json5": "^2.2.2"
   },
   "packageManager": "yarn@3.2.4"
 }
