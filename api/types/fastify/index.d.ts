@@ -38,11 +38,14 @@ declare module 'fastify' {
     };
 
     movies: {
-      nowPlaying: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
-      popular: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
-      trending: (redisPipeline?: Pipeline) => Promise<Array<Movie>>;
-      trendingByGenre: () => Promise<Array<MoviesByGenre>>;
+      nowPlaying: (redisPipeline: Pipeline) => Promise<Array<Movie>>;
+      popular: (redisPipeline: Pipeline) => Promise<Array<Movie>>;
+      trending: (redisPipeline: Pipeline) => Promise<Array<Movie>>;
+      trendingByGenre: (
+        redisPipeline: Pipeline
+      ) => Promise<Array<MoviesByGenre>>;
       popularByDecadeAndGenre: (
+        redisPipeline: Pipeline,
         decade: number
       ) => Promise<Array<MoviesByGenre>>;
       search: (text: string) => Promise<Array<Movie>>;

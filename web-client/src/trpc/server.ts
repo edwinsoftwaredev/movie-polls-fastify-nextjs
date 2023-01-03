@@ -1,58 +1,42 @@
-import { cache } from 'react';
 import type { AppRouter } from 'trpc/client';
-import {
-  createTRPCClient as crtTRPCClient,
-  CreateTRPCClientOptions,
-  TRPCRequestOptions,
-} from '@trpc/client';
-import routerLinks from './links';
-import { InferHandlerInput, TQuery } from 'trpc/client/utils';
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 
-// TODO: Install server-only package
-const isWebView = typeof window !== 'undefined';
+const apiURL = process.env.API_HOST_URL;
 
-const apiURL = !isWebView ? process.env.API_HOST_URL : undefined;
+// TODO: Calculate based on the selected tRPC query (making use of a generic types) or
+// calculate value in the fetch function based on the given input (url) value
+type appPaths =
+  | 'sessionRoutes'
+  | 'accountRoutes'
+  | 'moviesRoutes'
+  | 'publicMoviesRoutes'
+  | 'googleAuthRoutes';
 
 // NOTE: Use this function on server side
-export const getBaseTRPCClientConfig = (
-  headers: Headers
-): CreateTRPCClientOptions<AppRouter> => ({
-  url: `${apiURL}/trpc`,
-  links: routerLinks,
-  headers: () => {
-    const cookies = headers.get('Cookie');
+export const getTRPCClient = (headers: Headers, path: appPaths) =>
+  createTRPCProxyClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: `${apiURL}/trpc/${path}`,
+        fetch: (input, init) => {
+          const cookies = headers.get('Cookie');
+          return fetch(input, {
+            ...init,
+            headers: {
+              // TODO: Remove sensitive headers from request to cached/public endpoints
+              ...(cookies ? { Cookie: cookies } : {}),
 
-    return {
-      // TODO: Remove Cookie or auth headers for public routes
-      ...(cookies ? { Cookie: cookies } : {}),
-      // (when proxying)
-      // DO NOT set the host from the request's url.
-      // VALIDATE that the host
-      // in the request url is a valid host!
-      Host: new URL(`${apiURL}`).host,
-      Origin: process.env.HOST_URL,
-      'x-ssr': '1',
-      'x-api-key-movies': process.env.MOVIES_API_KEY,
-    };
-  },
-});
-
-export const createTRPCClient = crtTRPCClient<AppRouter>;
-const getTRPCClient = (headers: Headers) =>
-  createTRPCClient(getBaseTRPCClientConfig(headers));
-
-// TODO: Validate that the fetch function in TRPC Client
-// is not creating/updating the React cache.
-export const trpc = {
-  query: cache(
-    async <T extends TQuery>(
-      path: T,
-      headers: Headers,
-      ...args: [...InferHandlerInput<T>, TRPCRequestOptions?]
-    ) => {
-      const trpc = getTRPCClient(headers);
-      const res = await trpc.query(path, ...args);
-      return res;
-    }
-  ),
-};
+              // (when proxying)
+              // DO NOT set the host from the request's url.
+              // VALIDATE that the host
+              // in the request url is a valid host!
+              Host: new URL(`${process.env.API_HOST_URL}`).host,
+              Origin: process.env.HOST_URL || '',
+              'x-ssr': '1',
+              'x-api-key-movies': process.env.MOVIES_API_KEY || '',
+            },
+          });
+        },
+      }),
+    ],
+  });

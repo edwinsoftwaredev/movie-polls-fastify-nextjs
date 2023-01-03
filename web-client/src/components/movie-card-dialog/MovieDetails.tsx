@@ -24,7 +24,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     }, 50);
 
     return () => {
-      elRef.current && (elRef.current.style.opacity = '0');
+      // elRef.current && (elRef.current.style.opacity = '0');
       window.clearTimeout(toRef.current);
     };
   }, []);

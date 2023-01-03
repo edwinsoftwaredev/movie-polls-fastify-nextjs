@@ -1,12 +1,11 @@
 import { headers } from 'next/headers';
-import { trpc } from 'src/trpc/server';
+import { getTRPCClient } from 'src/trpc/server';
 import Home from './home';
 
 export default async function Page() {
-  const session = await trpc.query('session:getSession', headers());
+  const { session } = getTRPCClient(headers(), 'sessionRoutes');
+  const { isAuthenticated } = await session.getSession.query();
 
-  const { isAuthenticated } = session;
-
-  {/* @ts-expect-error Server Component */}
+  /* @ts-expect-error Server Component */
   return <Home />;
 }

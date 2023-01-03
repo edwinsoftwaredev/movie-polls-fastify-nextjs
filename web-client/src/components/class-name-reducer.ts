@@ -1,4 +1,4 @@
-export default (
+const classNameReducer = (
   state: string,
   action: { type: 'add' | 'remove'; className: string }
 ) => {
@@ -18,3 +18,5 @@ export default (
     }
   }
 };
+
+export default classNameReducer;

@@ -1,13 +1,12 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { trpc } from 'src/trpc/server';
+import { getTRPCClient } from 'src/trpc/server';
 import TopMovies from './TopMovies';
 
 export default async function Page() {
   const reqHeaders = headers();
-  const session = await trpc.query('session:getSession', reqHeaders);
-
-  const { isAuthenticated } = session;
+  const { session } = getTRPCClient(reqHeaders, 'sessionRoutes');
+  const { isAuthenticated } = await session.getSession.query();
 
   // if (!isAuthenticated) {
   //   redirect('/');

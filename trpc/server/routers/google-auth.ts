@@ -1,14 +1,13 @@
-import createRouter from '../createRouter';
+import { procedure, router } from '../init-tRPC';
 
 interface GoogleOAuthResponseType {
   credential: string;
 }
 
-const googleIDTokenVerification = createRouter().mutation(
-  'verifyGoogleIDToken',
-  {
-    input: (val) => val,
-    resolve: async ({ input, ctx }) => {
+const googleAuthRouter = router({
+  verifyGoogleIDToken: procedure
+    .input((val) => val)
+    .mutation(async ({ input, ctx }) => {
       const { req, res, fastify } = ctx;
 
       const { credential } = input as GoogleOAuthResponseType;
@@ -58,13 +57,7 @@ const googleIDTokenVerification = createRouter().mutation(
                 .then(() => res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`));
             });
         });
-    },
-  }
-);
+    }),
+});
 
-const googleAuthRouter = createRouter().merge(
-  'googleAuth:',
-  googleIDTokenVerification
-);
-
-export default googleAuthRouter;
+export default router({ googleAuth: googleAuthRouter });
