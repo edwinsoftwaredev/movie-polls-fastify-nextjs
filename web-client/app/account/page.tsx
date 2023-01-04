@@ -1,9 +1,14 @@
-import style from './Account.module.scss';
 import { headers } from 'next/headers';
-import { getTRPCClient } from 'src/trpc/server';
+import trpc from 'src/trpc/server';
+import style from './Account.module.scss';
 
 export default async function Page() {
-  const { session } = getTRPCClient(headers(), 'sessionRoutes');
+  const { isAuthenticated } = await trpc.query(
+    'session',
+    'getSession',
+    undefined,
+    headers()
+  );
 
   return (
     <div className={style['main']}>

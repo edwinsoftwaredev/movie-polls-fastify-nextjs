@@ -1,10 +1,14 @@
 import { headers } from 'next/headers';
-import { getTRPCClient } from 'src/trpc/server';
+import trpc from 'src/trpc/server';
 import SignIn from './SignIn';
 
 export default async function Page() {
-  const { account } = getTRPCClient(headers(), 'accountRoutes');
-  const { whoami } = await account.whoami.query();
+  const { whoami } = await trpc.query(
+    'account',
+    'whoami',
+    undefined,
+    headers()
+  );
 
   return (
     <section>

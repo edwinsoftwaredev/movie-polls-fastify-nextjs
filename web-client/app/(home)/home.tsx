@@ -1,17 +1,19 @@
 import { headers } from 'next/headers';
 import Slider from 'src/components/Slider';
-import { getTRPCClient } from 'src/trpc/server';
+import trpc from 'src/trpc/server';
 
+// Base type
 async function PopularSlider() {
   return (
     <>
       <Slider
         fetchItems={async () => {
-          const { publicMovies } = getTRPCClient(
-            headers(),
-            'publicMoviesRoutes'
+          const { popular } = await trpc.query(
+            'publicMovies',
+            'homeMovies',
+            undefined,
+            headers()
           );
-          const { popular } = await publicMovies.homeMovies.query();
           return popular;
         }}
         slideSize={3}
@@ -25,11 +27,12 @@ async function TrendingSlider() {
     <>
       <Slider
         fetchItems={async () => {
-          const { publicMovies } = getTRPCClient(
-            headers(),
-            'publicMoviesRoutes'
+          const { trending } = await trpc.query(
+            'publicMovies',
+            'homeMovies',
+            undefined,
+            headers()
           );
-          const { trending } = await publicMovies.homeMovies.query();
           return trending;
         }}
         slideSize={4}
@@ -43,11 +46,12 @@ async function NowPlayingSlider() {
     <>
       <Slider
         fetchItems={async () => {
-          const { publicMovies } = getTRPCClient(
-            headers(),
-            'publicMoviesRoutes'
+          const { nowPlaying } = await trpc.query(
+            'publicMovies',
+            'homeMovies',
+            undefined,
+            headers()
           );
-          const { nowPlaying } = await publicMovies.homeMovies.query();
           return nowPlaying;
         }}
         slideSize={5}

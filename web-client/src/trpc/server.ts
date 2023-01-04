@@ -1,26 +1,40 @@
 import type { AppRouter } from 'trpc/client';
-import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
+import { createTRPCProxyClient, httpLink } from '@trpc/client';
+import { cache } from 'react';
+import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 
 const apiURL = process.env.API_HOST_URL;
 
-// TODO: Calculate based on the selected tRPC query (making use of a generic types) or
-// calculate value in the fetch function based on the given input (url) value
-type appPaths =
-  | 'sessionRoutes'
-  | 'accountRoutes'
-  | 'moviesRoutes'
-  | 'publicMoviesRoutes'
-  | 'googleAuthRoutes';
+const trpcRoutersPaths: { [key: string]: string } = {
+  'session.': 'sessionRoutes/session.',
+  'account.': 'accountRoutes/account.',
+  'googleAuth.': 'googleAuthRoutes/googleAuth.',
+  'movies.': 'moviesRoutes/movies.',
+  'publicMovies.': 'publicMoviesRoutes/publicMovies.',
+};
 
-// NOTE: Use this function on server side
-export const getTRPCClient = (headers: Headers, path: appPaths) =>
+// NOTE: The expected headers are the headers
+// in the nextjs request object.
+export const createTRPCClient = (headers: Headers | undefined) =>
   createTRPCProxyClient<AppRouter>({
     links: [
-      httpBatchLink({
-        url: `${apiURL}/trpc/${path}`,
+      httpLink({
+        url: `${apiURL}/trpc`,
         fetch: (input, init) => {
-          const cookies = headers.get('Cookie');
-          return fetch(input, {
+          const cookies = headers?.get('Cookie');
+          const aUrl = new URL(input.toString());
+          let bUrl = aUrl
+            .toString()
+            .replace(
+              trpcRoutersPaths[0],
+              trpcRoutersPaths[trpcRoutersPaths[0]]
+            );
+
+          for (let key in trpcRoutersPaths) {
+            bUrl = bUrl.replace(key, trpcRoutersPaths[key]);
+          }
+
+          return fetch(bUrl, {
             ...init,
             headers: {
               // TODO: Remove sensitive headers from request to cached/public endpoints
@@ -40,3 +54,24 @@ export const getTRPCClient = (headers: Headers, path: appPaths) =>
       }),
     ],
   });
+
+// NOTE: Use this object on server side (server components)
+const trpc = {
+  query: cache(
+    async <
+      RouterKey extends keyof inferRouterInputs<AppRouter>,
+      ProcKey extends keyof inferRouterInputs<AppRouter[RouterKey]>,
+      ProcInput extends inferRouterInputs<AppRouter[RouterKey]>[ProcKey]
+    >(
+      routerKey: RouterKey,
+      procKey: ProcKey,
+      procInput: ProcInput,
+      headers: Headers | undefined
+    ): Promise<inferRouterOutputs<AppRouter[RouterKey]>[ProcKey]> => {
+      const trpcClient = createTRPCClient(headers);
+      return (trpcClient as any)[routerKey][procKey].query(procInput);
+    }
+  ),
+};
+
+export default trpc;

@@ -1,12 +1,14 @@
 import { headers } from 'next/headers';
 import Slider from 'src/components/Slider';
-import { getTRPCClient } from 'src/trpc/server';
+import trpc from 'src/trpc/server';
 
 export default async function TopMovies() {
-  const { publicMovies } = getTRPCClient(headers(), 'publicMoviesRoutes');
-  const { popularByGenre } = await publicMovies.popularByDecadeAndGenre.query({
-    decade: 2020,
-  });
+  const { popularByGenre } = await trpc.query(
+    'publicMovies',
+    'popularByDecadeAndGenre',
+    { decade: 2020 },
+    headers()
+  );
 
   return (
     <>

@@ -1,1 +1,1 @@
-export type { AppRouter } from '../server'
+export type { AppRouter } from '../server';

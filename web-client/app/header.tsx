@@ -1,9 +1,9 @@
-import { getTRPCClient } from 'src/trpc/server';
 import style from './header.module.scss';
 import SearchVector from 'public/vectors/search.svg';
 import Link from 'next/link';
-import { Voltaire } from '@next/font/google';
 import { headers } from 'next/headers';
+import { Voltaire } from '@next/font/google';
+import trpc from 'src/trpc/server';
 
 const voltaire = Voltaire({
   weight: '400',
@@ -65,9 +65,12 @@ const NavOptions: React.FC = () => (
 );
 
 export default async function Header() {
-  const reqHeaders = headers();
-  const { session } = getTRPCClient(reqHeaders, 'sessionRoutes');
-  const { isAuthenticated } = await session.getSession.query();
+  const { isAuthenticated } = await trpc.query(
+    'session',
+    'getSession',
+    undefined,
+    headers()
+  );
 
   return (
     <div className={style['container']}>
