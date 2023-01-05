@@ -1,12 +1,5 @@
 import type { AppRouter } from '../server';
-import type {
-  inferProcedureOutput,
-  inferProcedureInput,
-  // inferSubscriptionOutput,
-  inferHandlerInput,
-  inferRouterInputs,
-  inferRouterOutputs,
-} from '@trpc/server';
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 
 /**
  * Enum containing all api query paths

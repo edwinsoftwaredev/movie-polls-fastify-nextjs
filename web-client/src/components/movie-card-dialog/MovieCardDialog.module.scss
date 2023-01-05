@@ -11,8 +11,10 @@
     aspect-ratio: 16/9;
     height: auto;
     max-height: var(--max-header-height);
-    min-width: 100%;
     background-color: rgb(15, 15, 15);
+
+    min-height: 100%;
+    min-width: 100%;
 
     img {
       object-fit: contain;

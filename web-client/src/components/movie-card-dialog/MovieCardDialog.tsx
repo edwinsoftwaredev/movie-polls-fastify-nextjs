@@ -45,7 +45,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
         '0': { file_path },
       },
     },
-  } = useMovieDetails(movie);
+  } = useMovieDetails(movie, false);
 
   const movieCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLElement>(null);

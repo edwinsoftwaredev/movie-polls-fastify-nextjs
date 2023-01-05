@@ -1,4 +1,4 @@
-import { mergeRouters, router } from './init-tRPC';
+import { mergeRouters } from './init-tRPC';
 import {
   accountRouter,
   googleAuthRouter,

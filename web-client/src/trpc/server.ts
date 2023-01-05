@@ -1,17 +1,8 @@
 import type { AppRouter } from 'trpc/client';
+import { getRoute } from './routeHelper';
 import { createTRPCProxyClient, httpLink } from '@trpc/client';
 import { cache } from 'react';
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-
-const apiURL = process.env.API_HOST_URL;
-
-const trpcRoutersPaths: { [key: string]: string } = {
-  'session.': 'sessionRoutes/session.',
-  'account.': 'accountRoutes/account.',
-  'googleAuth.': 'googleAuthRoutes/googleAuth.',
-  'movies.': 'moviesRoutes/movies.',
-  'publicMovies.': 'publicMoviesRoutes/publicMovies.',
-};
 
 // NOTE: The expected headers are the headers
 // in the nextjs request object.
@@ -19,20 +10,10 @@ export const createTRPCClient = (headers: Headers | undefined) =>
   createTRPCProxyClient<AppRouter>({
     links: [
       httpLink({
-        url: `${apiURL}/trpc`,
+        url: `${process.env.API_HOST_URL}/trpc`,
         fetch: (input, init) => {
           const cookies = headers?.get('Cookie');
-          const aUrl = new URL(input.toString());
-          let bUrl = aUrl
-            .toString()
-            .replace(
-              trpcRoutersPaths[0],
-              trpcRoutersPaths[trpcRoutersPaths[0]]
-            );
-
-          for (let key in trpcRoutersPaths) {
-            bUrl = bUrl.replace(key, trpcRoutersPaths[key]);
-          }
+          const bUrl = getRoute(input.toString());
 
           return fetch(bUrl, {
             ...init,

@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
+import trpc from 'src/trpc/client';
 import { Movie } from 'types';
 
-const useMovieDetails = (movie: Movie) => {
+const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
+  const { data: additionalDetailsData } = trpc.publicMovies.movieDetails.useQuery({
+    movieId: movie.id,
+  }, {
+    enabled: fetchAdditionalDetails,
+  });
+  const additionalDetails = additionalDetailsData?.movieDetails;
+
   const [genresLabel, setGenresLabel] = useState(
     movie.genres.map((movie) => movie.name).join(', ')
   );
@@ -16,6 +24,9 @@ const useMovieDetails = (movie: Movie) => {
   );
   const [runtimeLabel, setRuntimeLabel] = useState(
     `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
+  );
+  const [ratingLabel, setRatingLabel] = useState(
+    additionalDetails?.release_dates.results[0].release_dates[0].certification
   );
 
   useEffect(() => {
@@ -41,13 +52,23 @@ const useMovieDetails = (movie: Movie) => {
     );
   }, [movie.runtime]);
 
+  useEffect(() => {
+    setRatingLabel(additionalDetails?.release_dates.results[0].release_dates[0].certification)
+  }, [additionalDetails?.release_dates]);
+
   return {
     genresLabel,
     directorLabel,
     castLabel,
     runtimeLabel,
     ...movie,
-  };
+
+    ...(
+      additionalDetails ? ({ additionalDetails: {
+        ratingLabel: ratingLabel
+      }}) : {}
+    )
+ };
 };
 
 export default useMovieDetails;

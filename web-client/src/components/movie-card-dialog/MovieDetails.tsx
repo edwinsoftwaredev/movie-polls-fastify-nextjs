@@ -11,8 +11,10 @@ interface MovieDetailsProps {
 }
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
-  const { runtimeLabel, castLabel, directorLabel, genresLabel, overview } =
-    useMovieDetails(movie);
+  const { runtimeLabel, castLabel, directorLabel, genresLabel, overview, additionalDetails } =
+    useMovieDetails(movie, false);
+
+  const { ratingLabel } = additionalDetails || {};
 
   const elRef = useRef<HTMLElement>(null);
   const toRef = useRef<number>();
