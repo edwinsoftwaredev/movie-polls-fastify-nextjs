@@ -10,8 +10,10 @@
     "sourceMap": true,
     "outDir": "dist",
     "strict": true,
-    "lib": ["es2022"],
+    // NOTE: Added DOM lib to handle Edge functions in typescript
+    "lib": ["es2022", "DOM"],
     "esModuleInterop": true,
     "baseUrl": "."
   },
+  "exclude": ["api/vercel/*", "api/middleware.ts"]
 }

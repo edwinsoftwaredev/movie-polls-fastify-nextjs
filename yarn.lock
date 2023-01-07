@@ -2145,17 +2145,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.7.18":
-  version: 18.7.18
-  resolution: "@types/node@npm:18.7.18"
-  checksum: 8aec61f0f96e2a69ce51f1f40f949ca578bbb4fe05d7c0b8ce3aeeb848e90f755837f17f6ac132ca404d974fe9b2974150ad3b4984fc9dc7c3ceddb10bae0167
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.9":
-  version: 18.11.17
-  resolution: "@types/node@npm:18.11.17"
-  checksum: 1933afd068d5c75c068c6c4df6d10edb3b0b2bb6503d544e2f0496ac007c90596e6a5e284a8ef032451bc16f871b7e46719d7d2bea60e9b25d13a77d52161cac
+"@types/node@npm:^18.11.18":
+  version: 18.11.18
+  resolution: "@types/node@npm:18.11.18"
+  checksum: 03f17f9480f8d775c8a72da5ea7e9383db5f6d85aa5fefde90dd953a1449bd5e4ffde376f139da4f3744b4c83942166d2a7603969a6f8ea826edfb16e6e3b49d
   languageName: node
   linkType: hard
 
@@ -2275,6 +2268,13 @@ __metadata:
   version: 5.7.2
   resolution: "@vercel/build-utils@npm:5.7.2"
   checksum: 9255335ff00de4fc96120d309763864cf30d1a4427afee16228c3d09df4a331406aea74a79209e3f0dcd78a94b9e3599e7ed0666ea3475d8a73d020d8603e449
+  languageName: node
+  linkType: hard
+
+"@vercel/edge@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@vercel/edge@npm:0.2.1"
+  checksum: 67765338e22f349859a4865cdc2cdad33d7d06c04438429ddd967c55556c9ca5a33b6cefad9926e1c6e69d6272aa1e784d006e0ee39d1f584a7daeed84859387
   languageName: node
   linkType: hard
 
@@ -2490,8 +2490,9 @@ __metadata:
     "@fastify/session": ^10.0.0
     "@prisma/client": latest
     "@trpc/server": ^10.7.0
-    "@types/node": ^18.11.9
+    "@types/node": ^18.11.18
     "@upstash/redis": ^1.16.0
+    "@vercel/edge": ^0.2.1
     "@vercel/node": ^2.6.1
     dotenv: ^16.0.3
     fastify: ^4.10.2
@@ -7046,7 +7047,7 @@ __metadata:
     "@trpc/client": ^10.7.0
     "@trpc/react-query": ^10.7.0
     "@trpc/server": ^10.7.0
-    "@types/node": 18.7.18
+    "@types/node": ^18.11.18
     "@types/react": 18.0.20
     "@types/react-dom": 18.0.6
     eslint: 8.23.1
