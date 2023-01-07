@@ -2,7 +2,7 @@ import { next } from '@vercel/edge';
 import { ipRateLimit } from './vercel/ip-rate-limt';
 
 export const config = {
-  matcher: ['/publicMoviesRoutes/:path*'],
+  matcher: ['/trpc/publicMoviesRoutes/:path*'],
   runtime: 'edge',
   regions: ['iad1'], // only execute this function on iad1
 };
