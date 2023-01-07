@@ -8,9 +8,12 @@ export const config = {
 };
 
 export default async (req: Request) => {
+  // TODO: consider device fingerprinting
   const ipRateLimitRes = await ipRateLimit(req);
   // If the status is not 200 then it has been rate limited.
   if (ipRateLimitRes.status !== 200) return ipRateLimitRes;
 
-  return next();
+  return next({
+    headers: { 'x-from-middleware': 'true' },
+  });
 };

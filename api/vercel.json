@@ -2,6 +2,17 @@
   "rewrites": [
     {
       "source": "/(.*)",
+      "destination": "/api/middleware.ts"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-from-middleware",
+          "value": "true"
+        }
+      ],
       "destination": "/api/serverless.ts"
     }
   ]
