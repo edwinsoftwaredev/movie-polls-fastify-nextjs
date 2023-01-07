@@ -44,7 +44,7 @@ export async function upstashRest(
 
   return upstash({
     token,
-    url: `https://${domain}${options?.pipeline ? '/pipeline' : ''}`,
+    url: `${domain}${options?.pipeline ? '/pipeline' : ''}`,
     method: 'POST',
     body: JSON.stringify(args),
   });
