@@ -1,11 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/trpc/publicMoviesRoutes/(.*)",
       "destination": "/api/middleware.ts"
     },
     {
-      "source": "/(.*)",
+      "source": "/trpc/publicMoviesRoutes/(.*)",
       "has": [
         {
           "type": "header",
@@ -13,6 +13,10 @@
           "value": "true"
         }
       ],
+      "destination": "/api/serverless.ts"
+    },
+    {
+      "source": "/(.*)",
       "destination": "/api/serverless.ts"
     }
   ]
