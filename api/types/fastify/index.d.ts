@@ -52,7 +52,6 @@ declare module 'fastify' {
       providersByMovieId: (
         movieId: number
       ) => Promise<{ id: number; results: any }>;
-      detailsByMovieId: (movieId: number) => Promise<MovieDetail>;
       genreNamesByIds: (genreIds: Array<number>) => Promise<Array<string>>;
       movieDetails: (movieId: number) => Promise<MovieDetail>;
     };

@@ -1,7 +1,7 @@
 import { fetch } from 'undici';
 import { MovieDetail } from '../types';
 
-export const movieDetails = async (movieId: number) => {
+export const movieDetails = async (movieId: number): Promise<MovieDetail> => {
   const TMDB_API_URL = process.env.TMDB_API_URL || '';
   const TMDB_API_KEY = process.env.TMDB_API_KEY || '';
 
@@ -12,18 +12,26 @@ export const movieDetails = async (movieId: number) => {
   // TODO: Get session's geolocation
   urlSearchParams.set('language', 'en-US');
   urlSearchParams.set('include_image_language', 'en,null');
-  const result = await fetch(`${TMDB_API_URL}/movie/${movieId}`, {
-    body: urlSearchParams,
-  });
+  const result = await fetch(
+    `${TMDB_API_URL}/movie/${movieId}?${urlSearchParams.toString()}`
+  );
 
-  const movieDetails: MovieDetail = (await result.json()) as any;
+  const movieDetails = (await result.json()) as any;
+
+  const { release_dates, iso_3166_1 } =
+    movieDetails.release_dates.results.find(
+      (r: any) =>
+        r.iso_3166_1 === 'US' &&
+        r.release_dates.find((rd: any) => rd.certification)
+    ) || {};
+
+  const { certification, release_date } = release_dates.shift() || {};
 
   return {
-    ...movieDetails,
-    release_dates: {
-      results: movieDetails.release_dates.results.filter(
-        (r) => r.iso_3166_1 === 'US'
-      ),
-    },
+    homepage: '',
+    providers: [],
+    release_date,
+    certification,
+    iso_3166_1,
   };
 };

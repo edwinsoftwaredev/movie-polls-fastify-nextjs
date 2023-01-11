@@ -3,12 +3,18 @@ import trpc from 'src/trpc/client';
 import { Movie } from 'types';
 
 const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
-  const { data: additionalDetailsData } = trpc.publicMovies.movieDetails.useQuery({
-    movieId: movie.id,
-  }, {
-    enabled: fetchAdditionalDetails,
-  });
-  const additionalDetails = additionalDetailsData?.movieDetails;
+  const { data: additionalMovieDetails } =
+    trpc.publicMovies.movieDetails.useQuery(
+      {
+        movieId: movie.id,
+      },
+      {
+        enabled: fetchAdditionalDetails,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+      }
+    );
+  const additionalDetails = additionalMovieDetails?.movieDetails;
 
   const [genresLabel, setGenresLabel] = useState(
     movie.genres.map((movie) => movie.name).join(', ')
@@ -26,8 +32,11 @@ const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
     `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
   );
   const [ratingLabel, setRatingLabel] = useState(
-    additionalDetails?.release_dates.results[0].release_dates[0].certification
+    additionalDetails?.certification
   );
+  const [releaseYearLabel, setReleaseYearLabel] = useState(
+    additionalDetails?.release_date.split('-')[0]
+  )
 
   useEffect(() => {
     setGenresLabel(movie.genres.map((movie) => movie.name).join(', '));
@@ -53,8 +62,12 @@ const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
   }, [movie.runtime]);
 
   useEffect(() => {
-    setRatingLabel(additionalDetails?.release_dates.results[0].release_dates[0].certification)
-  }, [additionalDetails?.release_dates]);
+    setRatingLabel(additionalDetails?.certification);
+  }, [additionalDetails?.certification]);
+
+  useEffect(() => {
+    setReleaseYearLabel(additionalDetails?.release_date.split('-')[0]);
+  }, [additionalDetails?.release_date]);
 
   return {
     genresLabel,
@@ -63,12 +76,15 @@ const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
     runtimeLabel,
     ...movie,
 
-    ...(
-      additionalDetails ? ({ additionalDetails: {
-        ratingLabel: ratingLabel
-      }}) : {}
-    )
- };
+    ...(additionalDetails
+      ? {
+          additionalDetails: {
+            ratingLabel: ratingLabel,
+            releaseYearLabel
+          },
+        }
+      : {}),
+  };
 };
 
 export default useMovieDetails;

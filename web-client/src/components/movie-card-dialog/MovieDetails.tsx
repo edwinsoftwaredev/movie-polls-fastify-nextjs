@@ -11,10 +11,16 @@ interface MovieDetailsProps {
 }
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
-  const { runtimeLabel, castLabel, directorLabel, genresLabel, overview, additionalDetails } =
-    useMovieDetails(movie, false);
+  const {
+    runtimeLabel,
+    castLabel,
+    directorLabel,
+    genresLabel,
+    overview,
+    additionalDetails,
+  } = useMovieDetails(movie, true);
 
-  const { ratingLabel } = additionalDetails || {};
+  const { ratingLabel, releaseYearLabel } = additionalDetails || {};
 
   const elRef = useRef<HTMLElement>(null);
   const toRef = useRef<number>();
@@ -37,8 +43,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         <div className={`${styles['movie-title-desc']}`}>
           <h3>{movie.title}</h3>
           <div className={`${styles['release-date-rating']}`}>
-            <Label outlined>RT-00</Label>
-            <Label>(2022)</Label>
+            {ratingLabel ? <Label outlined>{ratingLabel}</Label> : null}
+            {releaseYearLabel ? <Label>({releaseYearLabel})</Label> : null}
             <Label>{runtimeLabel}</Label>
           </div>
         </div>

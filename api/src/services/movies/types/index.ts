@@ -45,20 +45,14 @@ export interface Movie {
       job: string;
       name: string;
     }>;
-  }
+  };
 }
 
-export interface MovieDetail extends Movie {
+export interface MovieDetail {
   homepage: string;
-  release_dates: {
-    results: {
-      iso_3166_1: string;
-      release_dates: {
-        release_date: string;
-        certification: string;
-      }[];
-    }[];
-  };
+  release_date: string;
+  iso_3166_1: string;
+  certification: string;
   providers: any;
 }
 
@@ -75,20 +69,3 @@ export interface MoviesByGenre {
   genre_name: string;
   results: Movie[];
 }
-
-export const getMovieFromMovieDetails = (movie: MovieDetail): Movie => {
-  return {
-    adult: movie.adult,
-    images: movie.images,
-    genres: movie.genres,
-    id: movie.id,
-    original_language: movie.original_language,
-    original_title: movie.original_title,
-    overview: movie.overview,
-    release_date: movie.release_date,
-    title: movie.title,
-    vote_average: movie.vote_average,
-    runtime: movie.runtime,
-    credits: movie.credits
-  };
-};
