@@ -13,13 +13,9 @@ const publicRoutes: FastifyPluginAsync = async (fastify) => {
 
   // Validates that the request is a GET request and that it includes the MOVIES_API_KEY
   fastify.addHook('preHandler', async (req, res) => {
-    const reqKey = req.headers['x-api-key-movies'];
-    if (
-      req.method === 'GET' &&
-      reqKey === process.env.MOVIES_API_KEY &&
-      req.headers['x-ssr'] === '1'
-    )
-      return;
+    // TODO: remove headers not need on client side
+    const isFromMiddleware = req.headers['x-from-middleware'] === '1';
+    if (req.method === 'GET' && isFromMiddleware) return;
 
     res.code(401);
     res.send();

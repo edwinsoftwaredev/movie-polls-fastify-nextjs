@@ -15,5 +15,5 @@
     "esModuleInterop": true,
     "baseUrl": "."
   },
-  "exclude": ["api/vercel/*", "api/middleware.ts"]
+  "exclude": ["middleware.ts"]
 }
