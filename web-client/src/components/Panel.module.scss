@@ -1,0 +1,54 @@
+.panel {
+  width: 100%;
+  height: 100%;
+  background-color: rgba($color: #000000, $alpha: 0.8);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 10%;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.panel-tabs {
+  list-style: none;
+  padding-inline: 0;
+  margin-block: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  grid-row: 2;
+  text-align: center;
+
+  li {
+    display: inline;
+    width: 100%;
+    
+    &:hover {
+      background-color: rgba($color: #ffffff, $alpha: 0.2);
+    }
+
+    button {
+      background-color: transparent;
+      outline: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      color: white;
+      font-size: 0.8em;
+    }
+  }
+}
+
+.children {
+  width: 100%;
+  height: 100%;
+  grid-row: 1;
+  padding: 0.5rem;
+}
+
+.children-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}

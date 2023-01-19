@@ -42,9 +42,8 @@
   white-space: normal;
 
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
+  align-items: left;
   grid-row: 1;
   gap: 0.5rem;
 
@@ -60,6 +59,8 @@
   flex-wrap: nowrap;
   align-items: center;
   gap: 0.5rem;
+  width: fit-content;
+  min-height: 1.25rem;
 
   ul {
     list-style: disc;
@@ -96,7 +97,4 @@
 }
 
 .movie-action-panel {
-  opacity: 0;
-
-  visibility: hidden;
 }

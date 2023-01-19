@@ -36,7 +36,7 @@ const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
   );
   const [releaseYearLabel, setReleaseYearLabel] = useState(
     additionalDetails?.release_date.split('-')[0]
-  )
+  );
 
   useEffect(() => {
     setGenresLabel(movie.genres.map((movie) => movie.name).join(', '));
@@ -80,7 +80,7 @@ const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
       ? {
           additionalDetails: {
             ratingLabel: ratingLabel,
-            releaseYearLabel
+            releaseYearLabel,
           },
         }
       : {}),

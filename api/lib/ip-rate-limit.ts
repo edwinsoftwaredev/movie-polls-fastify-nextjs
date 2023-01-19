@@ -11,7 +11,7 @@ export const ipRateLimit = initRateLimit((request) => ({
   count: increment,
   // TODO: change limit for authenticated users
   limit: 250,
-  timeframe: 3600 * 24, // limit: 250 reqs per day
+  timeframe: 3600 * 24, // limit: 250 reqs per day (including OPTIONS request)
 }));
 
 const increment: CountFn = async ({ response, key, timeframe }) => {

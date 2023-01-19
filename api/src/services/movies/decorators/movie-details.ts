@@ -25,7 +25,10 @@ export const movieDetails = async (movieId: number): Promise<MovieDetail> => {
         r.release_dates.find((rd: any) => rd.certification)
     ) || {};
 
-  const { certification, release_date } = release_dates.shift() || {};
+  const { certification, release_date } = release_dates.find( 
+    (r: any) => r.certification
+  ) || {};
+    
 
   return {
     homepage: '',
