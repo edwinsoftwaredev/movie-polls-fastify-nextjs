@@ -6,6 +6,7 @@ import { OAuth2Client, LoginTicket } from 'google-auth-library';
 import {
   Movie,
   MovieDetail,
+  MovieProviders,
   MoviesByGenre,
 } from '../../src/services/movies/types';
 
@@ -49,11 +50,9 @@ declare module 'fastify' {
         decade: number
       ) => Promise<Array<MoviesByGenre>>;
       search: (text: string) => Promise<Array<Movie>>;
-      providersByMovieId: (
-        movieId: number
-      ) => Promise<{ id: number; results: any }>;
       genreNamesByIds: (genreIds: Array<number>) => Promise<Array<string>>;
       movieDetails: (movieId: number) => Promise<MovieDetail>;
+      movieProviders: (movieId: number) => Promise<MovieProviders>;
     };
   }
 

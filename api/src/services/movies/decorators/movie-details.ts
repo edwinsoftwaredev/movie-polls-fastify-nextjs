@@ -7,7 +7,7 @@ export const movieDetails = async (movieId: number): Promise<MovieDetail> => {
 
   const urlSearchParams = new URLSearchParams();
   urlSearchParams.set('api_key', TMDB_API_KEY || '');
-  urlSearchParams.set('append_to_response', 'release_dates');
+  urlSearchParams.set('append_to_response', 'release_dates,providers');
 
   // TODO: Get session's geolocation
   urlSearchParams.set('language', 'en-US');
@@ -25,14 +25,11 @@ export const movieDetails = async (movieId: number): Promise<MovieDetail> => {
         r.release_dates.find((rd: any) => rd.certification)
     ) || {};
 
-  const { certification, release_date } = release_dates.find( 
-    (r: any) => r.certification
-  ) || {};
-    
+  const { certification, release_date } =
+    release_dates.find((r: any) => r.certification) || {};
 
   return {
     homepage: '',
-    providers: [],
     release_date,
     certification,
     iso_3166_1,

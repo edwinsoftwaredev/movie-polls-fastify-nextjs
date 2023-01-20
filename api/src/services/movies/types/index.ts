@@ -53,7 +53,33 @@ export interface MovieDetail {
   release_date: string;
   iso_3166_1: string;
   certification: string;
-  providers: any;
+}
+
+export interface MovieProviders {
+  flatrate: [
+    {
+      logo_path: string;
+      provider_id: number;
+      display_priority: number;
+      provider_name: string;
+    }
+  ];
+  rent: [
+    {
+      logo_path: string;
+      provider_id: number;
+      display_priority: number;
+      provider_name: string;
+    }
+  ];
+  buy: [
+    {
+      logo_path: string;
+      provider_id: number;
+      display_priority: number;
+      provider_name: string;
+    }
+  ];
 }
 
 export interface GenreRequest {

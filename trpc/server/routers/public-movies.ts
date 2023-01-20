@@ -63,6 +63,18 @@ const publicMoviesRouter = router({
       const movieDetails = await fastify.movies.movieDetails(movieId);
       return { movieDetails };
     }),
+  movieProviders: procedure
+    .input(
+      z.object({
+        movieId: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { fastify } = ctx;
+      const { movieId } = input;
+      const movieProviders = await fastify.movies.movieProviders(movieId);
+      return { movieProviders };
+    }),
 });
 
 export default router({ publicMovies: publicMoviesRouter });

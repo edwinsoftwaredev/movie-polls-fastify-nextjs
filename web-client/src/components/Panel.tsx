@@ -1,20 +1,23 @@
 'use client';
 
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import styles from './Panel.module.scss';
 
 interface PanelProps extends PropsWithChildren {
-  tabs?: Array<{title: string, icon: 'image' | 'streamingOn' | 'availableOn' | 'pollStats'}>
+  tabs?: Array<{
+    title: string, 
+    icon: 'image' | 'streamingOn' | 'availableOn' | 'pollStats', 
+  }>;
   onTabClick: (tabTitle: string) => void;
+  defaultActiveTab?: string;
 }
 
-const Panel: React.FC<PanelProps> = ({ tabs, onTabClick, children }) => {
+const Panel: React.FC<PanelProps> = ({ tabs, onTabClick, defaultActiveTab, children }) => {
+  const [activeTab, setActiveTab] = useState(defaultActiveTab);
   return (
     <div className={styles['panel']}>
       <div className={styles['children']}>
-        <div className={styles['children-container']}>
-          {children}
-        </div>
+        {children}
       </div>
       {
         tabs?.length ? (
@@ -22,9 +25,12 @@ const Panel: React.FC<PanelProps> = ({ tabs, onTabClick, children }) => {
             {tabs.map(tab => (
               <li key={tab.title}>
                 <button
-                  onClick={() => {
+                  onClick={e => {
+                    e.stopPropagation();
+                    setActiveTab(tab.title);
                     onTabClick(tab.title);
                   }}
+                  className={activeTab === tab.title ? styles['active'] : ''}
                 >
                   <span>{tab.title}</span>
                 </button>
@@ -38,3 +44,4 @@ const Panel: React.FC<PanelProps> = ({ tabs, onTabClick, children }) => {
 }
 
 export default Panel;
+

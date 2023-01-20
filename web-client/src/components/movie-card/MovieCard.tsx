@@ -35,7 +35,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
         '0': { file_path },
       },
     },
-  } = useMovieDetails(movie, false);
+  } = useMovieDetails(movie, false, false);
 
   useEffect(() => {
     resizeObserverRef.current = new window.ResizeObserver(() => {

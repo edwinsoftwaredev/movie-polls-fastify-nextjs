@@ -1,20 +1,40 @@
 import { useEffect, useState } from 'react';
 import trpc from 'src/trpc/client';
-import { Movie } from 'types';
+import { Movie, MovieProviders } from 'types';
 
-const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
+const sortProviders = (
+  a: MovieProviders['flatrate'][0],
+  b: MovieProviders['flatrate'][0]
+) => a.display_priority - b.display_priority;
+
+const useMovieDetails = (
+  movie: Movie,
+  fetchAdditionalDetails?: boolean,
+  fetchProviders?: boolean
+) => {
   const { data: additionalMovieDetails } =
     trpc.publicMovies.movieDetails.useQuery(
       {
         movieId: movie.id,
       },
       {
-        enabled: fetchAdditionalDetails,
+        enabled: fetchAdditionalDetails ?? false,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
       }
     );
+
+  const { data: providersData } = trpc.publicMovies.movieProviders.useQuery(
+    { movieId: movie.id },
+    {
+      enabled: fetchProviders ?? false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    }
+  );
+
   const additionalDetails = additionalMovieDetails?.movieDetails;
+  const providers = providersData?.movieProviders;
 
   const [genresLabel, setGenresLabel] = useState(
     movie.genres.map((movie) => movie.name).join(', ')
@@ -37,6 +57,11 @@ const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
   const [releaseYearLabel, setReleaseYearLabel] = useState(
     additionalDetails?.release_date.split('-')[0]
   );
+  const [flatrate, setFlatRate] = useState(
+    providers?.flatrate.sort(sortProviders)
+  );
+  const [rent, setRent] = useState(providers?.rent.sort(sortProviders));
+  const [buy, setBuy] = useState(providers?.buy.sort(sortProviders));
 
   useEffect(() => {
     setGenresLabel(movie.genres.map((movie) => movie.name).join(', '));
@@ -69,13 +94,18 @@ const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
     setReleaseYearLabel(additionalDetails?.release_date.split('-')[0]);
   }, [additionalDetails?.release_date]);
 
+  useEffect(() => {
+    setFlatRate(providers?.flatrate.sort(sortProviders));
+    setRent(providers?.rent.sort(sortProviders));
+    setBuy(providers?.buy.sort(sortProviders));
+  }, [providers]);
+
   return {
     genresLabel,
     directorLabel,
     castLabel,
     runtimeLabel,
     ...movie,
-
     ...(additionalDetails
       ? {
           additionalDetails: {
@@ -84,6 +114,9 @@ const useMovieDetails = (movie: Movie, fetchAdditionalDetails: boolean) => {
           },
         }
       : {}),
+    flatrate,
+    rent,
+    buy,
   };
 };
 

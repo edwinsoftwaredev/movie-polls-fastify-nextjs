@@ -10,6 +10,7 @@ import {
   trendingByGenre,
 } from './decorators/cached-movies';
 import { movieDetails } from './decorators/movie-details';
+import { movieProviders } from './decorators/movie-providers';
 
 export interface MoviesPluginOptions extends FastifyPluginOptions {}
 
@@ -21,6 +22,7 @@ const movies: FastifyPluginAsync<MoviesPluginOptions> = async (fastify) => {
     trendingByGenre,
     popularByDecadeAndGenre,
     movieDetails,
+    movieProviders,
   });
 
   fastify.register(routes, { prefix: '/trpc/moviesRoutes' });
