@@ -45,7 +45,7 @@ const Provider: React.FC<{
       <h4>{title}</h4>
       <div>
         {providers?.map((item) => (
-          <ProviderItem provider={item} />
+          <ProviderItem key={item.provider_id} provider={item} />
         ))}
       </div>
     </section>
