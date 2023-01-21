@@ -56,6 +56,7 @@ export interface MovieDetail {
 }
 
 export interface MovieProviders {
+  link: string;
   flatrate: [
     {
       logo_path: string;

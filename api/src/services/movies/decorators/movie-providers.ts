@@ -20,6 +20,7 @@ export const movieProviders = async (
   const providers = data.results['US'] || {};
 
   return {
+    link: providers.link,
     flatrate: providers['flatrate'] ?? [],
     rent: providers['rent'] ?? [],
     buy: providers['buy'] ?? [],

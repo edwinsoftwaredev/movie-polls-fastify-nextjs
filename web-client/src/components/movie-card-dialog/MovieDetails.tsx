@@ -5,16 +5,14 @@ import { ComponentProps, useEffect, useRef, useState } from 'react';
 import { Movie } from 'types';
 import Label from '../Label';
 import Panel from '../Panel';
-import BuyOn from './movie-card-details-panels/BuyOn';
 import Poster from './movie-card-details-panels/Poster';
-import StreamingOn from './movie-card-details-panels/StreamingOn';
 import styles from './MovieDetails.module.scss';
+import AvailableOn from './movie-card-details-panels/AvailableOn';
 
 const tabs: ComponentProps<typeof Panel>['tabs'] = [
-  { title: 'Title', icon: 'image' },
-  { title: 'Poll', icon: 'pollStats' }, // ?
-  { title: 'Streaming On', icon: 'streamingOn' },
-  { title: 'Buy On', icon: 'availableOn' },
+  { title: 'Title' },
+  { title: 'Poll' }, // ?
+  { title: 'Available On' },
 ];
 
 interface MovieDetailsProps {
@@ -32,14 +30,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
     additionalDetails,
     images,
     title,
-    flatrate,
-    rent,
-    buy,
-  } = useMovieDetails(
-    movie,
-    true,
-    currentTab === 'Streaming On' || currentTab === 'Buy On'
-  );
+    providers,
+  } = useMovieDetails(movie, true, currentTab === 'Available On');
 
   const {
     posters: {
@@ -89,7 +81,18 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
             <span>
               ,{' '}
               <em>
-                <a href="/">more</a>
+                <a
+                  href={`${process.env.NEXT_PUBLIC_TMDB_URL}/movie/${movie.id}/cast`}
+                  title={'Visit TMDb'}
+                  referrerPolicy="no-referrer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  more
+                </a>
               </em>
             </span>
           </div>
@@ -111,10 +114,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           {currentTab === 'Title' ? (
             <Poster title={title} file_path={file_path} />
           ) : null}
-          {currentTab === 'Streaming On' ? (
-            <StreamingOn flatrate={flatrate} />
+          {currentTab === 'Available On' ? (
+            <AvailableOn providers={providers} movieTitle={title} />
           ) : null}
-          {currentTab === 'Buy On' ? <BuyOn rent={rent} buy={buy} /> : null}
         </Panel>
       </section>
     </article>
