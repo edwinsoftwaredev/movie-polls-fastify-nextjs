@@ -32,6 +32,9 @@
         height: 1rem;
         vertical-align: middle;
         border-color: #888;
+        border-style: solid;
+        border-width: 0;
+        border-right-width: 1px;
       }
 
       li {

@@ -6,7 +6,10 @@ export const animateDialogBackground = async (isReverse: boolean) => {
   const appFooter = document.getElementById('app-footer');
   const appMainPosY = appMain?.getBoundingClientRect().y;
 
-  if (!isReverse && window.innerHeight < document.body.clientHeight) {
+  if (
+    !isReverse &&
+    window.innerHeight < document.body.getBoundingClientRect().height
+  ) {
     typeof currentScrollbarPosY === 'undefined' &&
       (currentScrollbarPosY = window.scrollY);
     document.body.style.overflowY = 'scroll';
@@ -192,13 +195,13 @@ export const animateMovieCard = async (
     bottom: '0px',
     width: '100%',
     height: '100%',
-    minHeight: '100vh',
     // borderRadius: '4%',
     zIndex: '30',
   };
 
   const k3: Keyframe = {
     ...k2,
+    minHeight: '100vh',
     borderRadius: '0px',
   };
 

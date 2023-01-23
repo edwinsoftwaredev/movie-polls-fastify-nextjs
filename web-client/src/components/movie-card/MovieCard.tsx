@@ -43,8 +43,8 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
         setMovieCardRect({
           x: movieCardRef.current.getBoundingClientRect().x,
           y: movieCardRef.current.getBoundingClientRect().y,
-          height: movieCardRef.current.clientHeight,
-          width: movieCardRef.current.clientWidth,
+          height: movieCardRef.current.getBoundingClientRect().height,
+          width: movieCardRef.current.getBoundingClientRect().width,
         });
     });
   }, []);
@@ -70,8 +70,8 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
           setMovieCardRect({
             x: movieCardRef.current.getBoundingClientRect().x,
             y: movieCardRef.current.getBoundingClientRect().y,
-            height: movieCardRef.current.clientHeight,
-            width: movieCardRef.current.clientWidth,
+            height: movieCardRef.current.getBoundingClientRect().height,
+            width: movieCardRef.current.getBoundingClientRect().width,
           });
         setIsPreview(false);
       }}

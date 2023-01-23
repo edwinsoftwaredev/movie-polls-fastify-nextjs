@@ -73,7 +73,7 @@ const AvailableOn: React.FC<StreamingOnProps> = ({ providers, movieTitle }) => {
         <span>
           <a
             href={providers.link}
-            title={'Visit TMDb'}
+            title={'Visit TMDB'}
             referrerPolicy="no-referrer"
             target="_blank"
             rel="noopener noreferrer"

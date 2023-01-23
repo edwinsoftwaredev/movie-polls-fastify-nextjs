@@ -7,17 +7,21 @@ import trpc from 'src/trpc/client';
 import { getRoute } from 'src/trpc/routeHelper';
 
 const SessionHandler: React.FC = () => {
-  const { data: sessionData } = trpc.session.getSession.useQuery();
+  const { data: sessionData } = trpc.session.getSession.useQuery(undefined, {
+    // TODO: update
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
-    sessionData && 
+    sessionData &&
       document
-        .getElementsByName('csrf-token').item(0)
+        .getElementsByName('csrf-token')
+        .item(0)
         .setAttribute('content', sessionData.csrfToken);
-  }, [sessionData?.csrfToken])
+  }, [sessionData?.csrfToken]);
 
   return null;
-}
+};
 
 interface AppContextType {
   documentBodySize: number;
@@ -36,7 +40,7 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
-        // TODO: Add TRPC links for each route prefix defined 
+        // TODO: Add TRPC links for each route prefix defined
         // in the api. This will allow TRPC batching
         httpLink({
           url: `${apiURL}/trpc`,

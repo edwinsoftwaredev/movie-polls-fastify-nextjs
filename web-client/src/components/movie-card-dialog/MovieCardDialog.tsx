@@ -55,7 +55,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
   );
 
   const [headerImgWidth, setHeaderImgWidth] = useState(
-    document.body.clientWidth * 0.45
+    document.body.getBoundingClientRect().width * 0.45
   );
 
   const handleCardAnimate = async (isReverse: boolean) => {
@@ -106,10 +106,10 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
   }, [transitionStatus]);
 
   useEffect(() => {
-    setHeaderImgWidth(document.body.clientWidth * 0.45);
+    setHeaderImgWidth(document.body.getBoundingClientRect().width * 0.45);
     movieCardRef.current?.style.setProperty(
       '--max-header-height',
-      `${document.body.clientWidth * 0.45 * (9 / 16)}px`
+      `${document.body.getBoundingClientRect().width * 0.45 * (9 / 16)}px`
     );
   }, [initWidth, initHeight]);
 

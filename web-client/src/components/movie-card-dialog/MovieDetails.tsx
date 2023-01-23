@@ -83,7 +83,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <em>
                 <a
                   href={`${process.env.NEXT_PUBLIC_TMDB_URL}/movie/${movie.id}/cast`}
-                  title={'Visit TMDb'}
+                  title={'Visit TMDB'}
                   referrerPolicy="no-referrer"
                   target="_blank"
                   rel="noopener noreferrer"

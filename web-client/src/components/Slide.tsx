@@ -23,8 +23,8 @@ const Slide: React.FC<SlideProps> = ({ items, slideSize }) => {
           behavior: 'smooth',
           left:
             ev.type === 'forward'
-              ? slideRef.current.clientWidth
-              : -slideRef.current.clientWidth,
+              ? slideRef.current.getBoundingClientRect().width
+              : -slideRef.current.getBoundingClientRect().width,
         });
       }
     });

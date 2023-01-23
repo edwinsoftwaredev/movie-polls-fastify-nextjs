@@ -53,7 +53,7 @@ const useMovieDetails = (
     additionalDetails?.certification
   );
   const [releaseYearLabel, setReleaseYearLabel] = useState(
-    additionalDetails?.release_date.split('-')[0]
+    additionalDetails?.release_date?.split('-')[0]
   );
   const [providers, setProviders] = useState({
     link: providersData?.movieProviders.link,
@@ -91,7 +91,7 @@ const useMovieDetails = (
   }, [additionalDetails?.certification]);
 
   useEffect(() => {
-    setReleaseYearLabel(additionalDetails?.release_date.split('-')[0]);
+    setReleaseYearLabel(additionalDetails?.release_date?.split('-')[0]);
   }, [additionalDetails?.release_date]);
 
   useEffect(() => {

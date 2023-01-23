@@ -24,6 +24,8 @@
         max-width: 15%;
         width: 15%;
         border-radius: 2px;
+        aspect-ratio: 1;
+        background-color: rgba($color: #ffffff, $alpha: 0.2);
       }
     }
   }
@@ -64,5 +66,10 @@
   span:last-child {
     display: inline-flex;
     gap: 0.5em;
+  }
+
+  svg {
+    display: flex;
+    margin: auto 0;
   }
 }
