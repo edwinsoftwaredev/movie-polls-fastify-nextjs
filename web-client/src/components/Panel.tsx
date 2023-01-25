@@ -6,6 +6,7 @@ import styles from './Panel.module.scss';
 interface PanelProps extends PropsWithChildren {
   tabs?: Array<{
     title: string;
+    icon?: 'imagesmode' | 'leaderboard' | 'subscriptions';
   }>;
   onTabClick: (tabTitle: string) => void;
   defaultActiveTab?: string;
@@ -33,6 +34,7 @@ const Panel: React.FC<PanelProps> = ({
                 }}
                 className={activeTab === tab.title ? styles['active'] : ''}
               >
+                <span className="material-symbols-rounded">{tab.icon}</span>
                 <span>{tab.title}</span>
               </button>
             </li>

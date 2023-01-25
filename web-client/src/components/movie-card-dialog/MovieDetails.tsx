@@ -10,9 +10,9 @@ import styles from './MovieDetails.module.scss';
 import AvailableOn from './movie-card-details-panels/AvailableOn';
 
 const tabs: ComponentProps<typeof Panel>['tabs'] = [
-  { title: 'Title' },
-  { title: 'Poll' }, // ?
-  { title: 'Available On' },
+  { title: 'Title', icon: 'imagesmode' },
+  { title: 'Poll', icon: 'leaderboard' }, // ?
+  { title: 'Available On', icon: 'subscriptions' },
 ];
 
 interface MovieDetailsProps {

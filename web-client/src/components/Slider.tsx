@@ -40,9 +40,7 @@ const Slider: React.FC<SliderProps> = ({
               ctrlType={{
                 type: 'backward',
               }}
-            >
-              <span>{'-'}</span>
-            </SliderCtrl>
+            />
           </div>
           <div className={styles['slide-container']}>
             <Suspense fallback={<SlideSkeleton slideSize={slideSize} />}>
@@ -60,9 +58,7 @@ const Slider: React.FC<SliderProps> = ({
               ctrlType={{
                 type: 'forward',
               }}
-            >
-              <span>{'+'}</span>
-            </SliderCtrl>
+            />
           </div>
         </div>
       </div>

@@ -121,7 +121,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
           ),
         }}
       />
-      {!isPreview && movieCardRect ? (
+      {!isPreview && !!movieCardRect ? (
         <MovieCardDialog
           movie={movie}
           posY={movieCardRect.y}

@@ -113,6 +113,12 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
     );
   }, [initWidth, initHeight]);
 
+  useEffect(() => {
+    return () => {
+      process.env.NODE_ENV === 'production' && animateDialogBackground(true);
+    };
+  }, []);
+
   return createPortal(
     <div
       role={'dialog'}

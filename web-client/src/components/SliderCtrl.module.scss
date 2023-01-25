@@ -1,0 +1,20 @@
+.ctrl {
+  outline: none;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+
+  text-align: center;
+  span {
+    font-size: 4em;
+    color: transparent;
+  }
+
+  &:hover {
+    span {
+      color: rgb(0, 0, 0, 0.8);
+    }
+  }
+}

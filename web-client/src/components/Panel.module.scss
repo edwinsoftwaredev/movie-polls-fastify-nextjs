@@ -36,6 +36,11 @@
       height: 100%;
       color: inherit;
       font-size: 0.8em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25em;
 
       &:hover {
         color: white;
@@ -43,6 +48,10 @@
 
       &.active {
         color: white;
+      }
+
+      :first-child {
+        font-size: 1.4em;
       }
     }
   }
