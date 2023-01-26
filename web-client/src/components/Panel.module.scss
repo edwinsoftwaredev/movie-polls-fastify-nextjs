@@ -7,6 +7,10 @@
   grid-template-rows: 1fr 10%;
   border-radius: 2px;
   overflow: hidden;
+
+  @media screen and (max-width: 1200px) {
+    grid-template-rows: 1fr minmax(10%, 3em);
+  }
 }
 
 .panel-tabs {
@@ -53,6 +57,12 @@
       :first-child {
         font-size: 1.4em;
       }
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    button {
+      font-size: 0.95em !important;
     }
   }
 }

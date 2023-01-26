@@ -29,6 +29,17 @@
       }
     }
   }
+
+  @media screen and (max-width: 1200px) {
+    section {
+      div {
+        img {
+          max-width: 10%;
+          width: 10%;
+        }
+      }
+    }
+  }
 }
 
 .skeleton-item {
@@ -71,5 +82,9 @@
   svg {
     display: flex;
     margin: auto 0;
+  }
+
+  @media screen and (max-width: 1200px) {
+    // font-size: 1.3em;
   }
 }

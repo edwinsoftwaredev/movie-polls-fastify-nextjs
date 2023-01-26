@@ -72,12 +72,16 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
         </div>
         <div className={`${styles['movie-credits']}`}>
           <div>
-            <b>Director: </b>
-            {directorLabel}
+            <span>
+              <b>Director: </b>
+            </span>
+            <span>{directorLabel}</span>
           </div>
           <div>
-            <b>Cast: </b>
-            {castLabel}
+            <span>
+              <b>Cast: </b>
+            </span>
+            <span>{castLabel}</span>
             <span>
               ,{' '}
               <em>

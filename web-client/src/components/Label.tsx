@@ -18,7 +18,7 @@ const Label: React.FC<LabelProps> = ({ children, nowrap, outlined }) => {
   useEffect(() => {
     dispatch({
       type: nowrap ? 'add' : 'remove',
-      className: styles['wrapped'],
+      className: styles['nowrap'],
     });
     dispatch({
       type: outlined ? 'add' : 'remove',

@@ -1,6 +1,7 @@
 'use client';
 
 import { PropsWithChildren, useState } from 'react';
+import Label from './Label';
 import styles from './Panel.module.scss';
 
 interface PanelProps extends PropsWithChildren {
@@ -35,7 +36,7 @@ const Panel: React.FC<PanelProps> = ({
                 className={activeTab === tab.title ? styles['active'] : ''}
               >
                 <span className="material-symbols-rounded">{tab.icon}</span>
-                <span>{tab.title}</span>
+                <Label nowrap>{tab.title}</Label>
               </button>
             </li>
           ))}

@@ -13,20 +13,13 @@ const SliderCtrl: React.FC<SliderCtrlProps> = ({ ctrlType, children }) => {
 
   return (
     <button
-      className={`${styles['ctrl']} ${styles[`${ctrlType.type}`]}`}
+      className={`${styles['ctrl']}`}
       onClick={() => {
         onCtrlClick(ctrlType);
       }}
     >
       {ctrlType.type === 'backward' ? (
-        <span
-          className="material-symbols-rounded"
-          style={{
-            rotate: '180deg',
-          }}
-        >
-          chevron_right
-        </span>
+        <span className="material-symbols-rounded">chevron_left</span>
       ) : (
         <span className="material-symbols-rounded">chevron_right</span>
       )}

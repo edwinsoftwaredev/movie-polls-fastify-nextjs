@@ -9,6 +9,15 @@
     object-fit: cover !important;
     border-radius: 2px;
   }
+
+  @media screen and (max-width: 1200px) {
+    background-color: transparent;
+
+    img {
+      object-fit: contain !important;
+      max-height: 100% !important;
+    }
+  }
 }
 
 .poster-container {

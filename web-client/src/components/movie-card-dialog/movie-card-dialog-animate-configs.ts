@@ -79,6 +79,8 @@ export const animateCard = async (
   h: number,
   isReverse: boolean
 ) => {
+  const isWindowSmall = document.body.getBoundingClientRect().width <= 1200;
+
   const k1: Keyframe = {
     position: 'fixed',
     width: `${w}px`,
@@ -94,6 +96,7 @@ export const animateCard = async (
   };
 
   const k3: Keyframe = {
+    ...k2,
     position: 'fixed',
     width: `45%`,
     height: 'auto',
@@ -104,8 +107,10 @@ export const animateCard = async (
 
   const k4: Keyframe = {
     ...k3,
-    width: '75%',
-    left: `calc(50% - (75% * 0.5))`,
+    width: !isWindowSmall ? '75%' : '95%',
+    left: !isWindowSmall
+      ? `calc(50% - (75% * 0.5))`
+      : `calc(50% - (95% * 0.5))`,
   };
 
   const k5: Keyframe = {
@@ -123,16 +128,16 @@ export const animateCard = async (
       a1,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: 300,
+        duration: !isWindowSmall ? 300 : 0,
         fill: 'forwards',
       },
     ],
     [
       a2,
       {
-        delay: 100,
+        delay: !isWindowSmall ? 100 : 0,
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: 1100,
+        duration: !isWindowSmall ? 1100 : 0,
         fill: 'forwards',
         easing: 'cubic-bezier(1, 0, 0, 1)',
       },
@@ -140,9 +145,9 @@ export const animateCard = async (
     [
       a3,
       {
-        ...(!isReverse ? { delay: 150 } : {}),
+        ...(!isReverse ? { delay: !isWindowSmall ? 150 : 0 } : {}),
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: 200,
+        duration: !isWindowSmall ? 200 : 0,
         fill: 'forwards',
         easing: 'ease-out',
       },
@@ -151,7 +156,7 @@ export const animateCard = async (
       a4,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: 0,
+        duration: !isWindowSmall ? 0 : 0,
         fill: 'forwards',
       },
     ],
@@ -176,6 +181,8 @@ export const animateMovieCard = async (
   h: number,
   isReverse: boolean
 ) => {
+  const isWindowSmall = document.body.getBoundingClientRect().width <= 1200;
+
   const k1: Keyframe = {
     position: 'fixed',
     width: `${w}px`,
@@ -219,7 +226,7 @@ export const animateMovieCard = async (
       a1,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: 1600,
+        duration: !isWindowSmall ? 1600 : 0,
         fill: 'forwards',
         easing: 'cubic-bezier(1, 0, 0, 1)',
       },
@@ -228,7 +235,7 @@ export const animateMovieCard = async (
       a2,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: 200,
+        duration: !isWindowSmall ? 200 : 0,
         fill: 'forwards',
         easing: 'ease-out',
       },
@@ -237,7 +244,7 @@ export const animateMovieCard = async (
       a3,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: 0,
+        duration: !isWindowSmall ? 0 : 0,
         fill: 'forwards',
       },
     ],
