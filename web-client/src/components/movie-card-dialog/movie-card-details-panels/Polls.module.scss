@@ -1,0 +1,13 @@
+.polls {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.anonymous-container {
+  padding: 0.5em;
+  position: absolute;
+  bottom: 0.5rem;
+  z-index: 10;
+  width: 100%;
+}

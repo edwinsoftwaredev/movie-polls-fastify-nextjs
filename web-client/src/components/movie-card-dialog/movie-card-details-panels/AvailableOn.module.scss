@@ -23,7 +23,7 @@
       img {
         max-width: 15%;
         width: 15%;
-        border-radius: 2px;
+        border-radius: 0.175rem;
         aspect-ratio: 1;
         background-color: rgba($color: #ffffff, $alpha: 0.2);
       }
@@ -45,7 +45,7 @@
 .skeleton-item {
   max-width: 15%;
   width: 15%;
-  border-radius: 2px;
+  border-radius: 0.175rem;
   background-color: rgba($color: #ffffff, $alpha: 0.2);
   aspect-ratio: 1;
 }
@@ -67,7 +67,7 @@
   bottom: 0.5rem;
   font-size: 0.8em;
   z-index: 10;
-  border-radius: 2px;
+  border-radius: 0.175rem;
   backdrop-filter: blur(4px);
 
   span:first-child {

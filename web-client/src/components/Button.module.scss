@@ -1,0 +1,31 @@
+.button {
+  min-height: 32px;
+  min-width: 60px;
+  padding: 8px 16px;
+  border-radius: 0.175rem;
+  border-style: solid;
+  border-width: 1px;
+  background-color: rgba($color: #ffffff, $alpha: 0.15);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.25em;
+  transition-property: border-color, color;
+  transition-duration: 150ms, 150ms;
+  transition-timing-function: ease-in-out, ease-in-out;
+  color: inherit;
+
+  &:hover {
+    background-color: rgba($color: #ffffff, $alpha: 0.1);
+  }
+}
+
+.outlined {
+  &:hover {
+    border-color: gold !important;
+    color: gold !important;
+  }
+}
+
+.large {
+  width: 100%;
+}

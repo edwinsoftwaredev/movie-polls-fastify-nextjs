@@ -61,18 +61,26 @@ async function NowPlayingSlider() {
 }
 
 export default async function Home() {
+  const { isAuthenticated } = await trpc.query(
+    'session',
+    'getSession',
+    undefined,
+    headers()
+  );
+
   return (
     <>
       {/** Current polls section */}
-      <section>
-        <article>
-          <h2>Current Polls</h2>
-        </article>
+      {isAuthenticated ? (
+        <section>
+          <article>
+            <h2>Current Polls</h2>
+          </article>
 
-        {/** slider */}
-        <section />
-      </section>
-
+          {/** slider */}
+          <section />
+        </section>
+      ) : null}
       {/** Popular Movies */}
       <section>
         <article>

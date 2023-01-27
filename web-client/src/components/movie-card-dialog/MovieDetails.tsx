@@ -8,10 +8,11 @@ import Panel from '../Panel';
 import Poster from './movie-card-details-panels/Poster';
 import styles from './MovieDetails.module.scss';
 import AvailableOn from './movie-card-details-panels/AvailableOn';
+import Polls from './movie-card-details-panels/Polls';
 
 const tabs: ComponentProps<typeof Panel>['tabs'] = [
   { title: 'Title', icon: 'imagesmode' },
-  { title: 'Poll', icon: 'leaderboard' }, // ?
+  { title: 'Polls', icon: 'leaderboard' }, // ?
   { title: 'Available On', icon: 'subscriptions' },
 ];
 
@@ -121,6 +122,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           {currentTab === 'Available On' ? (
             <AvailableOn providers={providers} movieTitle={title} />
           ) : null}
+          {currentTab === 'Polls' ? <Polls /> : null}
         </Panel>
       </section>
     </article>

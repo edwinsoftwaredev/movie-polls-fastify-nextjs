@@ -79,7 +79,8 @@ export const animateCard = async (
   h: number,
   isReverse: boolean
 ) => {
-  const isWindowSmall = document.body.getBoundingClientRect().width <= 1200;
+  // this is layout viewport not visible viewport
+  const isNarrowViewport = window.innerWidth <= 1200;
 
   const k1: Keyframe = {
     position: 'fixed',
@@ -107,8 +108,8 @@ export const animateCard = async (
 
   const k4: Keyframe = {
     ...k3,
-    width: !isWindowSmall ? '75%' : '95%',
-    left: !isWindowSmall
+    width: !isNarrowViewport ? '75%' : '95%',
+    left: !isNarrowViewport
       ? `calc(50% - (75% * 0.5))`
       : `calc(50% - (95% * 0.5))`,
   };
@@ -128,16 +129,16 @@ export const animateCard = async (
       a1,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: !isWindowSmall ? 300 : 0,
+        duration: !isNarrowViewport ? 300 : 0,
         fill: 'forwards',
       },
     ],
     [
       a2,
       {
-        delay: !isWindowSmall ? 100 : 0,
+        delay: !isNarrowViewport ? 100 : 0,
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: !isWindowSmall ? 1100 : 0,
+        duration: !isNarrowViewport ? 1100 : 0,
         fill: 'forwards',
         easing: 'cubic-bezier(1, 0, 0, 1)',
       },
@@ -145,9 +146,9 @@ export const animateCard = async (
     [
       a3,
       {
-        ...(!isReverse ? { delay: !isWindowSmall ? 150 : 0 } : {}),
+        ...(!isReverse ? { delay: !isNarrowViewport ? 150 : 0 } : {}),
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: !isWindowSmall ? 200 : 0,
+        duration: !isNarrowViewport ? 200 : 0,
         fill: 'forwards',
         easing: 'ease-out',
       },
@@ -156,7 +157,7 @@ export const animateCard = async (
       a4,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: !isWindowSmall ? 0 : 0,
+        duration: !isNarrowViewport ? 0 : 0,
         fill: 'forwards',
       },
     ],
@@ -181,7 +182,8 @@ export const animateMovieCard = async (
   h: number,
   isReverse: boolean
 ) => {
-  const isWindowSmall = document.body.getBoundingClientRect().width <= 1200;
+  // this is layout viewport not visible viewport
+  const isNarrowViewport = window.innerWidth <= 1200;
 
   const k1: Keyframe = {
     position: 'fixed',
@@ -226,7 +228,7 @@ export const animateMovieCard = async (
       a1,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: !isWindowSmall ? 1600 : 0,
+        duration: !isNarrowViewport ? 1600 : 0,
         fill: 'forwards',
         easing: 'cubic-bezier(1, 0, 0, 1)',
       },
@@ -235,7 +237,7 @@ export const animateMovieCard = async (
       a2,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: !isWindowSmall ? 200 : 0,
+        duration: !isNarrowViewport ? 200 : 0,
         fill: 'forwards',
         easing: 'ease-out',
       },
@@ -244,7 +246,7 @@ export const animateMovieCard = async (
       a3,
       {
         direction: !isReverse ? 'normal' : 'reverse',
-        duration: !isWindowSmall ? 0 : 0,
+        duration: !isNarrowViewport ? 0 : 0,
         fill: 'forwards',
       },
     ],

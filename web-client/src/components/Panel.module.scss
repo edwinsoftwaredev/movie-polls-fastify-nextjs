@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 10%;
-  border-radius: 2px;
+  border-radius: 0.175rem;
   overflow: hidden;
 
   @media screen and (max-width: 1200px) {
