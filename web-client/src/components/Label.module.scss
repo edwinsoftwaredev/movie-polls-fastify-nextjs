@@ -3,7 +3,7 @@
   max-width: 100%;
   height: auto;
   box-sizing: border-box;
-  font-size: 0.8em;
+  font-size: 0.75em;
 
   // TODO: should be defined from a context
   color: rgba($color: #ffffff, $alpha: 0.85);
@@ -17,7 +17,7 @@
 }
 
 .outlined {
-  padding: 0 0.25rem;
+  padding: 0 0.25em;
   // TODO: should be defined from a context
-  border: 1px solid rgba($color: #ffffff, $alpha: 0.85);
+  border: 0.1em solid rgba($color: #ffffff, $alpha: 0.85);
 }

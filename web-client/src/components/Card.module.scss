@@ -1,9 +1,9 @@
 .card {
-  font-size: clamp(0.3rem, 0.55rem + 0.35vw, 5rem);
+  font-size: 1em;
   background-color: rgba($color: #ffffff, $alpha: 0.2);
   position: relative;
-  border-radius: 0.175rem;
-  // border: 0.125em solid rgba($color: #ffffff, $alpha: 0.2);
+  border-radius: 0.175em;
+  // border: 0.1em solid rgba($color: #ffffff, $alpha: 0.2);
   z-index: 1;
   overflow: hidden;
   box-sizing: border-box;
@@ -15,10 +15,10 @@
   // TODO: Refactor
   h3 {
     max-width: 100%;
-    padding: 0.5rem;
+    padding: 0.5em;
     background-color: rgba($color: #ffffff, $alpha: 0.2);
     backdrop-filter: blur(4px);
-    border-radius: 0.175rem;
+    border-radius: 0.175em;
     color: rgba($color: #000000, $alpha: 0.85);
     font-weight: 500;
     margin-block-end: 0;
@@ -28,7 +28,7 @@
 
   * {
     ::-webkit-scrollbar {
-      width: 0.275em;
+      width: 0.225em;
     }
 
     ::-webkit-scrollbar-thumb {

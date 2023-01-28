@@ -2,12 +2,12 @@
   background-color: rgba(255, 255, 255, 0.2);
   height: 100%;
   width: 100%;
-  border-radius: 0.175rem;
+  border-radius: 0.175em;
   position: relative;
 
   img {
     object-fit: cover !important;
-    border-radius: 0.175rem;
+    border-radius: 0.175em;
   }
 
   @media screen and (max-width: 1200px) {
@@ -23,5 +23,5 @@
 .poster-container {
   height: 100%;
   width: 100%;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.5em;
 }

@@ -10,7 +10,7 @@
     padding: 0 0.5em;
 
     h4 {
-      margin-block: 0.7em;
+      margin-block: 0.75em;
     }
 
     div {
@@ -18,12 +18,12 @@
       flex-direction: row;
       flex-wrap: wrap;
       gap: 1em;
-      padding-bottom: 0.7em;
+      padding-bottom: 0.75em;
 
       img {
-        max-width: 15%;
         width: 15%;
-        border-radius: 0.175rem;
+        min-width: 2em;
+        border-radius: 0.175em;
         aspect-ratio: 1;
         background-color: rgba($color: #ffffff, $alpha: 0.2);
       }
@@ -34,8 +34,7 @@
     section {
       div {
         img {
-          max-width: 10%;
-          width: 10%;
+          width: 5%;
         }
       }
     }
@@ -43,11 +42,15 @@
 }
 
 .skeleton-item {
-  max-width: 15%;
   width: 15%;
-  border-radius: 0.175rem;
+  min-width: 2em;
+  border-radius: 0.175em;
   background-color: rgba($color: #ffffff, $alpha: 0.2);
   aspect-ratio: 1;
+
+  @media screen and (max-width: 1200px) {
+    width: 5%;
+  }
 }
 
 .available-on-container {
@@ -64,10 +67,10 @@
   background-color: rgba($color: #000000, $alpha: 0.8);
   padding: 0.5em;
   position: sticky;
-  bottom: 0.5rem;
-  font-size: 0.8em;
+  bottom: 0.5em;
+  font-size: 0.75em;
   z-index: 10;
-  border-radius: 0.175rem;
+  border-radius: 0.175em;
   backdrop-filter: blur(4px);
 
   span:first-child {
@@ -82,9 +85,5 @@
   svg {
     display: flex;
     margin: auto 0;
-  }
-
-  @media screen and (max-width: 1200px) {
-    // font-size: 1.3em;
   }
 }

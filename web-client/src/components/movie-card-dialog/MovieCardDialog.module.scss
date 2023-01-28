@@ -29,9 +29,7 @@
     article {
       overflow: initial;
       height: fit-content;
-      // TODO: update this font-size after
-      // updating global or ancestor font-size
-      font-size: 2rem;
+      // font-size: 2em;
     }
 
     header {
@@ -41,7 +39,7 @@
         max-width: 100% !important;
         object-fit: contain;
         height: auto !important;
-        border-radius: 0.175rem;
+        border-radius: 0.175em;
       }
     }
   }

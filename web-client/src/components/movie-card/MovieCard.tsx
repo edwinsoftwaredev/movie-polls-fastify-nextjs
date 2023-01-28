@@ -34,6 +34,9 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
       backdrops: {
         '0': { file_path },
       },
+      posters: {
+        '0': { file_path: poster_file_path },
+      },
     },
   } = useMovieDetails(movie, false, false);
 
@@ -111,6 +114,11 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
                 return `https://image.tmdb.org/t/p/w300${src}`;
               }}
               src={`${file_path}`}
+              // src={`${
+              //   typeof window !== 'undefined' && window.innerWidth >= 1200
+              //     ? file_path
+              //     : poster_file_path
+              // }`}
               placeholder={'empty'}
               loading={'lazy'}
               fill={true}

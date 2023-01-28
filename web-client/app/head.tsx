@@ -12,6 +12,7 @@ export default async function Head() {
   return (
     <>
       <title>Movie Polls</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta
         name="description"
         content="Create movie polls and let everyone decide the winner."

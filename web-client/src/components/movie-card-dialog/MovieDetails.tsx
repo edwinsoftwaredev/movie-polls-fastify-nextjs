@@ -11,7 +11,7 @@ import AvailableOn from './movie-card-details-panels/AvailableOn';
 import Polls from './movie-card-details-panels/Polls';
 
 const tabs: ComponentProps<typeof Panel>['tabs'] = [
-  { title: 'Title', icon: 'imagesmode' },
+  { title: 'Title', icon: 'image' },
   { title: 'Polls', icon: 'leaderboard' }, // ?
   { title: 'Available On', icon: 'subscriptions' },
 ];

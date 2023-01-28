@@ -7,22 +7,23 @@
   cursor: pointer;
   text-align: center;
   padding: 0;
-  // font-size: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 
   span {
-    font-size: 3rem;
+    font-size: 4em;
     color: transparent;
-    width: 3rem;
-    height: 3rem;
   }
 
   &:hover {
     span {
-      color: rgb(0, 0, 0, 0.8);
+      color: white;
     }
+  }
+
+  @media screen and (max-width: 1200px) {
+    display: none;
   }
 }
