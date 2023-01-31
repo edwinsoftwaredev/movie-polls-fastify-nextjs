@@ -28,26 +28,26 @@ $slide-padding: calc((100% * (1 / 23)));
     box-sizing: content-box;
     flex-shrink: 0;
     aspect-ratio: 16 / 9;
-    padding-left: 7px;
+    padding-left: 0.5em;
     height: 100%;
 
     &:first-of-type {
       scroll-snap-stop: always;
       scroll-snap-align: start;
-      padding-left: 7px;
+      padding-left: 0.5em;
     }
 
     &:last-of-type {
       scroll-snap-stop: always;
       scroll-snap-align: start;
-      padding-right: 7px;
+      padding-right: 0.5em;
     }
 
     @media screen and (max-width: 1200px) {
       // TODO: Fix card rendered on server
       // aspect-ratio: 6 / 9;
 
-      width: get-slide-item-size(3, 7px) !important;
+      width: get-slide-item-size(3, 0.5em) !important;
       &:nth-of-type(n) {
         scroll-snap-stop: always !important;
         scroll-snap-align: start !important;
@@ -68,7 +68,7 @@ $slide-padding: calc((100% * (1 / 23)));
 
 .slide-s-3 {
   [class~='slide-item'] {
-    width: get-slide-item-size(3, 7px);
+    width: get-slide-item-size(3, 0.5em);
 
     &:nth-of-type(3n + 4) {
       scroll-snap-stop: always;
@@ -79,7 +79,7 @@ $slide-padding: calc((100% * (1 / 23)));
 
 .slide-s-4 {
   [class~='slide-item'] {
-    width: get-slide-item-size(4, 7px);
+    width: get-slide-item-size(4, 0.5em);
 
     &:nth-of-type(4n + 5) {
       scroll-snap-stop: always;
@@ -90,7 +90,7 @@ $slide-padding: calc((100% * (1 / 23)));
 
 .slide-s-5 {
   [class~='slide-item'] {
-    width: get-slide-item-size(5, 7px);
+    width: get-slide-item-size(5, 0.5em);
 
     &:nth-of-type(5n + 6) {
       scroll-snap-stop: always;

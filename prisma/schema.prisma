@@ -1,12 +1,12 @@
-// Enabling Prisma to do Referential Integrity so MySQL doesn't to.
-// https://www.prisma.io/docs/concepts/components/prisma-schema/relations/referential-integrity 
+// Enabling Prisma to do Referent
+// https://www.prisma.io/docs/concepts/components/prisma-schema/relations/relation-mode#emulate-relations-in-prisma-with-the-prisma-relation-mode
+// https://www.prisma.io/docs/guides/database/using-prisma-with-planetscale#how-to-emulate-relations-in-prisma-client
 //
 // In order to revert changes that cannot be rolled back(e.g migration deployment cannot move forward), follow:
 // https://www.prisma.io/docs/guides/database/production-troubleshooting#moving-backwards-and-reverting-all-changes
 
 generator client {
   provider          = "prisma-client-js"
-  previewFeatures   = ["referentialIntegrity"]
 }
 
 datasource db {
@@ -31,4 +31,6 @@ model UserSession {
   userId        String?
   csrfSecret    String
   expiresOn     DateTime?
+
+  @@index([userId])
 }
