@@ -17,6 +17,7 @@
 
     nav {
       font-size: 0.75em;
+
       ul {
         padding: 0;
         list-style: none;
@@ -33,6 +34,14 @@
     article {
       padding-top: 0;
       padding-bottom: 0;
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    padding: 1em 0.25em;
+
+    .tmdb-attribution {
+      font-size: 0.5em;
     }
   }
 }

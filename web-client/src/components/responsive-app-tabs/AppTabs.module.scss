@@ -1,0 +1,25 @@
+.app-tabs {
+  background-color: rgba($color: #ffffff, $alpha: 0.1);
+  max-width: 100vw;
+  position: sticky;
+  top: 4em;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  overflow-x: auto;
+
+  nav {
+    position: relative;
+    min-height: 2.5em;
+
+    li {
+      min-width: calc(100% * (1 / 3.5));
+    }
+  }
+
+  @media screen and (min-width: 1201px) {
+    display: none;
+  }
+}

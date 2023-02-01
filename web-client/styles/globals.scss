@@ -44,7 +44,7 @@ header {
 main {
   width: 100%;
   min-height: 100vh;
-  padding: 4rem 0;
+  padding: 4em 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -63,7 +63,7 @@ article {
   max-width: $fixed-content-width-1;
   width: 100%;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 1em 2em;
   box-sizing: border-box;
 
   @media (min-width: 2600px) {
@@ -74,7 +74,7 @@ article {
 footer {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.65);
-  padding: 1rem 2rem;
+  padding: 1em 2em;
   backdrop-filter: contrast(0.5);
   -webkit-backdrop-filter: contrast(0.5);
 }
@@ -87,7 +87,7 @@ svg {
 .app-title {
   // font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
   //   Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  font-size: clamp(1rem, 1.5rem + 0.3vw, 4rem);
+  font-size: clamp(1em, 1.5em + 0.3vw, 4em);
   color: gold;
 }
 

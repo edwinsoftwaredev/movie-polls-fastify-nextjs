@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import trpc from 'src/trpc/server';
 import TrendingMovies from './TrendingMovies';
+import AppTabs from 'src/components/responsive-app-tabs/AppTabs';
 
 export default async function Page() {
   const { isAuthenticated } = await trpc.query(
@@ -17,6 +18,7 @@ export default async function Page() {
 
   return (
     <>
+      <AppTabs currentPath="/trendingmovies" />
       <section>
         <article>
           <h2>Trending Movies</h2>

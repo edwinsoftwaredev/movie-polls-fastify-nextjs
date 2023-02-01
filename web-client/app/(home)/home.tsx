@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import AppTabs from 'src/components/responsive-app-tabs/AppTabs';
 import Slider from 'src/components/Slider';
 import trpc from 'src/trpc/server';
 
@@ -70,6 +71,7 @@ export default async function Home() {
 
   return (
     <>
+      <AppTabs currentPath="/" />
       {/** Current polls section */}
       {isAuthenticated ? (
         <section>
