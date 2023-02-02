@@ -13,7 +13,7 @@ export default async function TrendingMovies() {
   return (
     <>
       {trendingByGenre.map((genre) => (
-        <div key={genre.genre_name}>
+        <div key={genre.genre_name} className="slider-container">
           <article>
             <h2>{genre.genre_name}</h2>
           </article>

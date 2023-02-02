@@ -13,23 +13,9 @@ const Button: React.FC<ButtonProps> = ({
   outlined,
   large,
 }) => {
-  const [classNames, dispatch] = useReducer(
-    classNameReducer,
-    `${styles['button']} ${outlined ? styles['outlined'] : ''} ${
-      large ? styles['large'] : ''
-    }`
-  );
-
-  useEffect(() => {
-    dispatch({
-      type: outlined ? 'add' : 'remove',
-      className: styles['outlined'],
-    });
-    dispatch({
-      type: large ? 'add' : 'remove',
-      className: styles['large'],
-    });
-  }, [outlined, large]);
+  const classNames = `${styles['button']} ${
+    outlined ? styles['outlined'] : ''
+  } ${large ? styles['large'] : ''}`;
 
   return (
     <button onClick={onClick} className={classNames}>

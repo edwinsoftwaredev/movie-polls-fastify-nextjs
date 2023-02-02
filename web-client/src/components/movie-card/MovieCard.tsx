@@ -1,13 +1,20 @@
 'use client';
 
 import Image from 'next/image';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Movie } from 'types';
 import Card from '../Card';
 import styles from './MovieCard.module.scss';
 import MovieCardDialog from '../movie-card-dialog/MovieCardDialog';
 import Label from '../Label';
 import { useMovieDetails } from 'hooks';
+import { AppContext } from 'app/AppProvider';
 
 interface MovieCard extends PropsWithChildren {
   movie: Movie;
@@ -32,13 +39,19 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
     genresLabel,
     images: {
       backdrops: {
-        '0': { file_path },
+        '0': { file_path: backdrop_file_path },
       },
       posters: {
         '0': { file_path: poster_file_path },
       },
     },
   } = useMovieDetails(movie, false, false);
+
+  const { isNarrowViewport } = useContext(AppContext);
+
+  const [filePath, setFilePath] = useState<string>(
+    isNarrowViewport ? poster_file_path : backdrop_file_path
+  );
 
   useEffect(() => {
     resizeObserverRef.current = new window.ResizeObserver(() => {
@@ -63,6 +76,10 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
       resizeObserverRef.current?.disconnect();
     };
   }, [isPreview]);
+
+  useEffect(() => {
+    setFilePath(isNarrowViewport ? poster_file_path : backdrop_file_path);
+  }, [isNarrowViewport]);
 
   return (
     <div
@@ -98,35 +115,34 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
               </div>
             </div>
           ),
-          backdropImage: (
-            <Image
-              onLoad={() => {
-                setIsImgLoaded(true);
-              }}
-              style={{ opacity: isImgLoaded ? 1 : 0 }}
-              loader={({ src, width }) => {
-                if (width > 1920)
-                  return `https://image.tmdb.org/t/p/original${src}`;
-                if (width > 780)
-                  return `https://image.tmdb.org/t/p/w1280${src}`;
-                if (width > 300) return `https://image.tmdb.org/t/p/w780${src}`;
-
-                return `https://image.tmdb.org/t/p/w300${src}`;
-              }}
-              src={`${file_path}`}
-              // src={`${
-              //   typeof window !== 'undefined' && window.innerWidth >= 1200
-              //     ? file_path
-              //     : poster_file_path
-              // }`}
-              placeholder={'empty'}
-              loading={'lazy'}
-              fill={true}
-              sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1920px) 100vw, 100vw`}
-              quality={100}
-              alt={title}
-            />
-          ),
+          ...(
+            typeof isNarrowViewport !== 'undefined' ? {
+              backdropImage: (
+                <Image
+                onLoad={() => {
+                  setIsImgLoaded(true);
+                }}
+                style={{ opacity: isImgLoaded ? 1 : 0 }}
+                loader={({ src, width }) => {
+                  if (width > 1920)
+                    return `https://image.tmdb.org/t/p/original${src}`;
+                  if (width > 780)
+                    return `https://image.tmdb.org/t/p/w1280${src}`;
+                  if (width > 300) return `https://image.tmdb.org/t/p/w780${src}`;
+  
+                  return `https://image.tmdb.org/t/p/w300${src}`;
+                }}
+                src={`${filePath}`}
+                placeholder={'empty'}
+                loading={'lazy'}
+                fill={true}
+                sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1920px) 100vw, 100vw`}
+                quality={100}
+                alt={title}
+              />
+              )
+            } : {}
+          )
         }}
       />
       {!isPreview && !!movieCardRect ? (

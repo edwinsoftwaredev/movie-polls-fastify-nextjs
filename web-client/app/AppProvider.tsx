@@ -2,7 +2,13 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpLink } from '@trpc/client';
-import { createContext, PropsWithChildren, useEffect, useState } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import trpc from 'src/trpc/client';
 import { getRoute } from 'src/trpc/routeHelper';
 
@@ -24,11 +30,11 @@ const SessionHandler: React.FC = () => {
 };
 
 interface AppContextType {
-  documentBodySize: number;
+  isNarrowViewport: boolean | undefined;
 }
 
 export const AppContext = createContext<AppContextType>({
-  documentBodySize: 0,
+  isNarrowViewport: false,
 });
 
 interface AppProviderProps extends PropsWithChildren {}
@@ -65,10 +71,26 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     })
   );
 
+  const [isNarrowViewport, setIsNarrowViewPort] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsNarrowViewPort((window.visualViewport?.width ?? 0) <= 1200);
+
+    const listener = () => {
+      setIsNarrowViewPort((window.visualViewport?.width ?? 0) <= 1200);
+    };
+
+    window.visualViewport?.addEventListener('resize', listener);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', listener);
+    };
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
-        documentBodySize: 0,
+        isNarrowViewport: isNarrowViewport,
       }}
     >
       <trpc.Provider client={trpcClient} queryClient={queryClient}>

@@ -74,7 +74,7 @@ export default async function Home() {
       <AppTabs currentPath="/" />
       {/** Current polls section */}
       {isAuthenticated ? (
-        <section>
+        <section className="slider-container">
           <article>
             <h2>Current Polls</h2>
           </article>
@@ -84,7 +84,7 @@ export default async function Home() {
         </section>
       ) : null}
       {/** Popular Movies */}
-      <section>
+      <section className="slider-container">
         <article>
           <h2>Popular Movies</h2>
         </article>
@@ -97,7 +97,7 @@ export default async function Home() {
       </section>
 
       {/** Trending Movies */}
-      <section>
+      <section className="slider-container">
         <article>
           <h2>Trending Movies</h2>
         </article>
@@ -110,7 +110,7 @@ export default async function Home() {
       </section>
 
       {/** Now Playing */}
-      <section>
+      <section className="slider-container">
         <article>
           <h2>Now Playing</h2>
         </article>

@@ -1,0 +1,48 @@
+.select {
+  position: relative;
+  background: transparent;
+  min-height: 2.5em;
+  min-width: 4em;
+  border-radius: 0.175em;
+  border-style: solid;
+  border-width: 0.1em;
+  border-color: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: inherit;
+  background: rgba($color: #ffffff, $alpha: 0.15);
+
+  font-weight: bolder;
+
+  cursor: pointer;
+
+  .select-list {
+    display: none;
+
+    .option {
+      background: rgba($color: #000000, $alpha: 0.8);
+    }
+
+    &.active {
+      display: block;
+    }
+  }
+
+  .value {
+    width: 100%;
+    padding: 0.5em 2.25em 0.5em 1em;
+  }
+
+  .icon {
+    position: absolute;
+    right: 0.5em;
+    transform: rotate(-90deg);
+    margin: auto;
+    pointer-events: none;
+
+    span {
+      font-size: 1.25em;
+    }
+  }
+}

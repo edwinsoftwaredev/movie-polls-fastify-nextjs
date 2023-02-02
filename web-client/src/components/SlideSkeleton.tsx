@@ -6,7 +6,7 @@ interface SlideSkeletonProps {
 }
 
 const SlideSkeleton: React.FC<SlideSkeletonProps> = ({ slideSize }) => {
-  const items = new Array(slideSize).fill(0);
+  const items = new Array(slideSize + 1).fill(0);
 
   return (
     <div className={`${style['slide']} ${style[`slide-s-${slideSize}`]}`}>

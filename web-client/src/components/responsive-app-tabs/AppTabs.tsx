@@ -7,12 +7,10 @@ const routes: Record<string, string> = {
 };
 
 interface AppTabsProps {
-  currentPath: '/topmovies' | '/trendingmovies' | '/' 
+  currentPath: '/topmovies' | '/trendingmovies' | '/';
 }
 
-const AppTabs: React.FC<AppTabsProps> = ({
-  currentPath
-}) => {
+const AppTabs: React.FC<AppTabsProps> = ({ currentPath }) => {
   return (
     <div className={styles['app-tabs']}>
       <Tabs
@@ -22,7 +20,7 @@ const AppTabs: React.FC<AppTabsProps> = ({
             href: '/',
           },
           {
-            title: 'Top Movies',
+            title: 'Popular Movies',
             href: '/topmovies',
           },
           {

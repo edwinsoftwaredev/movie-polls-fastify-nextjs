@@ -1,0 +1,12 @@
+.d-select {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5em;
+
+  select {
+    font-size: 1.1em;
+    font-weight: bolder;
+  }
+}

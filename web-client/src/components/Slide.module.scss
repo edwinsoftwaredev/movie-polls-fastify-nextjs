@@ -44,13 +44,22 @@ $slide-padding: calc((100% * (1 / 23)));
     }
 
     @media screen and (max-width: 1200px) {
-      // TODO: Fix card rendered on server
-      // aspect-ratio: 6 / 9;
+      // TODO: refactor calculations
+      aspect-ratio: 6 / 9;
 
-      width: get-slide-item-size(3, 0.5em) !important;
+      padding: 0 0.5em;
+      width: get-slide-item-size(3, 1.5em) !important;
       &:nth-of-type(n) {
         scroll-snap-stop: always !important;
         scroll-snap-align: start !important;
+      }
+
+      &:first-child {
+        padding-left: 0.75em;
+      }
+
+      &:last-child {
+        padding-right: 0.75em;
       }
     }
   }
@@ -60,7 +69,7 @@ $slide-padding: calc((100% * (1 / 23)));
   }
 
   @media screen and (max-width: 1200px) {
-    scroll-padding-left: 0;
+    scroll-padding-left: 1.5em;
     padding: 0;
     margin-left: 0;
   }
