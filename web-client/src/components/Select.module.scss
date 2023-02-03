@@ -1,6 +1,5 @@
 .select {
   position: relative;
-  background: transparent;
   min-height: 2.5em;
   min-width: 4em;
   border-radius: 0.175em;
@@ -11,21 +10,38 @@
   flex-direction: row;
   align-items: center;
   font-size: inherit;
-  background: rgba($color: #ffffff, $alpha: 0.15);
+  background-color: rgba($color: #ffffff, $alpha: 0.15);
 
   font-weight: bolder;
 
   cursor: pointer;
 
   .select-list {
+    padding: 0.5em 0;
+    position: absolute;
+    top: calc(100% + 0.5em);
+    border-radius: 0.125em;
+    left: 0;
+    right: 0;
     display: none;
+    background-color: rgba($color: #ffffff, $alpha: 0.14);
+    backdrop-filter: blur(7px);
+    z-index: 20;
 
-    .option {
-      background: rgba($color: #000000, $alpha: 0.8);
+    &.open {
+      display: block;
     }
 
-    &.active {
-      display: block;
+    .option {
+      padding: 0.25em 2.25em 0.25em 1em;
+
+      &:hover {
+        background-color: rgba($color: #000000, $alpha: 0.8);
+      }
+    }
+
+    .option[aria-selected='true'] {
+      background-color: rgba($color: #000000, $alpha: 0.8);
     }
   }
 

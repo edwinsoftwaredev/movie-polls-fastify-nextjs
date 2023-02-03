@@ -1,7 +1,6 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import AppTabs from 'src/components/responsive-app-tabs/AppTabs';
-import Select from 'src/components/Select';
 import DSelect from 'src/components/top-movies/DSelect';
 import trpc from 'src/trpc/server';
 import TopMovies from './TopMovies';
@@ -36,7 +35,7 @@ export default async function Page({
       <AppTabs currentPath="/topmovies" />
       <section>
         <article>
-          <DSelect d={d[searchParams['d']]} />
+          <DSelect d={d[searchParams['d'] ?? 2020]} />
         </article>
 
         {/** slider*/}

@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import styles from './Select.module.scss';
 
 interface SelectProps {
@@ -14,11 +17,36 @@ const Select: React.FC<SelectProps> = ({
   defaultValue,
   onOptionClick,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className={styles['select']}>
-      <div className={styles['select-list']}>
+    <div
+      className={styles['select']}
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsOpen(true);
+      }}
+      role="combobox"
+      aria-haspopup="listbox"
+      tabIndex={0}
+      onBlur={() => {
+        setIsOpen(false);
+      }}
+    >
+      <div
+        className={`${styles['select-list']} ${isOpen ? styles['open'] : ''}`}
+      >
         {options.map((opt) => (
-          <div key={opt.value} className={styles['option']}>
+          <div
+            key={opt.value}
+            className={styles['option']}
+            onClick={() => {
+              onOptionClick && onOptionClick(opt.value);
+              setIsOpen(false);
+            }}
+            role="option"
+            aria-selected={defaultValue === opt.value}
+          >
             {opt.title}
           </div>
         ))}
