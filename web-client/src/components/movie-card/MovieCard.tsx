@@ -15,6 +15,7 @@ import MovieCardDialog from '../movie-card-dialog/MovieCardDialog';
 import Label from '../Label';
 import { useMovieDetails } from 'hooks';
 import { AppContext } from 'app/AppProvider';
+import Dialog from '../Dialog';
 
 interface MovieCard extends PropsWithChildren {
   movie: Movie;
@@ -22,13 +23,13 @@ interface MovieCard extends PropsWithChildren {
 
 const MovieCard: React.FC<MovieCard> = ({ movie }) => {
   const movieCardRef = useRef<HTMLDivElement>(null);
-  const [isPreview, setIsPreview] = useState(true);
-  const [movieCardRect, setMovieCardRect] = useState<{
-    x: number;
-    y: number;
-    height: number;
-    width: number;
-  }>();
+  const [movieCardDialogProps, setMovieCardDialogProps] = useState({
+    x: 0,
+    y: 0,
+    height: 0,
+    width: 0,
+    isPreview: true,
+  });
   const [isImgLoaded, setIsImgLoaded] = useState(false);
 
   const resizeObserverRef = useRef<ResizeObserver>();
@@ -56,26 +57,27 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
   useEffect(() => {
     resizeObserverRef.current = new window.ResizeObserver(() => {
       movieCardRef.current &&
-        setMovieCardRect({
-          x: movieCardRef.current.getBoundingClientRect().x,
-          y: movieCardRef.current.getBoundingClientRect().y,
-          height: movieCardRef.current.getBoundingClientRect().height,
-          width: movieCardRef.current.getBoundingClientRect().width,
-        });
+        setMovieCardDialogProps((state) => ({
+          ...state,
+          x: movieCardRef.current!.getBoundingClientRect().x,
+          y: movieCardRef.current!.getBoundingClientRect().y,
+          height: movieCardRef.current!.getBoundingClientRect().height,
+          width: movieCardRef.current!.getBoundingClientRect().width,
+        }));
     });
   }, []);
 
   useEffect(() => {
-    !isPreview &&
+    !movieCardDialogProps.isPreview &&
       movieCardRef.current &&
       resizeObserverRef.current?.observe(movieCardRef.current);
 
-    if (isPreview) resizeObserverRef.current?.disconnect();
+    if (movieCardDialogProps.isPreview) resizeObserverRef.current?.disconnect();
 
     return () => {
       resizeObserverRef.current?.disconnect();
     };
-  }, [isPreview]);
+  }, [movieCardDialogProps.isPreview]);
 
   useEffect(() => {
     setFilePath(isNarrowViewport ? poster_file_path : backdrop_file_path);
@@ -85,15 +87,14 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
     <div
       ref={movieCardRef}
       onClick={() => {
-        // TODO: Fix
         movieCardRef.current &&
-          setMovieCardRect({
+          setMovieCardDialogProps({
             x: movieCardRef.current.getBoundingClientRect().x,
             y: movieCardRef.current.getBoundingClientRect().y,
             height: movieCardRef.current.getBoundingClientRect().height,
             width: movieCardRef.current.getBoundingClientRect().width,
+            isPreview: false,
           });
-        setIsPreview(false);
       }}
       className={`${styles['movie-card']}`}
     >
@@ -141,18 +142,21 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
           ),
         }}
       />
-      {!isPreview && !!movieCardRect ? (
+      <Dialog isOpen={!movieCardDialogProps.isPreview}>
         <MovieCardDialog
           movie={movie}
-          posY={movieCardRect.y}
-          posX={movieCardRect.x}
-          initHeight={movieCardRect.height}
-          initWidth={movieCardRect.width}
+          posY={movieCardDialogProps.y}
+          posX={movieCardDialogProps.x}
+          initHeight={movieCardDialogProps.height}
+          initWidth={movieCardDialogProps.width}
           onDialogClose={() => {
-            setIsPreview(true);
+            setMovieCardDialogProps((state) => ({
+              ...state,
+              isPreview: true,
+            }));
           }}
         />
-      ) : null}
+      </Dialog>
     </div>
   );
 };

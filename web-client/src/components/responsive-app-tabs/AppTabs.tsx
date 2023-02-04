@@ -2,7 +2,7 @@ import Tabs from '../Tabs';
 import styles from './AppTabs.module.scss';
 
 const routes: Record<string, string> = {
-  topmovies: 'Top Movies',
+  topmovies: 'Popular Movies',
   trendingmovies: 'Trending Movies',
 };
 

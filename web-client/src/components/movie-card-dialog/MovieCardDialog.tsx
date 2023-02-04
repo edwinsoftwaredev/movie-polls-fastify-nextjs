@@ -1,14 +1,12 @@
 'use client';
 
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { Movie } from 'types';
 import Card from '../Card';
 import styles from './MovieCardDialog.module.scss';
 import {
   animateCard,
-  animateDialogBackground,
   animateMovieCard,
 } from './movie-card-dialog-animate-configs';
 import MovieDetails from './MovieDetails';
@@ -84,24 +82,23 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
 
   useEffect(() => {
     if (transitionStatus === TRANSITION_STATUS.OPEN_STARTED) {
-      animateDialogBackground(false)
-        .then(() =>
-          Promise.all([handleMovieCardAnimate(false), handleCardAnimate(false)])
-        )
-        .then(() => {
-          setTranstionStatus(TRANSITION_STATUS.OPEN_FINISHED);
-        });
+      Promise.all([
+        handleMovieCardAnimate(false),
+        handleCardAnimate(false),
+      ]).then(() => {
+        setTranstionStatus(TRANSITION_STATUS.OPEN_FINISHED);
+      });
     }
   }, [transitionStatus]);
 
   useEffect(() => {
     if (transitionStatus === TRANSITION_STATUS.CLOSE_STARTED) {
-      Promise.all([handleMovieCardAnimate(true), handleCardAnimate(true)])
-        .then(() => animateDialogBackground(true))
-        .then(() => {
+      Promise.all([handleMovieCardAnimate(true), handleCardAnimate(true)]).then(
+        () => {
           setTranstionStatus(TRANSITION_STATUS.CLOSE_FINISHED);
           onDialogClose();
-        });
+        }
+      );
     }
   }, [transitionStatus]);
 
@@ -113,13 +110,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
     );
   }, [initWidth, initHeight]);
 
-  useEffect(() => {
-    return () => {
-      process.env.NODE_ENV === 'production' && animateDialogBackground(true);
-    };
-  }, []);
-
-  return createPortal(
+  return (
     <div
       role={'dialog'}
       ref={movieCardRef}
@@ -170,8 +161,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
           ),
         }}
       />
-    </div>,
-    document.body
+    </div>
   );
 };
 
