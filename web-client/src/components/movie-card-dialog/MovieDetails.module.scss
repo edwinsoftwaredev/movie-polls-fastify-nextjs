@@ -27,6 +27,7 @@
   z-index: 20;
 
   @media screen and (max-width: 1200px) {
+    position: relative;
     grid-template-columns: 100%;
     grid-template-rows: auto minmax(25vh, 25em);
     left: 0%;
@@ -36,7 +37,7 @@
     background-image: linear-gradient(
       to bottom,
       transparent,
-      rgb(15, 15, 15) 30%
+      rgb(15, 15, 15) 25%
     );
   }
 }

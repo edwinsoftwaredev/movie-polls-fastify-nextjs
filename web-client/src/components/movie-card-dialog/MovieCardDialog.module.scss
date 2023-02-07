@@ -8,15 +8,15 @@
   --max-header-height: auto;
 
   header {
-    aspect-ratio: 16 / 9;
-    height: auto;
     max-height: var(--max-header-height);
     background-color: rgb(15, 15, 15);
-
     min-height: 100%;
     min-width: 100%;
+    margin: 0;
 
     img {
+      position: static !important;
+      aspect-ratio: 16 / 9;
       object-fit: contain;
       max-inline-size: 100%;
       block-size: auto;
@@ -27,20 +27,16 @@
 
   @media screen and (max-width: 1200px) {
     article {
-      overflow: initial;
       height: fit-content;
-      // font-size: 2em;
-      border-radius: 0.175em;
     }
 
     header {
-      max-height: 100% !important;
+      position: absolute;
+      top: 0;
 
       img {
         max-width: 100% !important;
-        object-fit: contain;
-        height: auto !important;
-        border-radius: 0.175em;
+        max-height: 100%;
       }
     }
   }

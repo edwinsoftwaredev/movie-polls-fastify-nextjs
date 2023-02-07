@@ -5,7 +5,7 @@ import Image from 'next/image';
 interface CardProps extends PropsWithChildren {
   // TODO: Refactor
   header: {
-    content: React.ReactElement;
+    content?: React.ReactElement;
     backdropImage?: React.ReactElement<HTMLImageElement | typeof Image>;
   };
   aspectRatio?: number;

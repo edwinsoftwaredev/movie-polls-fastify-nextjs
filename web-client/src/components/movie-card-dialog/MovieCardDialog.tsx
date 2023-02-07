@@ -127,12 +127,6 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
       <Card
         ref={cardRef}
         header={{
-          content:
-            transitionStatus === TRANSITION_STATUS.OPEN_FINISHED ? (
-              <MovieDetails movie={movie} />
-            ) : (
-              <></>
-            ),
           backdropImage: (
             <Image
               loader={({ src, width }) => {
@@ -160,7 +154,11 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
             />
           ),
         }}
-      />
+      >
+        {transitionStatus === TRANSITION_STATUS.OPEN_FINISHED ? (
+          <MovieDetails movie={movie} />
+        ) : null}
+      </Card>
     </div>
   );
 };

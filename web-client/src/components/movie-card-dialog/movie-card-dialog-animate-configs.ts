@@ -138,7 +138,9 @@ export const animateMovieCard = async (
   const k3: Keyframe = {
     ...k2,
     minHeight: '100vh',
+    height: 'fit-content',
     borderRadius: '0px',
+    paddingBottom: '8em',
   };
 
   const k4: Keyframe = {
