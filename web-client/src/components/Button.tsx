@@ -1,6 +1,5 @@
-import { MouseEvent, PropsWithChildren, useEffect, useReducer } from 'react';
+import { MouseEvent, PropsWithChildren } from 'react';
 import styles from './Button.module.scss';
-import classNameReducer from './class-name-reducer';
 interface ButtonProps extends PropsWithChildren {
   onClick: (e: MouseEvent<HTMLButtonElement>) => void;
   outlined?: boolean;

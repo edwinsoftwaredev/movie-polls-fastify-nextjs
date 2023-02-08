@@ -21,57 +21,11 @@
   a {
     height: fit-content;
     margin: auto;
+    z-index: 10;
 
     h1 {
       margin-block: 0;
       margin: auto;
-    }
-  }
-
-  // TODO: make it hamburger
-  nav {
-    display: inline-block;
-    position: relative;
-    margin: auto 0;
-    font-size: 0.75em;
-
-    ul {
-      list-style-type: none;
-      margin: auto;
-
-      hr {
-        display: inline-block;
-        margin: auto;
-        margin-right: 1.5em;
-        height: 1em;
-        vertical-align: middle;
-        border-color: #888;
-        border-style: solid;
-        border-width: 0;
-        border-right-width: 1px;
-      }
-
-      li {
-        display: inline-block;
-        vertical-align: middle;
-
-        &:not(:last-of-type) {
-          margin: auto;
-          margin-right: 1.5em;
-        }
-
-        .search-vector {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-      }
-    }
-  }
-
-  @media screen and (max-width: 1200px) {
-    nav {
-      display: none;
     }
   }
 }

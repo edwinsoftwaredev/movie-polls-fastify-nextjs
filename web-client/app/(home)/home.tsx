@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import AppTabs from 'src/components/responsive-app-tabs/AppTabs';
+import { AppTabs } from 'src/components/responsive-components';
 import Slider from 'src/components/Slider';
 import trpc from 'src/trpc/server';
 

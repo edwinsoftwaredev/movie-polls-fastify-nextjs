@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import AppTabs from 'src/components/responsive-app-tabs/AppTabs';
+import { AppTabs } from 'src/components/responsive-components';
 import DSelect from 'src/components/top-movies/DSelect';
 import trpc from 'src/trpc/server';
 import TopMovies from './TopMovies';

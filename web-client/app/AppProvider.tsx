@@ -6,7 +6,6 @@ import {
   createContext,
   PropsWithChildren,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import trpc from 'src/trpc/client';
