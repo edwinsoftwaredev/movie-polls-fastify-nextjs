@@ -1,12 +1,12 @@
 import { FastifyPluginAsync } from 'fastify';
 import prismaClient from './prismaClient';
-import { polls } from '../services';
+import { poll } from '../services';
 
-const pollsPlugin: FastifyPluginAsync = async (fastify) => {
+const pollPlugin: FastifyPluginAsync = async (fastify) => {
   const databaseUrl = process.env.DATABASE_URL || '';
 
   fastify.register(prismaClient, { databaseUrl });
-  fastify.register(polls);
+  fastify.register(poll);
 };
 
-export default pollsPlugin;
+export default pollPlugin;

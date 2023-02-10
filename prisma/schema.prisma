@@ -6,31 +6,54 @@
 // https://www.prisma.io/docs/guides/database/production-troubleshooting#moving-backwards-and-reverting-all-changes
 
 generator client {
-  provider          = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider          = "mysql"
-  url               = env("DATABASE_URL")
-  relationMode      = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
   provider      String
-  id            String      @id
+  id            String        @id
   displayName   String
   email         String?
   picture       String?
-  emailVerified Boolean     @default(false)
+  emailVerified Boolean       @default(false)
   sessions      UserSession[]
+  Poll          Poll[]
 }
 
 model UserSession {
-  id            String      @id
-  user          User?       @relation(fields: [userId], references: [id])
-  userId        String?
-  csrfSecret    String
-  expiresOn     DateTime?
+  id         String    @id
+  user       User?     @relation(fields: [userId], references: [id])
+  userId     String?
+  csrfSecret String
+  expiresOn  DateTime?
 
   @@index([userId])
+}
+
+model Poll {
+  id         String      @id
+  name       String
+  expiresOn  DateTime?
+  isActive   Boolean
+  author     User        @relation(fields: [authorId], references: [id])
+  authorId   String
+  MoviePolls MoviePoll[]
+
+  @@index([authorId])
+}
+
+model MoviePoll {
+  pollId    String
+  poll      Poll   @relation(fields: [pollId], references: [id])
+  movieId   Int
+  voteCount Int
+
+  @@id([pollId, movieId])
+  @@index([pollId])
 }

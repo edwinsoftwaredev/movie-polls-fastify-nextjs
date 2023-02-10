@@ -2498,7 +2498,7 @@ __metadata:
     fastify: ^4.10.2
     fastify-plugin: ^4.3.0
     google-auth-library: ^8.5.2
-    nodemon: ^2.0.19
+    nodemon: ^2.0.20
     trpc: 1.0.0
     ts-node: ^10.9.1
     tsconfig-paths: ^4.1.0
@@ -5461,7 +5461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemon@npm:^2.0.19":
+"nodemon@npm:^2.0.20":
   version: 2.0.20
   resolution: "nodemon@npm:2.0.20"
   dependencies:
@@ -6242,16 +6242,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.55.0":
-  version: 1.57.1
-  resolution: "sass@npm:1.57.1"
+"sass@npm:^1.58.0":
+  version: 1.58.0
+  resolution: "sass@npm:1.58.0"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 734a08781bcbe0e8defb2d54864e7012014ed3e68ba5fcb766189b002929019fc37b2f83a18d4be0b5f69ad77317c92396ce6112447ab47a194ed600ae1afb27
+  checksum: a7219634881d2de6441fb619787fb1a02e3fa0333fb715be26aa335ba49d6bdb4f1105d9df70a80a67200893022b08346745783dc49046095d94fc6e044492d6
   languageName: node
   linkType: hard
 
@@ -7055,7 +7055,7 @@ __metadata:
     next: latest
     react: latest
     react-dom: latest
-    sass: ^1.55.0
+    sass: ^1.58.0
     trpc: 1.0.0
     typescript: ^4.8.4
   languageName: unknown

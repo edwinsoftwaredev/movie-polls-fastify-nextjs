@@ -4,6 +4,7 @@ const trpcRoutersPaths: { [key: string]: string } = {
   'googleAuth.': 'googleAuthRoutes/googleAuth.',
   'movies.': 'moviesRoutes/movies.',
   'publicMovies.': 'publicMoviesRoutes/publicMovies.',
+  'poll.': 'pollRoutes/poll.',
 };
 
 export const getRoute = (aUrl: string) => {

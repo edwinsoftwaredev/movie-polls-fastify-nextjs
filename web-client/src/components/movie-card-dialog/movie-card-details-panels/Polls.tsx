@@ -1,7 +1,10 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Button from 'src/components/Button';
+import Input from 'src/components/Input';
 import { useUserSessionDetails } from 'src/hooks';
+import usePolls from 'src/hooks/usePolls';
+import { Poll } from 'src/types/poll';
 import styles from './Polls.module.scss';
 
 const Anonymous: React.FC = () => {
@@ -28,18 +31,38 @@ const Anonymous: React.FC = () => {
   );
 };
 
-const PollsEditor: React.FC = () => (
-  <div className={styles['polls-editor']}></div>
-);
+interface InactivePollListProps {
+  inactivePolls: Array<Poll>;
+}
+
+const InactivePollList: React.FC<InactivePollListProps> = ({
+  inactivePolls,
+}) => {
+  return (
+    <div className={styles['poll-list']}>
+      {inactivePolls.length < 10 ? (
+        <Input onChange={(value) => {}} placeholder="New poll name" />
+      ) : null}
+    </div>
+  );
+};
 
 interface PollsProps {}
 
 const Polls: React.FC<PollsProps> = () => {
   const { isAuthenticated } = useUserSessionDetails();
+
+  const { inactivePolls } = usePolls({
+    fetchInactivePolls: false,
+  });
+
   return (
     <div className={styles['polls']}>
-      <div className={styles['polls-editor']}></div>
-      {!isAuthenticated ? <Anonymous /> : null}
+      {!isAuthenticated ? (
+        <Anonymous />
+      ) : (
+        <InactivePollList inactivePolls={inactivePolls} />
+      )}
     </div>
   );
 };

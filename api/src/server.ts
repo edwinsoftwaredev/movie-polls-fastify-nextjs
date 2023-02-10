@@ -1,7 +1,7 @@
 import fastifyCors from '@fastify/cors';
 import fastifyFormbody from '@fastify/formbody';
 import { FastifyPluginAsync } from 'fastify';
-import { authPlugin, moviesPlugin, pollsPlugin } from './plugins';
+import { authPlugin, moviesPlugin, pollPlugin } from './plugins';
 import * as dotenv from 'dotenv';
 import fastifyHelmet from '@fastify/helmet';
 dotenv.config();
@@ -18,16 +18,15 @@ const serverlessFunc: FastifyPluginAsync = async (fastify) => {
 
   // Parse application/x-www-form-urlencoded req body
   fastify.register(fastifyFormbody);
-  
+
   // auth plugin
   fastify.register(authPlugin);
-  
+
   // movies plugin
   fastify.register(moviesPlugin);
-  
-  // polls plugin
-  // fastify.register(pollsPlugin);
-  
-}
+
+  // poll plugin
+  fastify.register(pollPlugin);
+};
 
 export default serverlessFunc;

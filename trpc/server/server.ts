@@ -5,6 +5,7 @@ import {
   moviesRouter,
   publicMoviesRouter,
   sessionRouter,
+  pollRouter,
 } from './routers';
 
 // Add routes to appRouter -------
@@ -13,7 +14,8 @@ const appRouter = mergeRouters(
   accountRouter,
   googleAuthRouter,
   moviesRouter,
-  publicMoviesRouter
+  publicMoviesRouter,
+  pollRouter
 );
 // -------------------------------
 

@@ -1,4 +1,4 @@
-import { UserSession, PrismaClient, User } from '@prisma/client';
+import { UserSession, PrismaClient, User, Poll } from '@prisma/client';
 import { Redis } from '@upstash/redis';
 import { OAuth2Client, LoginTicket } from 'google-auth-library';
 // Current project configuration requires to define full path
@@ -34,7 +34,7 @@ declare module 'fastify' {
     // services
     account: {
       user: {
-        getUser: (id: string) => Promise<User | null>;
+        getUser: (id: string) => Promise<Omit<User, 'id'> | null>;
       };
     };
 
@@ -53,6 +53,12 @@ declare module 'fastify' {
       genreNamesByIds: (genreIds: Array<number>) => Promise<Array<string>>;
       movieDetails: (movieId: number) => Promise<MovieDetail>;
       movieProviders: (movieId: number) => Promise<MovieProviders>;
+    };
+
+    polls: {
+      getInactivePolls: (
+        userId: string
+      ) => Promise<Array<Omit<Poll, 'authorId'>>>;
     };
   }
 

@@ -1,6 +1,10 @@
 .navigation-container {
   margin: auto 0;
 
+  [class~='material-symbols-rounded'] {
+    font-size: 2em;
+  }
+
   nav {
     display: inline-block;
     position: relative;

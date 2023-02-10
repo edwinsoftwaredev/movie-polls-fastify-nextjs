@@ -1,0 +1,56 @@
+.input {
+  background-color: rgba($color: #ffffff, $alpha: 0.15);
+  border-radius: 0.175em;
+  border-style: solid;
+  border-width: 0.1em;
+  padding: 0.25em 0.5em;
+  min-height: 2.25em;
+  min-width: 60px;
+  width: auto;
+  position: relative;
+  font-size: 1em;
+  cursor: text;
+
+  input {
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding: 0 7px;
+    bottom: 0.5em;
+    margin: auto;
+    border: none !important;
+    outline: none !important;
+    background-color: transparent;
+    width: 100%;
+    color: white;
+    font-size: 0.85em;
+  }
+
+  .label {
+    position: absolute;
+    top: calc(50% - 0.65em);
+    left: 7px;
+    font-size: 0.75em;
+    transition-property: top, font-size;
+    transition-duration: 200ms, 200ms;
+    transition-timing-function: ease-in-out, ease-in-out;
+  }
+
+  &.active {
+    .label {
+      top: 0.5em;
+      font-size: 0.35em;
+    }
+  }
+
+  &:hover {
+    .label {
+      top: 0.5em;
+      font-size: 0.35em;
+    }
+  }
+}
+
+.large {
+  width: 100%;
+}

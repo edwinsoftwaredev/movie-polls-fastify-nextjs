@@ -8,6 +8,13 @@ const user: FastifyPluginAsync = async (fastify) => {
       where: {
         id,
       },
+      // TODO: update
+      select: {
+        displayName: true,
+        email: true,
+        emailVerified: true,
+        picture: true,
+      },
     });
 
   const decorators = {

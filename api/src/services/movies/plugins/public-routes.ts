@@ -1,17 +1,13 @@
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { FastifyPluginAsync } from 'fastify';
+import csrfRouteGuard from 'src/plugins/csrfRouteGuard';
 import { createTRPCFastifyContext } from 'trpc/server';
 import { publicMoviesRouter } from 'trpc/server/routers';
 
 const publicRoutes: FastifyPluginAsync = async (fastify) => {
-  // Protects the entire plugin from CSRF attacks
-  fastify.addHook('onRequest', (req, res, done) => {
-    if (req.method === 'GET' && req.headers['x-ssr'] === '1') return done();
+  fastify.register(csrfRouteGuard);
 
-    return fastify.csrfProtection(req, res, done);
-  });
-
-  // Validates that the request is a GET request and that it includes the MOVIES_API_KEY
+  // Validates that the request is a GET request and that has been handled by middleware
   fastify.addHook('preHandler', async (req, res) => {
     // TODO: remove headers not need on client side
     const isFromMiddleware = req.headers['x-from-middleware'] === '1';

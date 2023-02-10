@@ -35,7 +35,7 @@ const NavOptions: React.FC = () => (
     <li>
       <Link href="/search">
         <div className={styles['search-vector']}>
-          <SearchVector />
+          <span className="material-symbols-rounded">search</span>
         </div>
       </Link>
     </li>
