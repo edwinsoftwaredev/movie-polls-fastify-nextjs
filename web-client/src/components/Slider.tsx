@@ -7,11 +7,12 @@ import SliderProvider from './SliderProvider';
 import SliderCtrl from './SliderCtrl';
 
 interface SliderProps extends PropsWithChildren {
-  // TODO: Refactor
+  // TODO: create SliderItem type
   fetchItems: () => Promise<Movies>;
   slideSize: 3 | 4 | 5;
   slideItemsGap?: 7;
   slideItemAspectRatio?: '16/9' | '4/3';
+  title?: string;
 }
 
 const Slider: React.FC<SliderProps> = ({
@@ -19,6 +20,7 @@ const Slider: React.FC<SliderProps> = ({
   slideSize,
   slideItemAspectRatio,
   slideItemsGap,
+  title,
 }) => {
   const RenderSlide = async () => {
     const items = await fetchItems();
@@ -29,6 +31,9 @@ const Slider: React.FC<SliderProps> = ({
   return (
     <SliderProvider>
       <div className={`${styles['slider']}`}>
+        <div className={`${styles['title']}`}>
+          {title ? <h2>{title}</h2> : null}
+        </div>
         <div className="slider-interface">
           <div
             className="backward-ctrl slider-ctrl"

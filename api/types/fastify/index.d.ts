@@ -59,6 +59,11 @@ declare module 'fastify' {
       getInactivePolls: (
         userId: string
       ) => Promise<Array<Omit<Poll, 'authorId'>>>;
+      createPoll: (
+        userId: string,
+        pollName: string,
+        movieId?: Movie['id']
+      ) => Promise<Omit<Poll, 'authorId'>>;
     };
   }
 

@@ -12,7 +12,7 @@ const DSelect: React.FC<DSelectProps> = ({ d }) => {
   const router = useRouter();
 
   return (
-    <div className={styles['d-select']}>
+    <div className={`${styles['d-select']} ${styles['title']}`}>
       <Select
         options={[
           {

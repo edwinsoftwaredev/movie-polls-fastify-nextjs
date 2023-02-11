@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import trpc from 'src/trpc/server';
 import TrendingMovies from './TrendingMovies';
 import { AppTabs } from 'src/components/responsive-components';
+import styles from './TrendingMovies.module.scss';
 
 export default async function Page() {
   const { isAuthenticated } = await trpc.query(
@@ -20,7 +21,7 @@ export default async function Page() {
     <>
       <AppTabs currentPath="/trendingmovies" />
       <section>
-        <article>
+        <article className={`${styles['title']}`}>
           <h2>Trending Movies</h2>
         </article>
 

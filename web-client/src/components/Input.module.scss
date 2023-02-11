@@ -28,12 +28,12 @@
 
   .label {
     position: absolute;
-    top: calc(50% - 0.65em);
+    top: calc(50% - 0.55em);
     left: 7px;
-    font-size: 0.75em;
+    // font-size: 0.75em;
     transition-property: top, font-size;
-    transition-duration: 200ms, 200ms;
-    transition-timing-function: ease-in-out, ease-in-out;
+    transition-duration: 150ms, 150ms;
+    transition-timing-function: linear, linear;
   }
 
   &.active {

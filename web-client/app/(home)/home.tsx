@@ -17,6 +17,7 @@ async function PopularSlider() {
           );
           return popular;
         }}
+        title="Popular Movies"
         slideSize={3}
       />
     </>
@@ -36,6 +37,7 @@ async function TrendingSlider() {
           );
           return trending;
         }}
+        title="Trending Movies"
         slideSize={4}
       />
     </>
@@ -55,6 +57,7 @@ async function NowPlayingSlider() {
           );
           return nowPlaying;
         }}
+        title="Now Playing"
         slideSize={5}
       />
     </>
@@ -75,9 +78,9 @@ export default async function Home() {
       {/** Current polls section */}
       {isAuthenticated ? (
         <section className="slider-container">
-          <article>
+          {/* <article>
             <h2>Current Polls</h2>
-          </article>
+          </article> */}
 
           {/** slider */}
           <section />
@@ -85,10 +88,6 @@ export default async function Home() {
       ) : null}
       {/** Popular Movies */}
       <section className="slider-container">
-        <article>
-          <h2>Popular Movies</h2>
-        </article>
-
         {/** slider */}
         <section>
           {/* @ts-expect-error Server Component */}
@@ -98,10 +97,6 @@ export default async function Home() {
 
       {/** Trending Movies */}
       <section className="slider-container">
-        <article>
-          <h2>Trending Movies</h2>
-        </article>
-
         {/** slider */}
         <section>
           {/* @ts-expect-error Server Component */}
@@ -111,10 +106,6 @@ export default async function Home() {
 
       {/** Now Playing */}
       <section className="slider-container">
-        <article>
-          <h2>Now Playing</h2>
-        </article>
-
         {/** slider */}
         <section>
           {/* @ts-expect-error Server Component */}

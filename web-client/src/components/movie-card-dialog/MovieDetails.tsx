@@ -58,7 +58,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   }, []);
 
   return (
-    <article ref={elRef} className={`${styles['header-content']}`}>
+    <article
+      ref={elRef}
+      className={`${styles['header-content']}`}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       <section className={`${styles['movie-details']}`}>
         <div className={`${styles['movie-title-desc']}`}>
           <h3>{movie.title}</h3>

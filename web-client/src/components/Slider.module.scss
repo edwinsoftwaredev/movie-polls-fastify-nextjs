@@ -39,3 +39,7 @@ $slider-ctrl-size: calc((100% * (1 / 25)));
 
 .slide-container {
 }
+
+.title {
+  padding: 0 calc($slider-ctrl-size + 0.5em);
+}

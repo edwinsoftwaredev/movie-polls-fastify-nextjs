@@ -14,10 +14,11 @@ export default async function TrendingMovies() {
     <>
       {trendingByGenre.map((genre) => (
         <div key={genre.genre_name} className="slider-container">
-          <article>
-            <h2>{genre.genre_name}</h2>
-          </article>
-          <Slider fetchItems={async () => genre.results} slideSize={5} />
+          <Slider
+            title={genre.genre_name}
+            fetchItems={async () => genre.results}
+            slideSize={5}
+          />
         </div>
       )) ?? null}
     </>

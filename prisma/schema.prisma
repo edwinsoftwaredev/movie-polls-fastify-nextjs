@@ -37,10 +37,10 @@ model UserSession {
 }
 
 model Poll {
-  id         String      @id
+  id         String      @id @default(uuid())
   name       String
   expiresOn  DateTime?
-  isActive   Boolean
+  isActive   Boolean?     @default(false)
   author     User        @relation(fields: [authorId], references: [id])
   authorId   String
   MoviePolls MoviePoll[]
@@ -52,7 +52,7 @@ model MoviePoll {
   pollId    String
   poll      Poll   @relation(fields: [pollId], references: [id])
   movieId   Int
-  voteCount Int
+  voteCount Int?   @default(0)
 
   @@id([pollId, movieId])
   @@index([pollId])

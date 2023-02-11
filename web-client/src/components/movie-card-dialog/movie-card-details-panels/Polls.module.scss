@@ -2,13 +2,18 @@
   width: 100%;
   height: 100%;
   position: relative;
+  padding: 0.5em;
   padding-bottom: 0.5em;
+  overflow: hidden;
+  overflow-y: auto;
 }
 
 .anonymous-container {
   padding: 0.5em;
   position: absolute;
   bottom: 0.5em;
+  left: 0;
+  right: 0;
   z-index: 10;
   width: 100%;
 }
@@ -17,5 +22,46 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: 100%;
+}
+
+.new-poll-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  h4 {
+    margin-block-start: 0;
+  }
+}
+
+.poll-list-item {
+  background-color: rgba($color: #ffffff, $alpha: 0.15);
+  padding: 0.75em 0.5em;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  align-items: center;
+  border-radius: 0.175em;
+
+  &:hover {
+    background-color: rgba($color: #ffffff, $alpha: 0.25);
+    color: white;
+  }
+}
+
+.poll-item-name {
+  flex: 1 0;
+}
+
+.poll-list-container {
+  margin-top: 1.5em;
+  h4 {
+    margin-block-start: 0;
+  }
+}
+
+.poll-list-item-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }

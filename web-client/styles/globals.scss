@@ -32,13 +32,13 @@ $dark-color: #888;
 $dark-hover-color: white;
 
 header {
-  max-width: $fixed-content-width-1;
+  // max-width: $fixed-content-width-1;
   width: 100%;
   margin: auto;
 
-  @media (min-width: 2600px) {
-    max-width: $fixed-content-width-2;
-  }
+  // @media (min-width: 2600px) {
+  //   max-width: $fixed-content-width-2;
+  // }
 }
 
 main {
@@ -60,15 +60,15 @@ section {
 }
 
 article {
-  max-width: $fixed-content-width-1;
+  // max-width: $fixed-content-width-1;
   width: 100%;
   margin: 0 auto;
   padding: 1em 2em;
   box-sizing: border-box;
 
-  @media (min-width: 2600px) {
-    max-width: $fixed-content-width-2;
-  }
+  // @media (min-width: 2600px) {
+  //   max-width: $fixed-content-width-2;
+  // }
 }
 
 footer {
@@ -152,6 +152,8 @@ svg {
 }
 
 .slider-container {
+  margin: 2em 0;
+
   h2 {
     font-size: 1.2em;
   }

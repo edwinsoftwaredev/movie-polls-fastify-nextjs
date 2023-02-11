@@ -1,3 +1,9 @@
+$slider-ctrl-size: calc((100% * (1 / 25)));
+
+.title {
+  padding: 0 calc($slider-ctrl-size + 1em);
+}
+
 .d-select {
   display: flex;
   flex-direction: row;

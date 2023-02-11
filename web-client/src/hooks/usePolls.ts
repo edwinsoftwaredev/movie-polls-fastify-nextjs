@@ -5,6 +5,8 @@ interface UsePollsOpts {
 }
 
 const usePolls = ({ fetchInactivePolls }: UsePollsOpts) => {
+  const { poll: pollContext } = trpc.useContext();
+
   const { data: inactivePollsData } = trpc.poll.inactivePolls.useQuery(
     undefined,
     {
@@ -14,8 +16,15 @@ const usePolls = ({ fetchInactivePolls }: UsePollsOpts) => {
     }
   );
 
+  const { mutate: createPoll, isLoading: isLoadingCreatePoll } =
+    trpc.poll.createPoll.useMutation({
+      onSuccess: (data, variables, context) => {},
+    });
+
   return {
     inactivePolls: inactivePollsData?.polls || [],
+    createPoll,
+    isLoadingCreatePoll,
   };
 };
 

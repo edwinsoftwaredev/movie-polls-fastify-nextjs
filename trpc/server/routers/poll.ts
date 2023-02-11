@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { procedure, router } from '../init-tRPC';
 
 const pollRouter = router({
@@ -10,6 +11,23 @@ const pollRouter = router({
 
     return { polls };
   }),
+  createPoll: procedure
+    .input(
+      z.object({
+        name: z.string(),
+        movieId: z.optional(z.number()),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { fastify, req } = ctx;
+      const { movieId, name } = input;
+      const userId = req.session.userSession?.userId;
+      if (!userId) return { poll: undefined };
+
+      const poll = await fastify.polls.createPoll(userId, name, movieId);
+
+      return { poll };
+    }),
 });
 
 export default router({ poll: pollRouter });

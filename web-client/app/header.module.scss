@@ -1,3 +1,6 @@
+$fixed-content-width-1: 1200px;
+$fixed-content-width-2: 2600px;
+
 .container {
   background-color: rgba($color: #000000, $alpha: 0.65);
   backdrop-filter: blur(7px);
@@ -17,6 +20,7 @@
   grid-template-columns: auto 1fr auto;
   grid-template-rows: 4em;
   padding: 0 2rem;
+  max-width: $fixed-content-width-1;
 
   a {
     height: fit-content;
@@ -27,5 +31,9 @@
       margin-block: 0;
       margin: auto;
     }
+  }
+
+  @media (min-width: 2600px) {
+    max-width: $fixed-content-width-2;
   }
 }

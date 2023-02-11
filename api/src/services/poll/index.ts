@@ -1,5 +1,6 @@
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
+import { Movie } from '../movies/types';
 import routes from './plugins/routes';
 
 interface PollPluginOpts extends FastifyPluginOptions {}
@@ -19,8 +20,31 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       },
     });
 
+  const createPoll = (
+    userId: string,
+    pollName: string,
+    movieId: Movie['id']
+  ) => {
+    fastify.prismaClient.poll.create({
+      data: {
+        name: pollName,
+        authorId: userId,
+        ...(movieId
+          ? {
+              MoviePolls: {
+                create: {
+                  movieId: movieId,
+                },
+              },
+            }
+          : {}),
+      },
+    });
+  };
+
   fastify.decorate('polls', {
     getInactivePolls,
+    createPoll,
   });
   fastify.register(routes, { prefix: '/trpc/pollRoutes' });
 };

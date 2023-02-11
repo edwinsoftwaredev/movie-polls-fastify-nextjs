@@ -7,14 +7,22 @@ interface InputProps {
   value?: string;
   placeholder?: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-const Input: React.FC<InputProps> = ({ placeholder, value, onChange }) => {
+const Input: React.FC<InputProps> = ({
+  placeholder,
+  value,
+  onChange,
+  disabled,
+}) => {
   const [active, setActive] = useState(false);
 
   return (
     <div
-      className={`${styles['input']} ${active ? styles['active'] : ''}`}
+      className={`${styles['input']} ${active ? styles['active'] : ''} ${
+        disabled ? styles['disabled'] : ''
+      }`}
       onClick={(e) => {
         setActive(true);
         e.stopPropagation();
@@ -22,6 +30,7 @@ const Input: React.FC<InputProps> = ({ placeholder, value, onChange }) => {
     >
       <div className={styles['label']}>{placeholder}</div>
       <input
+        disabled={disabled ?? false}
         defaultValue={value}
         onChange={(ev) => {
           setActive(true);
