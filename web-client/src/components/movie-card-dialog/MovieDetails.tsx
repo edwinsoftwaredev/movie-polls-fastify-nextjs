@@ -128,7 +128,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
           {currentTab === 'Available On' ? (
             <AvailableOn providers={providers} movieTitle={title} />
           ) : null}
-          {currentTab === 'Polls' ? <Polls /> : null}
+          {currentTab === 'Polls' ? <Polls movieId={movie.id} /> : null}
         </Panel>
       </section>
     </article>

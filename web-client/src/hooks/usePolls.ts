@@ -13,18 +13,35 @@ const usePolls = ({ fetchInactivePolls }: UsePollsOpts) => {
       enabled: fetchInactivePolls ?? false,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      onSuccess: (data) =>
+        data.polls.sort(
+          (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt)
+        ),
     }
   );
 
-  const { mutate: createPoll, isLoading: isLoadingCreatePoll } =
-    trpc.poll.createPoll.useMutation({
-      onSuccess: (data, variables, context) => {},
-    });
+  const {
+    mutate: createPoll,
+    isLoading: isLoadingCreatePoll,
+    isSuccess: isSuccessCreatePoll,
+    isIdle: isIdleCreatePoll,
+  } = trpc.poll.createPoll.useMutation({
+    onSuccess: async (input) => {
+      if (!(input && input.poll)) return;
+
+      const data = pollContext.inactivePolls.getData();
+      // await pollContext.inactivePolls.cancel();
+      pollContext.inactivePolls.setData(undefined, {
+        polls: [...(data?.polls || []), input.poll],
+      });
+    },
+  });
 
   return {
     inactivePolls: inactivePollsData?.polls || [],
     createPoll,
     isLoadingCreatePoll,
+    isSuccessCreatePoll,
   };
 };
 

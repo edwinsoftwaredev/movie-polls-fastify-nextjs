@@ -1,8 +1,17 @@
 .footer {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 1em 2em;
+  backdrop-filter: contrast(0.5);
+  -webkit-backdrop-filter: contrast(0.5);
+
   .main-footer {
     display: grid;
     grid-template-columns: auto 1fr auto;
     grid-template-rows: auto;
+    max-width: 1200px;
+    padding: 0 2rem;
+    margin: auto;
 
     p {
       font-size: 0.75em;

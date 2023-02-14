@@ -69,14 +69,10 @@ article {
   // @media (min-width: 2600px) {
   //   max-width: $fixed-content-width-2;
   // }
-}
 
-footer {
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 1em 2em;
-  backdrop-filter: contrast(0.5);
-  -webkit-backdrop-filter: contrast(0.5);
+  @media screen and (max-width: 1200px) {
+    padding: 0;
+  }
 }
 
 svg {
@@ -152,7 +148,7 @@ svg {
 }
 
 .slider-container {
-  margin: 2em 0;
+  margin: 0.75em 0;
 
   h2 {
     font-size: 1.2em;

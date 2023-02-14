@@ -4,7 +4,7 @@
   border-style: solid;
   border-width: 0.1em;
   padding: 0.25em 0.5em;
-  min-height: 2.25em;
+  min-height: 3em;
   min-width: 60px;
   width: auto;
   position: relative;
@@ -23,7 +23,7 @@
     background-color: transparent;
     width: 100%;
     color: white;
-    font-size: 0.85em;
+    font-size: 0.95em;
   }
 
   .label {
@@ -39,14 +39,14 @@
   &.active {
     .label {
       top: 0.5em;
-      font-size: 0.35em;
+      font-size: 0.65em;
     }
   }
 
   &:hover {
     .label {
       top: 0.5em;
-      font-size: 0.35em;
+      font-size: 0.65em;
     }
   }
 }

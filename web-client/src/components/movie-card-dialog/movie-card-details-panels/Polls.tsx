@@ -4,6 +4,7 @@ import { Button, Input, Label } from 'src/components';
 import { useUserSessionDetails } from 'src/hooks';
 import usePolls from 'src/hooks/usePolls';
 import { Poll } from 'src/types/poll';
+import { Movie } from 'types';
 import styles from './Polls.module.scss';
 
 const Anonymous: React.FC = () => {
@@ -32,28 +33,37 @@ const Anonymous: React.FC = () => {
 
 interface InactivePollListProps {
   inactivePolls: Array<Poll>;
+  movieId: Movie['id'];
 }
 
 const InactivePollList: React.FC<InactivePollListProps> = ({
   inactivePolls,
+  movieId,
 }) => {
-  const { createPoll, isLoadingCreatePoll } = usePolls({
-    fetchInactivePolls: false,
+  const { createPoll, isLoadingCreatePoll, isSuccessCreatePoll } = usePolls({
+    fetchInactivePolls: true,
   });
 
   const [activePoll, setActivePoll] = useState<string | null>(null);
   const [pollName, setPollName] = useState<string>();
+  const [formVersion, setFormVersion] = useState(0);
+
+  useEffect(() => {
+    if (isSuccessCreatePoll) {
+      setFormVersion((state) => state + 1);
+    }
+  }, [isSuccessCreatePoll]);
 
   return (
     <div className={styles['poll-list']}>
-      {inactivePolls.length < 10 ? (
+      {inactivePolls.length < 100 ? (
         <form
           className={styles['new-poll-input']}
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
             if (pollName && !isLoadingCreatePoll) {
-              createPoll({ name: pollName });
+              createPoll({ name: pollName, movieId });
             }
           }}
         >
@@ -64,6 +74,7 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
             }}
             placeholder="Poll Name"
             disabled={isLoadingCreatePoll}
+            key={`poll-name-input-${formVersion}`}
           />
           <Button
             large
@@ -94,7 +105,7 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
                   );
                 }}
               >
-                <span className="material-symbols-rounded">unfold_more</span>
+                <span className="material-symbols-rounded">expand_more</span>
               </Button>
             </div>
           ))}
@@ -104,9 +115,11 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
   );
 };
 
-interface PollsProps {}
+interface PollsProps {
+  movieId: Movie['id'];
+}
 
-const Polls: React.FC<PollsProps> = () => {
+const Polls: React.FC<PollsProps> = ({ movieId }) => {
   const { isAuthenticated } = useUserSessionDetails();
 
   const { inactivePolls } = usePolls({
@@ -119,7 +132,7 @@ const Polls: React.FC<PollsProps> = () => {
       {/* {!isAuthenticated ? (
         <Anonymous />
       ) : (
-        <InactivePollList inactivePolls={inactivePolls} />
+        <InactivePollList inactivePolls={inactivePolls} movieId={movieId} />
       )} */}
     </div>
   );

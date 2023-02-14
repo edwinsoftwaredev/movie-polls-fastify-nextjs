@@ -1,7 +1,7 @@
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { FastifyPluginAsync } from 'fastify';
-import csrfRouteGuard from 'src/plugins/csrfRouteGuard';
-import userAuthRouteGuard from 'src/plugins/userAuthRouteGuard';
+import csrfRouteGuard from '../../../plugins/csrfRouteGuard';
+import userAuthRouteGuard from '../../../plugins/userAuthRouteGuard';
 import { createTRPCFastifyContext } from 'trpc/server';
 import { moviesRouter } from 'trpc/server/routers';
 

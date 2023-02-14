@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import styles from './Input.module.scss';
 
 interface InputProps {
-  value?: string;
+  defaultValue?: string;
   placeholder?: string;
   onChange: (value: string) => void;
   disabled?: boolean;
@@ -12,12 +12,11 @@ interface InputProps {
 
 const Input: React.FC<InputProps> = ({
   placeholder,
-  value,
+  defaultValue,
   onChange,
   disabled,
 }) => {
   const [active, setActive] = useState(false);
-
   return (
     <div
       className={`${styles['input']} ${active ? styles['active'] : ''} ${
@@ -31,7 +30,7 @@ const Input: React.FC<InputProps> = ({
       <div className={styles['label']}>{placeholder}</div>
       <input
         disabled={disabled ?? false}
-        defaultValue={value}
+        defaultValue={defaultValue ?? ''}
         onChange={(ev) => {
           setActive(true);
           onChange(ev.target.value || '');

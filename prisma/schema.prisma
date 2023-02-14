@@ -39,8 +39,9 @@ model UserSession {
 model Poll {
   id         String      @id @default(uuid())
   name       String
+  createdAt  DateTime    @default(now())
   expiresOn  DateTime?
-  isActive   Boolean?     @default(false)
+  isActive   Boolean?    @default(false)
   author     User        @relation(fields: [authorId], references: [id])
   authorId   String
   MoviePolls MoviePoll[]

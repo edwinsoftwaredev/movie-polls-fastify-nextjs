@@ -14,7 +14,7 @@ const pollRouter = router({
   createPoll: procedure
     .input(
       z.object({
-        name: z.string(),
+        name: z.string().max(80),
         movieId: z.optional(z.number()),
       })
     )
@@ -22,7 +22,7 @@ const pollRouter = router({
       const { fastify, req } = ctx;
       const { movieId, name } = input;
       const userId = req.session.userSession?.userId;
-      if (!userId) return { poll: undefined };
+      if (!userId) return { poll: null };
 
       const poll = await fastify.polls.createPoll(userId, name, movieId);
 
