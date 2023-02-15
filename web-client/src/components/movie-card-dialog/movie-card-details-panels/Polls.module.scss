@@ -24,28 +24,38 @@
   justify-content: flex-end;
 }
 
-.new-poll-input {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-
+.new-poll-form {
   h4 {
     margin-block-start: 0;
+  }
+
+  .new-poll-form-input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
   }
 }
 
 .poll-list-item {
-  background-color: rgba($color: #ffffff, $alpha: 0.15);
+  background-color: rgb(40, 40, 40);
   padding: 0.75em 0.5em;
   display: flex;
   flex-direction: row;
   gap: 0.5em;
   align-items: center;
   border-radius: 0.175em;
+  position: relative;
+  z-index: 10;
 
   &:hover {
-    background-color: rgba($color: #ffffff, $alpha: 0.25);
+    background-color: rgb(60, 60, 60);
     color: white;
+  }
+
+  &.active {
+    .expand-more-icon {
+      transform: rotate(180deg);
+    }
   }
 }
 
@@ -64,4 +74,42 @@
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+}
+
+.poll-movie-list-container {
+  position: relative;
+  top: -0.125em;
+  height: 0;
+  overflow: hidden;
+  border-radius: 0 0 0.125em 0.125em;
+  padding: 0;
+  background-color: rgb(20, 20, 20);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  &.active {
+    padding: 0.75em 0.5em;
+    height: auto;
+
+    .expand-more-icon {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.poll-movie-list {
+  width: 100%;
+}
+
+.poll-movie-list-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto;
+  gap: 0.25em;
+  width: 100%;
+
+  * {
+    margin: auto 0;
+  }
 }

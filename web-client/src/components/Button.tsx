@@ -6,6 +6,7 @@ interface ButtonProps extends PropsWithChildren {
   outlined?: boolean;
   large?: boolean;
   icon?: boolean;
+  del?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -15,12 +16,13 @@ const Button: React.FC<ButtonProps> = ({
   outlined,
   large,
   icon,
+  del,
 }) => {
   const classNames = `${styles['button']} ${
     outlined ? styles['outlined'] : ''
   } ${large ? styles['large'] : ''} ${icon ? styles['icon'] : ''} ${
     disabled ? styles['disabled'] : ''
-  }`;
+  } ${del ? styles['delete'] : ''}`;
 
   return (
     <button

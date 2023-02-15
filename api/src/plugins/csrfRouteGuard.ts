@@ -1,4 +1,5 @@
 import { FastifyPluginAsync } from 'fastify';
+import fastifyPlugin from 'fastify-plugin';
 
 /**
  * Adds CSRF token validation.
@@ -14,4 +15,4 @@ const csrfRouteGuard: FastifyPluginAsync = async (fastify) => {
   });
 };
 
-export default csrfRouteGuard;
+export default fastifyPlugin(csrfRouteGuard);

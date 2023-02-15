@@ -25,6 +25,10 @@
   @media screen and (max-width: 1200px) {
     padding: 0.75em 1em;
   }
+
+  [class~='material-symbols-rounded'] {
+    font-size: 1.25em;
+  }
 }
 
 .outlined {
@@ -43,8 +47,21 @@
   padding: 0;
   min-width: auto;
   min-height: auto;
+  font-size: initial;
 
   &:hover {
     border-color: rgba($color: #ffffff, $alpha: 0.8);
+  }
+}
+
+.delete {
+  background-color: rgba($color: #ff0000, $alpha: 0.09);
+  border-color: rgba($color: #ff0000, $alpha: 0.6);
+  color: rgba($color: #ff0000, $alpha: 0.6);
+
+  &:hover {
+    background-color: rgba($color: #ff0000, $alpha: 0.125);
+    border-color: rgba($color: #ff0000, $alpha: 0.8) !important;
+    color: rgba($color: #ff0000, $alpha: 0.8) !important;
   }
 }

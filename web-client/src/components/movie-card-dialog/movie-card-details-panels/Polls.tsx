@@ -31,6 +31,36 @@ const Anonymous: React.FC = () => {
   );
 };
 
+interface PollMovieListProps {
+  movies: Poll['MoviePolls'];
+  removeClbk: (movieId: Movie['id']) => void;
+}
+
+const PollMovieList: React.FC<PollMovieListProps> = ({
+  movies,
+  removeClbk,
+}) => {
+  return (
+    <div className={styles['poll-movie-list']}>
+      {!movies.length && <Label>No Movies</Label>}
+      {movies.map((movie) => (
+        <div key={movie.movieId} className={styles['poll-movie-list-item']}>
+          <Label>{movie.movieId}</Label>
+          <Button
+            icon
+            del
+            onClick={() => {
+              removeClbk(movie.movieId);
+            }}
+          >
+            <span className="material-symbols-rounded">delete</span>
+          </Button>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 interface InactivePollListProps {
   inactivePolls: Array<Poll>;
   movieId: Movie['id'];
@@ -58,7 +88,7 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
     <div className={styles['poll-list']}>
       {inactivePolls.length < 100 ? (
         <form
-          className={styles['new-poll-input']}
+          className={styles['new-poll-form']}
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -68,45 +98,81 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
           }}
         >
           <h4>Create a new poll</h4>
-          <Input
-            onChange={(value) => {
-              setPollName(value);
-            }}
-            placeholder="Poll Name"
-            disabled={isLoadingCreatePoll}
-            key={`poll-name-input-${formVersion}`}
-          />
-          <Button
-            large
-            outlined
-            onClick={() => {}}
-            disabled={isLoadingCreatePoll}
-          >
-            Add New Poll
-          </Button>
+          <div className={styles['new-poll-form-input']}>
+            <Input
+              onChange={(value) => {
+                setPollName(value);
+              }}
+              placeholder="Poll Name"
+              disabled={isLoadingCreatePoll}
+              key={`poll-name-input-${formVersion}`}
+            />
+            <Button
+              large
+              outlined
+              onClick={() => {}}
+              disabled={isLoadingCreatePoll}
+            >
+              Add New Poll
+            </Button>
+          </div>
         </form>
       ) : null}
       <div className={styles['poll-list-container']}>
         <h4>Available Polls</h4>
         <div className={styles['poll-list-item-container']}>
           {inactivePolls.map((poll) => (
-            <div
-              className={`${styles['poll-list-item']} ${
-                activePoll === poll.id ? styles['active'] : ''
-              }`}
-              key={poll.id}
-            >
-              <span className={styles['poll-item-name']}>{poll.name}</span>
-              <Button
-                icon
-                onClick={(e) => {
-                  setActivePoll((state) =>
-                    state !== poll.id ? poll.id : null
-                  );
-                }}
+            <div key={poll.id}>
+              <div
+                className={`${activePoll === poll.id ? styles['active'] : ''} ${
+                  styles['poll-list-item']
+                }`}
               >
-                <span className="material-symbols-rounded">expand_more</span>
-              </Button>
+                <span className={styles['poll-item-name']}>{poll.name}</span>
+                <Button
+                  icon
+                  onClick={(e) => {
+                    setActivePoll((state) =>
+                      state !== poll.id ? poll.id : null
+                    );
+                  }}
+                >
+                  <span
+                    className={`${styles['expand-more-icon']} material-symbols-rounded`}
+                  >
+                    add
+                  </span>
+                </Button>
+                <Button
+                  icon
+                  onClick={(e) => {
+                    setActivePoll((state) =>
+                      state !== poll.id ? poll.id : null
+                    );
+                  }}
+                >
+                  <span
+                    className={`${styles['expand-more-icon']} material-symbols-rounded`}
+                  >
+                    expand_more
+                  </span>
+                </Button>
+              </div>
+              <div
+                className={`${styles['poll-movie-list-container']} ${
+                  activePoll === poll.id ? styles['active'] : ''
+                }`}
+              >
+                <PollMovieList
+                  key={poll.id}
+                  movies={poll.MoviePolls}
+                  removeClbk={(movieId) => {}}
+                />
+                <Button del large outlined onClick={() => {}}>
+                  <span className="material-symbols-rounded">delete</span>
+                  Delete Poll
+                </Button>
+              </div>
             </div>
           ))}
         </div>

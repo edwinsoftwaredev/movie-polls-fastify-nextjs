@@ -1,4 +1,11 @@
-import { UserSession, PrismaClient, User, Poll } from '@prisma/client';
+import {
+  UserSession,
+  PrismaClient,
+  User,
+  Poll,
+  Prisma,
+  MoviePoll,
+} from '@prisma/client';
 import { Redis } from '@upstash/redis';
 import { OAuth2Client, LoginTicket } from 'google-auth-library';
 // Current project configuration requires to define full path
@@ -56,14 +63,28 @@ declare module 'fastify' {
     };
 
     polls: {
-      getInactivePolls: (
-        userId: string
-      ) => Promise<Array<Omit<Poll, 'authorId'>>>;
+      getInactivePolls: (userId: string) => Promise<
+        Array<
+          Omit<
+            Poll & {
+              MoviePolls: MoviePoll[];
+            },
+            'authorId'
+          >
+        >
+      >;
       createPoll: (
         userId: string,
         pollName: string,
         movieId?: Movie['id']
-      ) => Promise<Omit<Poll, 'authorId'>>;
+      ) => Promise<
+        Omit<
+          Poll & {
+            MoviePolls: MoviePoll[];
+          },
+          'authorId'
+        >
+      >;
     };
   }
 

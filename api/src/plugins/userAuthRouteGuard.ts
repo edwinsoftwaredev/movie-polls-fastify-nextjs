@@ -1,4 +1,5 @@
 import { FastifyPluginAsync } from 'fastify';
+import fastifyPlugin from 'fastify-plugin';
 
 /**
  * Add user session validation.
@@ -17,4 +18,4 @@ const userAuthRouteGuard: FastifyPluginAsync = async (fastify) => {
   });
 };
 
-export default userAuthRouteGuard;
+export default fastifyPlugin(userAuthRouteGuard);
