@@ -28,7 +28,7 @@ model User {
 
 model UserSession {
   id         String    @id
-  user       User?     @relation(fields: [userId], references: [id])
+  user       User?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     String?
   csrfSecret String
   expiresOn  DateTime?
@@ -42,7 +42,8 @@ model Poll {
   createdAt  DateTime    @default(now())
   expiresOn  DateTime?
   isActive   Boolean?    @default(false)
-  author     User        @relation(fields: [authorId], references: [id])
+  // NOTE: User deletes cascade to Poll (As an alternative remove record on schedule).
+  author     User        @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   authorId   String
   MoviePolls MoviePoll[]
 
@@ -51,7 +52,8 @@ model Poll {
 
 model MoviePoll {
   pollId    String
-  poll      Poll   @relation(fields: [pollId], references: [id])
+  // NOTE: Poll deletes cascade to MoviePoll (As an alternative remove record on schedule).
+  poll      Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   movieId   Int
   voteCount Int?   @default(0)
 

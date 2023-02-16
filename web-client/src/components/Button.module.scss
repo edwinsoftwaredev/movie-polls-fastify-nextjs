@@ -5,16 +5,19 @@
   padding: 0.5em;
   border-radius: 0.175em;
   border-style: solid;
-  border-width: 0.1em;
+  border-width: 0.075em;
+  border-color: transparent;
   background-color: rgba($color: #ffffff, $alpha: 0.15);
   font-weight: bold;
   cursor: pointer;
-  transition-property: border-color, color;
-  transition-duration: 150ms, 150ms;
-  transition-timing-function: ease-in-out, ease-in-out;
+  transition-property: border-color, color, background-color;
+  transition-duration: 150ms, 150ms, 150ms;
+  transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
   color: inherit;
 
   display: flex;
+  flex-direction: row;
+  gap: 0.25em;
   align-items: center;
   justify-content: center;
 
@@ -55,13 +58,16 @@
 }
 
 .delete {
-  background-color: rgba($color: #ff0000, $alpha: 0.09);
-  border-color: rgba($color: #ff0000, $alpha: 0.6);
-  color: rgba($color: #ff0000, $alpha: 0.6);
+  color: rgba($color: #d42424, $alpha: 1);
+
+  &.outlined {
+    &:hover {
+      border-color: rgba($color: #d42424, $alpha: 0.8) !important;
+    }
+  }
 
   &:hover {
-    background-color: rgba($color: #ff0000, $alpha: 0.125);
-    border-color: rgba($color: #ff0000, $alpha: 0.8) !important;
-    color: rgba($color: #ff0000, $alpha: 0.8) !important;
+    background-color: rgba($color: #d42424, $alpha: 0.125);
+    color: rgba($color: #ffffff, $alpha: 1) !important;
   }
 }

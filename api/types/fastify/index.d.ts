@@ -3,7 +3,6 @@ import {
   PrismaClient,
   User,
   Poll,
-  Prisma,
   MoviePoll,
 } from '@prisma/client';
 import { Redis } from '@upstash/redis';
@@ -63,28 +62,59 @@ declare module 'fastify' {
     };
 
     polls: {
-      getInactivePolls: (userId: string) => Promise<
-        Array<
-          Omit<
+      getActivePolls: (userSession: UserSession) => Promise<
+        | Array<
+            Omit<
+              Poll & {
+                MoviePolls: MoviePoll[];
+              },
+              'authorId'
+            >
+          >
+        | Error
+      >;
+      getInactivePolls: (userSession: UserSession) => Promise<
+        | Array<
+            Omit<
+              Poll & {
+                MoviePolls: MoviePoll[];
+              },
+              'authorId'
+            >
+          >
+        | Error
+      >;
+      createPoll: (
+        userSession: UserSession,
+        pollName: string,
+        movieId?: Movie['id']
+      ) => Promise<
+        | Omit<
             Poll & {
               MoviePolls: MoviePoll[];
             },
             'authorId'
           >
-        >
+        | Error
       >;
-      createPoll: (
-        userId: string,
-        pollName: string,
-        movieId?: Movie['id']
-      ) => Promise<
-        Omit<
-          Poll & {
-            MoviePolls: MoviePoll[];
-          },
-          'authorId'
-        >
-      >;
+      updatePoll: (
+        userSession: UserSession,
+        poll: Poll
+      ) => Promise<Omit<Poll, 'authorId'> | Error>;
+      removePoll: (
+        userSession: UserSession,
+        pollId: Poll['id']
+      ) => Promise<Omit<Poll, 'authorId'> | Error>;
+      addMovie: (
+        userSession: UserSession,
+        pollId: Poll['id'],
+        movieId: Movie['id']
+      ) => Promise<MoviePoll | Error>;
+      removeMovie: (
+        userSession: UserSession,
+        pollId: Poll['id'],
+        movieId: Movie['id']
+      ) => Promise<MoviePoll | Error>;
     };
   }
 

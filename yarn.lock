@@ -6728,6 +6728,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "trpc@workspace:trpc"
   dependencies:
+    "@prisma/client": latest
     "@trpc/client": ^10.7.0
     "@trpc/server": ^10.7.0
     typescript: ^4.8.4

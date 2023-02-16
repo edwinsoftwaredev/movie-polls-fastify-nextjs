@@ -49,6 +49,7 @@ const PollMovieList: React.FC<PollMovieListProps> = ({
           <Button
             icon
             del
+            title="Remove movie"
             onClick={() => {
               removeClbk(movie.movieId);
             }}
@@ -70,7 +71,14 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
   inactivePolls,
   movieId,
 }) => {
-  const { createPoll, isLoadingCreatePoll, isSuccessCreatePoll } = usePolls({
+  const {
+    createPoll,
+    isLoadingCreatePoll,
+    isSuccessCreatePoll,
+    addMovie,
+    removeMovie,
+    removePoll,
+  } = usePolls({
     fetchInactivePolls: true,
   });
 
@@ -86,7 +94,7 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
 
   return (
     <div className={styles['poll-list']}>
-      {inactivePolls.length < 100 ? (
+      {inactivePolls.length < 10 ? (
         <form
           className={styles['new-poll-form']}
           onSubmit={(e) => {
@@ -107,76 +115,89 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
               disabled={isLoadingCreatePoll}
               key={`poll-name-input-${formVersion}`}
             />
-            <Button
-              large
-              outlined
-              onClick={() => {}}
-              disabled={isLoadingCreatePoll}
-            >
+            <Button type="submit" large outlined disabled={isLoadingCreatePoll}>
               Add New Poll
             </Button>
           </div>
         </form>
       ) : null}
-      <div className={styles['poll-list-container']}>
-        <h4>Available Polls</h4>
-        <div className={styles['poll-list-item-container']}>
-          {inactivePolls.map((poll) => (
-            <div key={poll.id}>
-              <div
-                className={`${activePoll === poll.id ? styles['active'] : ''} ${
-                  styles['poll-list-item']
-                }`}
-              >
-                <span className={styles['poll-item-name']}>{poll.name}</span>
-                <Button
-                  icon
-                  onClick={(e) => {
-                    setActivePoll((state) =>
-                      state !== poll.id ? poll.id : null
-                    );
-                  }}
+      {inactivePolls.length ? (
+        <div className={styles['poll-list-container']}>
+          <h4>Available Polls</h4>
+          <div className={styles['poll-list-item-container']}>
+            {inactivePolls.map((poll) => (
+              <div key={poll.id}>
+                <div
+                  className={`${
+                    activePoll === poll.id ? styles['active'] : ''
+                  } ${styles['poll-list-item']}`}
                 >
-                  <span
-                    className={`${styles['expand-more-icon']} material-symbols-rounded`}
+                  <span className={styles['poll-item-name']}>{poll.name}</span>
+                  {poll.MoviePolls.length < 5 &&
+                  !poll.MoviePolls.find(
+                    (moviePoll) => moviePoll.movieId === movieId
+                  ) ? (
+                    <Button
+                      icon
+                      title="Add movie to this poll"
+                      onClick={(_) => {
+                        setActivePoll((state) =>
+                          state !== poll.id ? poll.id : state
+                        );
+                        addMovie({ movieId, pollId: poll.id });
+                      }}
+                    >
+                      <span
+                        className={`${styles['expand-more-icon']} material-symbols-rounded`}
+                      >
+                        add
+                      </span>
+                    </Button>
+                  ) : null}
+                  <Button
+                    icon
+                    onClick={(e) => {
+                      setActivePoll((state) =>
+                        state !== poll.id ? poll.id : null
+                      );
+                    }}
                   >
-                    add
-                  </span>
-                </Button>
-                <Button
-                  icon
-                  onClick={(e) => {
-                    setActivePoll((state) =>
-                      state !== poll.id ? poll.id : null
-                    );
-                  }}
+                    <span
+                      className={`${styles['expand-more-icon']} material-symbols-rounded`}
+                    >
+                      expand_more
+                    </span>
+                  </Button>
+                </div>
+                <div
+                  className={`${styles['poll-movie-list-container']} ${
+                    activePoll === poll.id ? styles['active'] : ''
+                  }`}
                 >
-                  <span
-                    className={`${styles['expand-more-icon']} material-symbols-rounded`}
+                  <PollMovieList
+                    key={poll.id}
+                    movies={poll.MoviePolls}
+                    removeClbk={(movieId) => {
+                      removeMovie({ movieId, pollId: poll.id });
+                    }}
+                  />
+                  <Button
+                    del
+                    large
+                    outlined
+                    onClick={() => {
+                      removePoll({ pollId: poll.id });
+                    }}
                   >
-                    expand_more
-                  </span>
-                </Button>
+                    <span className="material-symbols-rounded">delete</span>
+                    Delete Poll
+                  </Button>
+                </div>
               </div>
-              <div
-                className={`${styles['poll-movie-list-container']} ${
-                  activePoll === poll.id ? styles['active'] : ''
-                }`}
-              >
-                <PollMovieList
-                  key={poll.id}
-                  movies={poll.MoviePolls}
-                  removeClbk={(movieId) => {}}
-                />
-                <Button del large outlined onClick={() => {}}>
-                  <span className="material-symbols-rounded">delete</span>
-                  Delete Poll
-                </Button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 };

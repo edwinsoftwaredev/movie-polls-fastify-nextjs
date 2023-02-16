@@ -1,3 +1,4 @@
+import { Poll, Prisma, User, UserSession } from '@prisma/client';
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import { Movie } from '../movies/types';
@@ -6,10 +7,12 @@ import routes from './plugins/routes';
 interface PollPluginOpts extends FastifyPluginOptions {}
 
 const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
-  const getInactivePolls = (userId: string) =>
-    fastify.prismaClient.poll.findMany({
+  const getInactivePolls = (userSession: UserSession) => {
+    if (!userSession.userId) return new Error('UNAUTHORIZED');
+
+    return fastify.prismaClient.poll.findMany({
       where: {
-        authorId: userId,
+        authorId: userSession.userId,
         isActive: false,
       },
       select: {
@@ -20,14 +23,47 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
         MoviePolls: true,
       },
     });
+  };
+
+  const getActivePolls = (userSession: UserSession) => {
+    if (!userSession.userId) return new Error('UNAUTHORIZED');
+
+    return fastify.prismaClient.poll.findMany({
+      where: {
+        authorId: userSession.userId,
+        isActive: true,
+      },
+      select: {
+        name: true,
+        id: true,
+        expiresOn: true,
+        createdAt: true,
+        MoviePolls: true,
+      },
+    });
+  };
 
   // TODO: rate limit
   // TODO: set limit
-  const createPoll = (userId: string, pollName: string, movieId: Movie['id']) =>
-    fastify.prismaClient.poll.create({
+  const createPoll = async (
+    userSession: UserSession,
+    pollName: string,
+    movieId: Movie['id']
+  ) => {
+    if (!userSession.userId) return new Error('UNAUTHORIZED');
+    const inactivePollsCount = await fastify.prismaClient.poll.count({
+      where: {
+        authorId: userSession.userId,
+        isActive: false,
+      },
+    });
+
+    if (inactivePollsCount >= 10) return new Error('LIMIT_REACHED');
+
+    return fastify.prismaClient.poll.create({
       data: {
         name: pollName,
-        authorId: userId,
+        authorId: userSession.userId,
         ...(movieId
           ? {
               MoviePolls: {
@@ -38,14 +74,183 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
             }
           : {}),
       },
-      include: {
+      select: {
+        name: true,
+        id: true,
+        expiresOn: true,
+        createdAt: true,
         MoviePolls: true,
       },
     });
+  };
+
+  const updatePoll = async (userSession: UserSession, poll: Poll) => {
+    const currentPoll = await fastify.prismaClient.poll.findUnique({
+      where: {
+        id: poll.id,
+      },
+      select: {
+        authorId: true,
+        isActive: true,
+      },
+    });
+
+    // Checks permissions
+    if (!currentPoll) return new Error('NOT_FOUND');
+    if (!userSession.userId) return new Error('UNAUTHORIZED');
+    if (currentPoll.authorId !== userSession.userId)
+      return new Error('UNAUTHORIZED');
+
+    if (currentPoll.isActive && poll.isActive) return new Error('ACTIVE_POLL');
+
+    const { authorId, createdAt, id, ...rest } = poll;
+
+    // NOTE: Poll updates cascade to MoviePoll
+    return fastify.prismaClient.poll.update({
+      data: {
+        ...rest,
+        ...(currentPoll.isActive && !poll.isActive
+          ? {
+              MoviePolls: {
+                updateMany: {
+                  data: { voteCount: 0 },
+                  where: { pollId: poll.id },
+                },
+              },
+            }
+          : {}),
+      },
+      where: {
+        id: poll.id,
+      },
+      select: {
+        name: true,
+        id: true,
+        expiresOn: true,
+        createdAt: true,
+      },
+    });
+  };
+
+  const removePoll = async (userSession: UserSession, pollId: Poll['id']) => {
+    const currentPoll = await fastify.prismaClient.poll.findUnique({
+      where: {
+        id: pollId,
+      },
+      select: {
+        authorId: true,
+      },
+    });
+
+    // Checks permissions
+    if (!currentPoll) return new Error('NOT_FOUND');
+    if (!userSession.userId) return new Error('UNAUTHORIZED');
+    if (currentPoll.authorId !== userSession.userId)
+      return new Error('UNAUTHORIZED');
+
+    // NOTE: Poll deletes cascade to MoviePoll
+    return fastify.prismaClient.poll.delete({
+      where: {
+        id: pollId,
+      },
+      select: {
+        name: true,
+        id: true,
+        expiresOn: true,
+        createdAt: true,
+        isActive: true,
+      },
+    });
+  };
+
+  const addMovie = async (
+    userSession: UserSession,
+    pollId: Poll['id'],
+    movieId: Movie['id']
+  ) => {
+    const currentPoll = await fastify.prismaClient.poll.findUnique({
+      where: {
+        id: pollId,
+      },
+      select: {
+        isActive: true,
+        authorId: true,
+      },
+    });
+
+    // Checks permissions
+    if (!currentPoll) return new Error('NOT_FOUND');
+    if (!userSession.userId) return new Error('UNAUTHORIZED');
+    if (currentPoll.authorId !== userSession.userId)
+      return new Error('UNAUTHORIZED');
+
+    if (currentPoll.isActive) return new Error('ACTIVE_POLL');
+    const moviePollCount = await fastify.prismaClient.moviePoll.count({
+      where: {
+        pollId,
+      },
+    });
+    if (moviePollCount >= 5) return new Error('LIMIT_REACHED');
+
+    return fastify.prismaClient.moviePoll
+      .create({
+        data: {
+          movieId,
+          pollId,
+        },
+      })
+      .catch((error) => {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+          if (error.code === 'P2002') return new Error('DUPLICATED');
+        }
+
+        return new Error(
+          (error as Prisma.PrismaClientUnknownRequestError).message
+        );
+      });
+  };
+
+  const removeMovie = async (
+    userSession: UserSession,
+    pollId: Poll['id'],
+    movieId: Movie['id']
+  ) => {
+    const currentPoll = await fastify.prismaClient.poll.findUnique({
+      where: {
+        id: pollId,
+      },
+      select: {
+        authorId: true,
+        isActive: true,
+      },
+    });
+
+    // Checks permissions
+    if (!currentPoll) return new Error('NOT_FOUND');
+    if (!userSession.userId) return new Error('UNAUTHORIZED');
+    if (currentPoll.authorId !== userSession.userId)
+      return new Error('UNAUTHORIZED');
+
+    if (currentPoll.isActive) return new Error('ACTIVE_POLL');
+
+    return fastify.prismaClient.moviePoll.delete({
+      where: {
+        pollId_movieId: {
+          movieId,
+          pollId,
+        },
+      },
+    });
+  };
 
   fastify.decorate('polls', {
+    getActivePolls,
     getInactivePolls,
     createPoll,
+    updatePoll,
+    removePoll,
+    addMovie,
+    removeMovie,
   });
 
   fastify.register(routes, { prefix: '/trpc/pollRoutes' });

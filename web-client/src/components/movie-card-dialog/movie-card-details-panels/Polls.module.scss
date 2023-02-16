@@ -22,6 +22,8 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  gap: 1em;
+  min-height: 100%;
 }
 
 .new-poll-form {
@@ -64,7 +66,6 @@
 }
 
 .poll-list-container {
-  margin-top: 1.5em;
   h4 {
     margin-block-start: 0;
   }
@@ -100,6 +101,9 @@
 
 .poll-movie-list {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
 }
 
 .poll-movie-list-item {

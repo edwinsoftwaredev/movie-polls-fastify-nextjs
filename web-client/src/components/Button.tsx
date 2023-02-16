@@ -1,7 +1,9 @@
-import { MouseEvent, PropsWithChildren } from 'react';
+import { ButtonHTMLAttributes, MouseEvent, PropsWithChildren } from 'react';
 import styles from './Button.module.scss';
 interface ButtonProps extends PropsWithChildren {
-  onClick: (e: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+  title?: string;
+  type?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
   disabled?: boolean;
   outlined?: boolean;
   large?: boolean;
@@ -11,6 +13,8 @@ interface ButtonProps extends PropsWithChildren {
 
 const Button: React.FC<ButtonProps> = ({
   onClick,
+  type,
+  title,
   disabled,
   children,
   outlined,
@@ -26,6 +30,8 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      type={type}
+      title={title}
       onClick={onClick}
       className={classNames}
       disabled={disabled ?? false}
