@@ -1,10 +1,18 @@
+import { useRef, useState } from 'react';
 import trpc from 'src/trpc/client';
+import { Poll } from 'src/types/poll';
+import { Movie } from 'types';
 
 interface UsePollsOpts {
   fetchInactivePolls?: boolean;
 }
 
 const usePolls = ({ fetchInactivePolls }: UsePollsOpts) => {
+  // NOTE: using useRef instead of useState.
+  // onMutate may set state after onError.
+  const removedPolls = useRef<Array<Poll>>([]);
+  const removedMovies = useRef<Poll['MoviePolls']>([]);
+
   const { poll: pollContext } = trpc.useContext();
 
   const {
@@ -76,12 +84,51 @@ const usePolls = ({ fetchInactivePolls }: UsePollsOpts) => {
 
       // TODO: remove from active polls
       const inactivePolls = pollContext.inactivePolls.getData();
+      // consider updating the input type to Poll type
+      const removedPoll = inactivePolls?.polls.find(
+        (poll) => poll.id === input.pollId
+      );
+
+      if (removedPoll) {
+        removedPolls.current = [...removedPolls.current, removedPoll];
+      }
+
       pollContext.inactivePolls.setData(undefined, {
         polls:
           inactivePolls?.polls.filter((poll) => poll.id !== input.pollId) || [],
       });
     },
-    // TODO: revert on error
+    onSuccess: async (input) => {
+      const removedPoll = removedPolls.current.find(
+        (poll) => poll.id === input.poll.id
+      );
+
+      if (!removedPoll) return;
+
+      removedPolls.current = removedPolls.current.filter(
+        (poll) => poll.id !== input.poll.id
+      );
+    },
+    onError: async (_error, data) => {
+      const inactivePoll = pollContext.inactivePolls.getData();
+      const removedPoll = removedPolls.current.find(
+        (poll) => poll.id === data.pollId
+      );
+
+      if (!removedPoll) return;
+
+      pollContext.inactivePolls.setData(undefined, {
+        polls: [...(inactivePoll?.polls || []), removedPoll],
+      });
+
+      removedPolls.current = removedPolls.current.filter(
+        (poll) => poll.id !== data.pollId
+      );
+
+      // TODO: show error message
+    },
+    // TODO: update
+    retry: false,
   });
 
   const {
@@ -116,6 +163,18 @@ const usePolls = ({ fetchInactivePolls }: UsePollsOpts) => {
   } = trpc.poll.removeMovie.useMutation({
     onMutate: async (input) => {
       const inactivePolls = pollContext.inactivePolls.getData();
+
+      const moviePoll = inactivePolls?.polls
+        .flatMap((poll) => poll.MoviePolls)
+        .find(
+          (moviePoll) =>
+            moviePoll.pollId === input.pollId &&
+            moviePoll.movieId === input.movieId
+        );
+
+      if (moviePoll)
+        removedMovies.current = [...removedMovies.current, moviePoll];
+
       pollContext.inactivePolls.setData(undefined, {
         polls:
           inactivePolls?.polls.map((poll) => {
@@ -131,7 +190,53 @@ const usePolls = ({ fetchInactivePolls }: UsePollsOpts) => {
           }) || [],
       });
     },
-    // TODO: Revert on Error
+    onSuccess: async (input) => {
+      const removedMovie = removedMovies.current.find(
+        (moviePoll) =>
+          moviePoll.pollId === input.moviePoll.pollId &&
+          moviePoll.movieId === input.moviePoll.movieId
+      );
+
+      if (removedMovie) {
+        removedMovies.current = removedMovies.current.filter(
+          (movie) =>
+            movie.pollId !== input.moviePoll.pollId &&
+            movie.movieId !== input.moviePoll.movieId
+        );
+      }
+    },
+    onError: async (_error, data) => {
+      const inactivePoll = pollContext.inactivePolls.getData();
+      const removedMovie = removedMovies.current.find(
+        (moviePoll) =>
+          moviePoll.pollId === data.pollId && moviePoll.movieId === data.movieId
+      );
+
+      if (removedMovie) {
+        pollContext.inactivePolls.setData(undefined, {
+          polls:
+            inactivePoll?.polls.map((poll) => {
+              if (poll.id === data.pollId) {
+                return {
+                  ...poll,
+                  MoviePolls: [...poll.MoviePolls, removedMovie],
+                };
+              }
+
+              return poll;
+            }) || [],
+        });
+
+        removedMovies.current = removedMovies.current.filter(
+          (movie) =>
+            movie.pollId !== data.pollId && movie.movieId !== data.movieId
+        );
+
+        // TODO: show error message
+      }
+    },
+    // TODO: update
+    retry: false,
   });
 
   return {

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Input, Label } from 'src/components';
 import { useUserSessionDetails } from 'src/hooks';
 import usePolls from 'src/hooks/usePolls';
@@ -62,6 +62,131 @@ const PollMovieList: React.FC<PollMovieListProps> = ({
   );
 };
 
+interface PollItemControlsProps {
+  movieId: Movie['id'];
+  poll: Poll;
+  onAddMovie: () => void;
+  onExpandMore: () => void;
+}
+
+const PollItemControls: React.FC<PollItemControlsProps> = ({
+  movieId,
+  poll,
+  onAddMovie,
+  onExpandMore,
+}) => {
+  const isMovieInPoll = useMemo(
+    () =>
+      poll.MoviePolls.find((moviePoll) => {
+        return moviePoll.movieId === movieId;
+      }),
+    [movieId, poll.MoviePolls]
+  );
+
+  return (
+    <>
+      <span className={styles['poll-item-name']}>{poll.name}</span>
+      {poll.MoviePolls.length < 5 && !isMovieInPoll ? (
+        <Button
+          icon
+          title="Add movie to this poll"
+          onClick={() => {
+            onAddMovie();
+          }}
+        >
+          <span
+            className={`${styles['expand-more-icon']} material-symbols-rounded`}
+          >
+            add
+          </span>
+        </Button>
+      ) : null}
+      <Button
+        icon
+        onClick={(e) => {
+          onExpandMore();
+        }}
+      >
+        <span
+          className={`${styles['expand-more-icon']} material-symbols-rounded`}
+        >
+          expand_more
+        </span>
+      </Button>
+    </>
+  );
+};
+
+interface PollItemProps {
+  movieId: Movie['id'];
+  poll: Poll;
+  isActive: boolean;
+  onSelect: (pollId: Poll['id']) => void;
+}
+
+const PollItem: React.FC<PollItemProps> = ({
+  movieId,
+  poll,
+  isActive,
+  onSelect,
+}) => {
+  const { addMovie, removeMovie, removePoll } = usePolls({
+    fetchInactivePolls: false,
+  });
+
+  const addMovieClbk = useCallback(() => {
+    !isActive && onSelect(poll.id);
+    addMovie({ movieId, pollId: poll.id });
+  }, [movieId, poll.id, isActive]);
+
+  const onExpandMoreClbk = useCallback(() => {
+    onSelect(poll.id);
+  }, [poll.id]);
+
+  const removeMovieClbk = useCallback(
+    (movieId: Movie['id']) => {
+      removeMovie({ movieId, pollId: poll.id });
+    },
+    [poll.id]
+  );
+
+  const removePollClbk = useCallback(() => {
+    removePoll({ pollId: poll.id });
+  }, [poll.id]);
+
+  return (
+    <div>
+      <div
+        className={`${isActive ? styles['active'] : ''} ${
+          styles['poll-list-item']
+        }`}
+      >
+        <PollItemControls
+          poll={poll}
+          movieId={movieId}
+          onAddMovie={addMovieClbk}
+          onExpandMore={onExpandMoreClbk}
+        />
+      </div>
+      <div
+        className={`${styles['poll-movie-list-container']} ${
+          isActive ? styles['active'] : ''
+        }`}
+      >
+        <PollMovieList
+          key={poll.id}
+          movies={poll.MoviePolls}
+          removeClbk={removeMovieClbk}
+        />
+        <Button del large outlined onClick={removePollClbk}>
+          <span className="material-symbols-rounded">delete</span>
+          Delete Poll
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 interface InactivePollListProps {
   inactivePolls: Array<Poll>;
   movieId: Movie['id'];
@@ -71,20 +196,17 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
   inactivePolls,
   movieId,
 }) => {
-  const {
-    createPoll,
-    isLoadingCreatePoll,
-    isSuccessCreatePoll,
-    addMovie,
-    removeMovie,
-    removePoll,
-  } = usePolls({
+  const { createPoll, isLoadingCreatePoll, isSuccessCreatePoll } = usePolls({
     fetchInactivePolls: true,
   });
 
   const [activePoll, setActivePoll] = useState<string | null>(null);
   const [pollName, setPollName] = useState<string>();
   const [formVersion, setFormVersion] = useState(0);
+
+  const onPollSelectClbk = useCallback((pollId: Poll['id']) => {
+    setActivePoll((state) => (state !== pollId ? pollId : null));
+  }, []);
 
   useEffect(() => {
     if (isSuccessCreatePoll) {
@@ -126,74 +248,13 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
           <h4>Available Polls</h4>
           <div className={styles['poll-list-item-container']}>
             {inactivePolls.map((poll) => (
-              <div key={poll.id}>
-                <div
-                  className={`${
-                    activePoll === poll.id ? styles['active'] : ''
-                  } ${styles['poll-list-item']}`}
-                >
-                  <span className={styles['poll-item-name']}>{poll.name}</span>
-                  {poll.MoviePolls.length < 5 &&
-                  !poll.MoviePolls.find(
-                    (moviePoll) => moviePoll.movieId === movieId
-                  ) ? (
-                    <Button
-                      icon
-                      title="Add movie to this poll"
-                      onClick={(_) => {
-                        setActivePoll((state) =>
-                          state !== poll.id ? poll.id : state
-                        );
-                        addMovie({ movieId, pollId: poll.id });
-                      }}
-                    >
-                      <span
-                        className={`${styles['expand-more-icon']} material-symbols-rounded`}
-                      >
-                        add
-                      </span>
-                    </Button>
-                  ) : null}
-                  <Button
-                    icon
-                    onClick={(e) => {
-                      setActivePoll((state) =>
-                        state !== poll.id ? poll.id : null
-                      );
-                    }}
-                  >
-                    <span
-                      className={`${styles['expand-more-icon']} material-symbols-rounded`}
-                    >
-                      expand_more
-                    </span>
-                  </Button>
-                </div>
-                <div
-                  className={`${styles['poll-movie-list-container']} ${
-                    activePoll === poll.id ? styles['active'] : ''
-                  }`}
-                >
-                  <PollMovieList
-                    key={poll.id}
-                    movies={poll.MoviePolls}
-                    removeClbk={(movieId) => {
-                      removeMovie({ movieId, pollId: poll.id });
-                    }}
-                  />
-                  <Button
-                    del
-                    large
-                    outlined
-                    onClick={() => {
-                      removePoll({ pollId: poll.id });
-                    }}
-                  >
-                    <span className="material-symbols-rounded">delete</span>
-                    Delete Poll
-                  </Button>
-                </div>
-              </div>
+              <PollItem
+                key={poll.id}
+                poll={poll}
+                movieId={movieId}
+                isActive={poll.id === activePoll}
+                onSelect={onPollSelectClbk}
+              />
             ))}
           </div>
         </div>
