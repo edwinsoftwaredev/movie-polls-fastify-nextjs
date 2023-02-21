@@ -57,64 +57,56 @@ declare module 'fastify' {
       ) => Promise<Array<MoviesByGenre>>;
       search: (text: string) => Promise<Array<Movie>>;
       genreNamesByIds: (genreIds: Array<number>) => Promise<Array<string>>;
+      movie: (movieId: number) => Promise<Movie>;
       movieDetails: (movieId: number) => Promise<MovieDetail>;
       movieProviders: (movieId: number) => Promise<MovieProviders>;
     };
 
     polls: {
-      getActivePolls: (userSession: UserSession) => Promise<
-        | Array<
-            Omit<
-              Poll & {
-                MoviePolls: MoviePoll[];
-              },
-              'authorId'
-            >
-          >
-        | Error
-      >;
-      getInactivePolls: (userSession: UserSession) => Promise<
-        | Array<
-            Omit<
-              Poll & {
-                MoviePolls: MoviePoll[];
-              },
-              'authorId'
-            >
-          >
-        | Error
-      >;
+      getActivePolls: (userSession: UserSession) => Promise<Array<
+        Omit<
+          Poll & {
+            MoviePolls: MoviePoll[];
+          },
+          'authorId'
+        >
+      >>;
+      getInactivePolls: (userSession: UserSession) => Promise<Array<
+        Omit<
+          Poll & {
+            MoviePolls: MoviePoll[];
+          },
+          'authorId'
+        >
+      >>;
       createPoll: (
         userSession: UserSession,
         pollName: string,
         movieId?: Movie['id']
-      ) => Promise<
-        | Omit<
-            Poll & {
-              MoviePolls: MoviePoll[];
-            },
-            'authorId'
-          >
-        | Error
-      >;
+      ) => Promise<Omit<
+        Poll & {
+          MoviePolls: MoviePoll[];
+        },
+        'authorId'
+      >>;
       updatePoll: (
         userSession: UserSession,
         poll: Poll
-      ) => Promise<Omit<Poll, 'authorId'> | Error>;
+      ) => Promise<Omit<Poll, 'authorId'>>;
       removePoll: (
         userSession: UserSession,
         pollId: Poll['id']
-      ) => Promise<Omit<Poll, 'authorId'> | Error>;
+      ) => Promise<Omit<Poll, 'authorId'>>;
       addMovie: (
         userSession: UserSession,
         pollId: Poll['id'],
         movieId: Movie['id']
-      ) => Promise<MoviePoll | Error>;
+      ) => Promise<MoviePoll>;
       removeMovie: (
         userSession: UserSession,
         pollId: Poll['id'],
         movieId: Movie['id']
-      ) => Promise<MoviePoll | Error>;
+      ) => Promise<MoviePoll>;
     };
   }
 

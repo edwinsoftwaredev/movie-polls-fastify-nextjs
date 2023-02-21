@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Input, Label } from 'src/components';
-import { useUserSessionDetails } from 'src/hooks';
+import { useMovie, useUserSessionDetails } from 'src/hooks';
 import usePolls from 'src/hooks/usePolls';
 import { Poll } from 'src/types/poll';
 import { Movie } from 'types';
@@ -31,6 +31,18 @@ const Anonymous: React.FC = () => {
   );
 };
 
+interface MovieProps {
+  movieId: Movie['id'];
+}
+
+const Movie: React.FC<MovieProps> = ({ movieId }) => {
+  const { movie } = useMovie({ movieId });
+
+  if (!movie) return <Label></Label>;
+
+  return <Label>{movie.title}</Label>;
+};
+
 interface PollMovieListProps {
   movies: Poll['MoviePolls'];
   removeClbk: (movieId: Movie['id']) => void;
@@ -45,7 +57,7 @@ const PollMovieList: React.FC<PollMovieListProps> = ({
       {!movies.length && <Label>No Movies</Label>}
       {movies.map((movie) => (
         <div key={movie.movieId} className={styles['poll-movie-list-item']}>
-          <Label>{movie.movieId}</Label>
+          <Movie movieId={movie.movieId} />
           <Button
             icon
             del
@@ -276,12 +288,11 @@ const Polls: React.FC<PollsProps> = ({ movieId }) => {
 
   return (
     <div className={styles['polls']}>
-      <Anonymous />
-      {/* {!isAuthenticated ? (
+      {!isAuthenticated ? (
         <Anonymous />
       ) : (
         <InactivePollList inactivePolls={inactivePolls} movieId={movieId} />
-      )} */}
+      )}
     </div>
   );
 };

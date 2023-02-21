@@ -51,6 +51,14 @@ const publicMoviesRouter = router({
 
       return { popularByGenre: result[0] };
     }),
+  movie: procedure
+    .input(z.object({ movieId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const { fastify } = ctx;
+      const { movieId } = input;
+      const movie = await fastify.movies.movie(movieId);
+      return movie;
+    }),
   movieDetails: procedure
     .input(
       z.object({

@@ -4,6 +4,7 @@ import csrfRouteGuard from '../../../plugins/csrfRouteGuard';
 import userAuthRouteGuard from '../../../plugins/userAuthRouteGuard';
 import { createTRPCFastifyContext } from 'trpc/server';
 import { pollRouter } from 'trpc/server/routers';
+import { trcpErrorHandler } from 'trpc/server/context';
 
 const routes: FastifyPluginAsync = async (fastify) => {
   fastify.register(csrfRouteGuard);
@@ -13,6 +14,7 @@ const routes: FastifyPluginAsync = async (fastify) => {
     trpcOptions: {
       router: pollRouter,
       createContext: createTRPCFastifyContext(fastify),
+      onError: trcpErrorHandler,
     },
   });
 };

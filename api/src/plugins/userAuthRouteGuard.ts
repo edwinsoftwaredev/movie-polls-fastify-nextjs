@@ -8,6 +8,7 @@ import fastifyPlugin from 'fastify-plugin';
  * @param fastify
  */
 const userAuthRouteGuard: FastifyPluginAsync = async (fastify) => {
+  // TODO: update to onRequest
   fastify.addHook('preHandler', async (req, res) => {
     if (req.session.userSession?.userId) return;
 

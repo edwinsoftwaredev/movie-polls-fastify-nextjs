@@ -40,6 +40,7 @@ export interface Movie {
   credits: {
     cast: Array<{
       name: string;
+      adult: boolean;
     }>;
     crew: Array<{
       job: string;

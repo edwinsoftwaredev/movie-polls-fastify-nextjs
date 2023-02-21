@@ -19,14 +19,14 @@ const serverlessFunc: FastifyPluginAsync = async (fastify) => {
   // Parse application/x-www-form-urlencoded req body
   fastify.register(fastifyFormbody);
 
-  // auth plugin
-  fastify.register(authPlugin);
+  // Protected routes
+  fastify.register(async (instance) => {
+    instance.register(authPlugin);
+    instance.register(pollPlugin);
+  });
 
-  // movies plugin
+  // Public routes
   fastify.register(moviesPlugin);
-
-  // poll plugin
-  fastify.register(pollPlugin);
 };
 
 export default serverlessFunc;
