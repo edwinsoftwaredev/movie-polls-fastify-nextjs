@@ -17,6 +17,7 @@ export default async function Head() {
         name="description"
         content="Create movie polls and let everyone decide the winner."
       />
+      {/** On page route an extra csrf-token meta tag is create */}
       <meta name="csrf-token" content={csrfToken} />
       <link rel="icon" href="/favicon.ico" />
     </>

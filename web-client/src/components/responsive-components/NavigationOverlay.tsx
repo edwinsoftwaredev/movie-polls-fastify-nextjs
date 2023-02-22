@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import trpc from 'src/trpc/client';
 import Button from '../Button';
 import styles from './NavigationOverlay.module.scss';
 
@@ -31,6 +32,10 @@ const AnonymousUserNavOptions: React.FC = () => (
 );
 
 const NavOptions: React.FC = () => {
+  const { data: sessionData } = trpc.session.getSession.useQuery(undefined, {
+    enabled: false,
+  });
+
   return (
     <ul>
       <li>
@@ -61,6 +66,11 @@ const NavOptions: React.FC = () => {
           method="post"
           action={`${process.env.NEXT_PUBLIC_API_HOST_URL}/trpc/accountRoutes/account.logout`}
         >
+          <input
+            type="hidden"
+            name="_csrf"
+            value={sessionData?.csrfToken || ''}
+          />
           <Button type="submit">Sign Out</Button>
         </form>
       </li>

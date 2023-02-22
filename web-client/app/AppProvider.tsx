@@ -2,12 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpLink } from '@trpc/client';
-import {
-  createContext,
-  PropsWithChildren,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import trpc from 'src/trpc/client';
 import { getRoute } from 'src/trpc/routeHelper';
 
