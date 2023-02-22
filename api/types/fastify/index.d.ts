@@ -55,7 +55,10 @@ declare module 'fastify' {
         redisPipeline: Pipeline,
         decade: number
       ) => Promise<Array<MoviesByGenre>>;
-      search: (searchTerm: string) => Promise<Array<{ id: number }>>;
+      search: (
+        userSession: UserSession,
+        searchTerm: string
+      ) => Promise<Array<{ id: number }>>;
       genreNamesByIds: (genreIds: Array<number>) => Promise<Array<string>>;
       movie: (movieId: number) => Promise<Movie | null>;
       movieDetails: (movieId: number) => Promise<MovieDetail | null>;

@@ -36,7 +36,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
       httpOnly: true,
       secure: !isDevEnv,
       maxAge: 15 * 60 * 1000,
-      domain 
+      domain,
     },
     rolling: false,
     // https://redis.com/blog/cache-vs-session-store/
@@ -48,7 +48,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         fastify.log.info('Getting session...');
         fastify.redisClient
           .get<UserSession>(sessionId)
-          .then(userSession => {
+          .then((userSession) => {
             // NOTE that a userSession is returned which is part
             // of the session object. also the _csrf token in session is
             // overwritten.
@@ -86,19 +86,23 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
 
         fastify.log.info('Session upsert...');
         fastify.redisClient
-          .set<UserSession>(sessionId, {
-            ...(userSession || { userId: null }),
-            id: sessionId,
-            csrfSecret,
-            expiresOn: session.cookie.expires ?? null,
-          }, { 
-            px: session.cookie.expires?.getTime() || 0,
-          })
-          .then(_ => {
-            fastify.log.info('Session updated.')
+          .set<UserSession>(
+            sessionId,
+            {
+              ...(userSession || { userId: null }),
+              id: sessionId,
+              csrfSecret,
+              expiresOn: session.cookie.expires ?? null,
+            },
+            {
+              pxat: session.cookie.expires?.getTime() || 0,
+            }
+          )
+          .then((_) => {
+            fastify.log.info('Session updated.');
             callback();
           })
-          .catch(reason => {
+          .catch((reason) => {
             callback(reason);
           });
       },

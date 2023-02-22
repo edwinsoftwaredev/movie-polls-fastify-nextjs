@@ -9,10 +9,13 @@ const moviesRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      const { fastify } = ctx;
+      const { fastify, req } = ctx;
+      const {
+        session: { userSession },
+      } = req;
       const { searchTerm } = input;
 
-      const movies = await fastify.movies.search(searchTerm);
+      const movies = await fastify.movies.search(userSession!, searchTerm);
       return { movies };
     }),
 });

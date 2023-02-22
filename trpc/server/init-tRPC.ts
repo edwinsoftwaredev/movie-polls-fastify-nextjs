@@ -71,7 +71,7 @@ const t = initTRPC.context<Context>().create({
               code: 'BAD_REQUEST',
               httpStatus: 400,
             },
-            message: 'The limit reached.',
+            message: 'Limit reached.',
           };
           break;
         }
