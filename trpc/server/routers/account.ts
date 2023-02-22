@@ -12,6 +12,12 @@ const accountRouter = router({
 
     return { whoami };
   }),
+  logout: procedure.mutation(async ({ ctx }) => {
+    const { req, res } = ctx;
+    return req.session
+      .destroy()
+      .then(() => res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`));
+  }),
 });
 
 export default router({ account: accountRouter });

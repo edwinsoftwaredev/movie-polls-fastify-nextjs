@@ -59,7 +59,7 @@ const NavOptions: React.FC = () => {
       <li>
         <form
           method="post"
-          action={`${process.env.NEXT_PUBLIC_API_HOST_URL}/trpc/sessionRoutes/session.logout`}
+          action={`${process.env.NEXT_PUBLIC_API_HOST_URL}/trpc/accountRoutes/account.logout`}
         >
           <Button type="submit">Sign Out</Button>
         </form>
