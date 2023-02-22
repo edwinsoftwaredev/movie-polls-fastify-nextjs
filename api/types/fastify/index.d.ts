@@ -14,7 +14,7 @@ import {
   MovieDetail,
   MovieProviders,
   MoviesByGenre,
-} from '../../src/services/movies/types';
+} from '../../src/services/public-movies/types';
 
 // Importing these type declaration allows the LSP to
 // provide methods and properties from them.
@@ -55,40 +55,46 @@ declare module 'fastify' {
         redisPipeline: Pipeline,
         decade: number
       ) => Promise<Array<MoviesByGenre>>;
-      search: (text: string) => Promise<Array<Movie>>;
+      search: (searchTerm: string) => Promise<Array<{ id: number }>>;
       genreNamesByIds: (genreIds: Array<number>) => Promise<Array<string>>;
-      movie: (movieId: number) => Promise<Movie>;
-      movieDetails: (movieId: number) => Promise<MovieDetail>;
+      movie: (movieId: number) => Promise<Movie | null>;
+      movieDetails: (movieId: number) => Promise<MovieDetail | null>;
       movieProviders: (movieId: number) => Promise<MovieProviders>;
     };
 
     polls: {
-      getActivePolls: (userSession: UserSession) => Promise<Array<
-        Omit<
-          Poll & {
-            MoviePolls: MoviePoll[];
-          },
-          'authorId'
+      getActivePolls: (userSession: UserSession) => Promise<
+        Array<
+          Omit<
+            Poll & {
+              MoviePolls: MoviePoll[];
+            },
+            'authorId'
+          >
         >
-      >>;
-      getInactivePolls: (userSession: UserSession) => Promise<Array<
-        Omit<
-          Poll & {
-            MoviePolls: MoviePoll[];
-          },
-          'authorId'
+      >;
+      getInactivePolls: (userSession: UserSession) => Promise<
+        Array<
+          Omit<
+            Poll & {
+              MoviePolls: MoviePoll[];
+            },
+            'authorId'
+          >
         >
-      >>;
+      >;
       createPoll: (
         userSession: UserSession,
         pollName: string,
         movieId?: Movie['id']
-      ) => Promise<Omit<
-        Poll & {
-          MoviePolls: MoviePoll[];
-        },
-        'authorId'
-      >>;
+      ) => Promise<
+        Omit<
+          Poll & {
+            MoviePolls: MoviePoll[];
+          },
+          'authorId'
+        >
+      >;
       updatePoll: (
         userSession: UserSession,
         poll: Poll

@@ -112,7 +112,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
                 </Label>
               </div>
               <div className={`${styles['popularity']} header-desc`}>
-                <Label nowrap>{`${vote_average * 10}%`}</Label>
+                <Label nowrap>{`${vote_average}%`}</Label>
               </div>
             </div>
           ),

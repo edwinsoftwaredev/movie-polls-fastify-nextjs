@@ -62,6 +62,9 @@ const useMovieDetails = (
     buy: providersData?.movieProviders?.buy.sort(sortProviders) ?? [],
     isProvidersDataFetched,
   });
+  const [voteAverage, setVoteAverage] = useState(
+    Math.round(movie.vote_average * 10)
+  );
 
   useEffect(() => {
     setGenresLabel(movie.genres.map((movie) => movie.name).join(', '));
@@ -105,12 +108,17 @@ const useMovieDetails = (
     });
   }, [providersData?.movieProviders]);
 
+  useEffect(() => {
+    setVoteAverage(Math.round(movie.vote_average * 10));
+  }, [movie.vote_average]);
+
   return {
     genresLabel,
     directorLabel,
     castLabel,
     runtimeLabel,
     ...movie,
+    vote_average: voteAverage,
     ...(additionalDetails
       ? {
           additionalDetails: {

@@ -17,6 +17,12 @@ const sessionRouter = router({
 
     return { csrfToken, isAuthenticated: !!userId };
   }),
+  logout: procedure.mutation(async ({ ctx }) => {
+    const { req, res } = ctx;
+    return req.session
+      .destroy()
+      .then(() => res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`));
+  }),
 });
 
 export default router({ session: sessionRouter });

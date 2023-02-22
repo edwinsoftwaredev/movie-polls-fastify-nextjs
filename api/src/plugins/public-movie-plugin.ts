@@ -1,8 +1,8 @@
 import { FastifyPluginAsync } from 'fastify';
-import { movies } from '../services';
-import redisClient from './redisClient';
+import { publicMovies } from '../services';
+import redisClient from './redis-client';
 
-const moviesPlugin: FastifyPluginAsync = async (fastify) => {
+const publicMoviesPlugin: FastifyPluginAsync = async (fastify) => {
   const redisConnectionString = process.env.UPSTASH_REDIS_REST_URL || '';
   const redisConnectionToken = process.env.UPSTASH_REDIS_REST_TOKEN || '';
 
@@ -10,7 +10,7 @@ const moviesPlugin: FastifyPluginAsync = async (fastify) => {
     url: redisConnectionString,
     token: redisConnectionToken,
   });
-  fastify.register(movies);
+  fastify.register(publicMovies);
 };
 
-export default moviesPlugin;
+export default publicMoviesPlugin;

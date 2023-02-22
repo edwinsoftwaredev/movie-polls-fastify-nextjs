@@ -1,0 +1,29 @@
+.sign-in-container {
+  width: 25%;
+  margin: auto;
+  padding-top: 6em;
+
+  @media screen and (max-width: 1200px) {
+    width: 75%;
+  }
+}
+
+.sign-in-header {
+  padding: 1em;
+
+  h2 {
+    margin-block: 0;
+  }
+
+  .sign-in-title {
+    padding: 0.75em 0;
+    font-size: 1.25em;
+  }
+}
+
+.sign-in-body-card {
+  padding: 2em 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

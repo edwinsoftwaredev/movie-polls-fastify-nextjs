@@ -15,9 +15,11 @@ const useMovie = ({ movieId }: UseMovieProps) => {
     }
   );
 
-  if (!movieData) return { movie: undefined };
+  if (!movieData || !movieData?.movie) return { movie: undefined };
 
-  return { movie: movieData };
+  const { movie } = movieData;
+
+  return { movie };
 };
 
 export default useMovie;

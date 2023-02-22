@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import SearchVector from 'public/vectors/search.svg';
 import { useEffect, useState } from 'react';
+import Button from '../Button';
 import styles from './NavigationOverlay.module.scss';
 
 const AnonymousUserNavOptions: React.FC = () => (
@@ -30,36 +30,43 @@ const AnonymousUserNavOptions: React.FC = () => (
   </ul>
 );
 
-const NavOptions: React.FC = () => (
-  <ul>
-    <li>
-      <Link href="/search">
-        <div className={styles['search-vector']}>
-          <span className="material-symbols-rounded">search</span>
-        </div>
-      </Link>
-    </li>
-    <li>
-      <Link href="/">Home</Link>
-    </li>
-    <li>
-      <Link href="/topmovies">Top Movies</Link>
-    </li>
-    <li>
-      <Link href="/trendingmovies">Trending Movies</Link>
-    </li>
-    <li>
-      <Link href="/mypolls">My Polls</Link>
-    </li>
-    <hr />
-    <li>
-      <Link href="/account">Account</Link>
-    </li>
-    <li>
-      <Link href="/signout">Sign Out</Link>
-    </li>
-  </ul>
-);
+const NavOptions: React.FC = () => {
+  return (
+    <ul>
+      <li>
+        <Link href="/search">
+          <div className={styles['search-vector']}>
+            <span className="material-symbols-rounded">search</span>
+          </div>
+        </Link>
+      </li>
+      <li>
+        <Link href="/">Home</Link>
+      </li>
+      <li>
+        <Link href="/topmovies">Top Movies</Link>
+      </li>
+      <li>
+        <Link href="/trendingmovies">Trending Movies</Link>
+      </li>
+      <li>
+        <Link href="/mypolls">My Polls</Link>
+      </li>
+      <hr />
+      <li>
+        <Link href="/account">Account</Link>
+      </li>
+      <li>
+        <form
+          method="post"
+          action={`${process.env.NEXT_PUBLIC_API_HOST_URL}/trpc/sessionRoutes/session.logout`}
+        >
+          <Button type="submit">Sign Out</Button>
+        </form>
+      </li>
+    </ul>
+  );
+};
 
 interface NavigationOverlayProps {
   isAuthenticated: boolean;

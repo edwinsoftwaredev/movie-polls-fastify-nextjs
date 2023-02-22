@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from 'fastify';
-import prismaClient from './prismaClient';
+import prismaClient from './prisma-client';
 import { poll } from '../services';
 
 const pollPlugin: FastifyPluginAsync = async (fastify) => {

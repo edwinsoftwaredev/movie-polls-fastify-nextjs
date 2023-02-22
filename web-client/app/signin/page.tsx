@@ -18,12 +18,7 @@ export default async function Page() {
             Welcome <span>{whoami.displayName}</span>
           </h2>
         ) : (
-          <>
-            <span style={{ textAlign: 'center' }}>
-              <h2>You are not authenticated</h2>
-            </span>
-            <SignIn />
-          </>
+          <SignIn />
         )}
       </article>
     </section>

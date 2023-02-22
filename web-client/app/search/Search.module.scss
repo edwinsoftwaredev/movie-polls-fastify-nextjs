@@ -1,0 +1,9 @@
+$slider-ctrl-size: calc((100% * (1 / 25)));
+
+.search-page {
+  padding: 4em $slider-ctrl-size;
+
+  @media screen and (max-width: 1200px) {
+    padding: 1em $slider-ctrl-size;
+  }
+}

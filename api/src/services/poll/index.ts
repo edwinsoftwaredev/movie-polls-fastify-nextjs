@@ -1,7 +1,7 @@
 import { Poll, Prisma, User, UserSession } from '@prisma/client';
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { Movie } from '../movies/types';
+import { Movie } from '../public-movies/types';
 import routes from './plugins/routes';
 
 interface PollPluginOpts extends FastifyPluginOptions {}

@@ -1,6 +1,6 @@
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { FastifyPluginAsync } from 'fastify';
-import csrfRouteGuard from '../../../../../plugins/csrfRouteGuard';
+import csrfRouteGuard from '../../../../../plugins/csrf-route-guard';
 import { createTRPCFastifyContext } from 'trpc/server';
 import { accountRouter } from 'trpc/server/routers';
 

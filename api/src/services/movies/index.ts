@@ -1,34 +1,15 @@
-import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
-import routes from './plugins/routes';
+import { FastifyPluginAsync } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import publicRoutes from './plugins/public-routes';
-import {
-  nowPlaying,
-  popular,
-  popularByDecadeAndGenre,
-  trending,
-  trendingByGenre,
-} from './decorators/cached-movies';
-import { movieDetails } from './decorators/movie-details';
-import { movieProviders } from './decorators/movie-providers';
-import { movie } from './decorators/movie';
+import { searchMovies } from './decorators/search-movies';
+import routes from './plugins/routes';
 
-export interface MoviesPluginOptions extends FastifyPluginOptions {}
-
-const movies: FastifyPluginAsync<MoviesPluginOptions> = async (fastify) => {
+const movies: FastifyPluginAsync = async (fastify) => {
+  // TODO: rate limit by userId
   fastify.decorate('movies', {
-    nowPlaying,
-    popular,
-    trending,
-    trendingByGenre,
-    popularByDecadeAndGenre,
-    movieDetails,
-    movieProviders,
-    movie,
+    search: searchMovies,
   });
 
   fastify.register(routes, { prefix: '/trpc/moviesRoutes' });
-  fastify.register(publicRoutes, { prefix: '/trpc/publicMoviesRoutes' });
 };
 
 export default fastifyPlugin(movies);

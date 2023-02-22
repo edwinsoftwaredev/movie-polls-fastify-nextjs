@@ -148,6 +148,7 @@ const fetchTopPopularMovies = async (tmdbUrl, tmdbKey) => {
   );
   params.append('vote_average.gte', '7');
   params.append('vote_count.gte', 1000);
+  params.append('include_adult', false);
 
   const res = await axios
     .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
@@ -179,6 +180,7 @@ const fetchTopTrendingMovies = async (tmdbUrl, tmdbKey) => {
   );
   params.append('vote_average.gte', 7);
   params.append('vote_count.gte', 50);
+  params.append('include_adult', false);
 
   const res = await axios
     .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
@@ -206,6 +208,7 @@ const fetchNowPlayingMovies = async (tmdbUrl, tmdbKey) => {
   );
   params.append('vote_average.gte', 1);
   params.append('vote_count.gte', 50);
+  params.append('include_adult', false);
 
   const movies = await axios
     .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
@@ -230,6 +233,7 @@ const fetchTrendingMoviesByGenre = (tmdbUrl, tmdbKey) => {
   );
   params.append('vote_average.gte', 1);
   params.append('vote_count.gte', 50);
+  params.append('include_adult', false);
 
   return genres
     ?.filter((genre) => genre.name !== 'Documentary')
@@ -262,6 +266,7 @@ const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
   params.append('sort_by', 'vote_average.desc');
   params.append('page', 1);
   params.append('vote_count.gte', 500);
+  params.append('include_adult', false);
 
   const resultArr = [];
 

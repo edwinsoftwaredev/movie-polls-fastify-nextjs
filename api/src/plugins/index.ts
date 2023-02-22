@@ -1,7 +1,15 @@
-import prismaClient from './prismaClient';
-import redisClient from './redisClient';
-import authPlugin from './authPlugin';
-import moviesPlugin from './moviesPlugin';
-import pollPlugin from './pollPlugin';
+import prismaClient from './prisma-client';
+import redisClient from './redis-client';
+import authPlugin from './auth-plugin';
+import publicMoviesPlugin from './public-movie-plugin';
+import moviesPlugin from './movie-plugins';
+import pollPlugin from './poll-plugin';
 
-export { prismaClient, redisClient, authPlugin, moviesPlugin, pollPlugin };
+export {
+  prismaClient,
+  redisClient,
+  authPlugin,
+  publicMoviesPlugin,
+  moviesPlugin,
+  pollPlugin,
+};

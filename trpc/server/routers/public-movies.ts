@@ -57,7 +57,7 @@ const publicMoviesRouter = router({
       const { fastify } = ctx;
       const { movieId } = input;
       const movie = await fastify.movies.movie(movieId);
-      return movie;
+      return { movie };
     }),
   movieDetails: procedure
     .input(

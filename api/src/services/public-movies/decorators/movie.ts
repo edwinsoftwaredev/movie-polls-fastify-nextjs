@@ -23,6 +23,8 @@ export const movie = async (movieId: Movie['id'], language = 'en-US') => {
 
   const result: Movie = (await data.json()) as any;
 
+  if (!result || result?.adult) return null;
+
   const {
     genres,
     id,
@@ -50,6 +52,8 @@ export const movie = async (movieId: Movie['id'], language = 'en-US') => {
     file_path: backdrop.file_path,
     height: backdrop.height,
   }));
+
+  if (!backdrops.length || !posters.length) return null;
 
   const cast = result.credits.cast
     .slice(0, 8)
