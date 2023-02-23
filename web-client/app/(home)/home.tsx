@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import CurrentPolls from 'src/components/current-polls/CurrentPolls';
 import { AppTabs } from 'src/components/responsive-components';
 import Slider from 'src/components/Slider';
 import trpc from 'src/trpc/server';
@@ -78,9 +79,7 @@ export default async function Home() {
       {/** Current polls section */}
       {isAuthenticated ? (
         <section className="slider-container">
-          {/* <article>
-            <h2>Current Polls</h2>
-          </article> */}
+          <CurrentPolls />
 
           {/** slider */}
           <section />

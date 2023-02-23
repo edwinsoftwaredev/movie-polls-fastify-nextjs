@@ -34,9 +34,7 @@ export default async function Page({
     <>
       <AppTabs currentPath="/topmovies" />
       <section>
-        <article>
-          <DSelect d={d[searchParams['d'] ?? 2020]} />
-        </article>
+        <DSelect d={d[searchParams['d'] ?? 2020]} />
 
         {/** slider*/}
         <section>

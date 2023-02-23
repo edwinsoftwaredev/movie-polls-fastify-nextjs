@@ -6,7 +6,7 @@ interface UseMovieProps {
 }
 
 const useMovie = ({ movieId }: UseMovieProps) => {
-  const { data: movieData } = trpc.publicMovies.movie.useQuery(
+  const { data: movieData, isLoading } = trpc.publicMovies.movie.useQuery(
     { movieId },
     {
       refetchOnMount: false,
@@ -19,7 +19,7 @@ const useMovie = ({ movieId }: UseMovieProps) => {
 
   const { movie } = movieData;
 
-  return { movie };
+  return { movie, isLoading };
 };
 
 export default useMovie;

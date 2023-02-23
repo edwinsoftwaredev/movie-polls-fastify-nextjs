@@ -1,10 +1,10 @@
 $slider-ctrl-size: calc((100% * (1 / 25)));
 
 .title {
-  padding: 0 calc(($slider-ctrl-size + 1.25em) * 0.5);
+  padding: 0 calc(4% + 0.5em);
 
   @media screen and (max-width: 1200px) {
-    padding: 0 calc(($slider-ctrl-size + 0.25em) * 0.5);
+    padding: 0 0.75em;
   }
 }
 

@@ -9,12 +9,13 @@ interface CardProps extends PropsWithChildren {
     backdropImage?: React.ReactElement<HTMLImageElement | typeof Image>;
   };
   aspectRatio?: number;
+  contrast?: 'dark' | 'light'
 }
 
-const Card = forwardRef<HTMLElement, CardProps>(({ header, children }, ref) => {
+const Card = forwardRef<HTMLElement, CardProps>(({ header, children, contrast }, ref) => {
   const { content, backdropImage } = header;
   return (
-    <article ref={ref} className={`${style['card']}`}>
+    <article ref={ref} className={`${style['card']} ${style[contrast || '']}`}>
       <header className="card-header">
         {content}
         {backdropImage}
