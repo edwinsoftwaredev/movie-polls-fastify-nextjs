@@ -10,7 +10,11 @@ import fastifyPlugin from 'fastify-plugin';
 const csrfRouteGuard: FastifyPluginAsync = async (fastify) => {
   fastify.addHook('onRequest', (req, res, done) => {
     if (req.method === 'GET' && req.headers['x-ssr'] === '1') return done();
-    if (req.url === '/trpc/accountRoutes/account.logout') return done();
+    if (
+      req.url === '/trpc/accountRoutes/account.logout' &&
+      req.method === 'POST'
+    )
+      return done();
 
     return fastify.csrfProtection(req, res, done);
   });
