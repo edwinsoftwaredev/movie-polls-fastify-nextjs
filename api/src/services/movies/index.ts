@@ -17,7 +17,7 @@ const movies: FastifyPluginAsync = async (fastify) => {
     const pResult = await p.exec<[number, number]>();
     const { '0': searchCount } = pResult;
 
-    if (searchCount === 25) throw new Error('LIMIT_REACHED');
+    if (searchCount >= 25) throw new Error('LIMIT_REACHED');
 
     return searchMovieDecorator(...args);
   };
