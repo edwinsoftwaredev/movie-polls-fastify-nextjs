@@ -1,0 +1,30 @@
+.progress-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto;
+  gap: 0.5em;
+  margin: auto;
+
+  progress[value] {
+    width: 100%;
+    margin: auto;
+    background-color: transparent;
+    height: 0.45em;
+
+    &::-webkit-progress-value {
+      border-radius: 0.175em;
+      background-color: gold;
+    }
+
+    &::-webkit-progress-bar {
+      background-color: rgba($color: #ffffff, $alpha: 0.15);
+      border-radius: 0.175em;
+    }
+  }
+
+  label {
+    margin: auto;
+    font-size: 0.75em;
+    font-weight: 500;
+  }
+}

@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from 'app/AppProvider';
 import Button from '../Button';
+import ProgressBar from '../ProgressBar';
 
 const MoviePoll: React.FC<{
   moviePoll: Poll['MoviePolls']['0'];
@@ -54,7 +55,18 @@ const MoviePoll: React.FC<{
 const PollCardHeader: React.FC<{ poll: Poll }> = ({ poll }) => {
   return (
     <div className={styles['poll-card-header']}>
-      <h3>{poll.name}</h3>
+      <div className={styles['title-expire-date']}>
+        <h3>{poll.name}</h3>
+        <div className={styles['expire-on-date']}>
+          {new Date().toLocaleString(undefined, {
+            dateStyle: 'long',
+            timeStyle: 'short',
+          })}
+        </div>
+      </div>
+      <div className={styles['poll-progress']}>
+        <ProgressBar value={Math.random() * 100} />
+      </div>
     </div>
   );
 };
@@ -106,7 +118,7 @@ const CurrentPolls: React.FC = () => {
                 });
               }}
             >
-              <span className="material-symbols-rounded">chevron_left</span>
+              <span className="material-symbols-rounded">chevron_right</span>
             </Button>
           </div>
         </div>
