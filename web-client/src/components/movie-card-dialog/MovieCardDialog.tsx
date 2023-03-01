@@ -1,7 +1,6 @@
 'use client';
 
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import { Movie } from 'types';
 import Card from '../Card';
 import styles from './MovieCardDialog.module.scss';
@@ -10,7 +9,7 @@ import {
   animateMovieCard,
 } from './movie-card-dialog-animate-configs';
 import MovieDetails from './MovieDetails';
-import { useMovieDetails } from 'hooks';
+import MovieBackdrop from '../movie-images/MovieBackdrop';
 
 enum TRANSITION_STATUS {
   OPEN_STARTED,
@@ -36,15 +35,6 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
   initHeight,
   onDialogClose,
 }) => {
-  const {
-    title,
-    images: {
-      backdrops: {
-        '0': { file_path },
-      },
-    },
-  } = useMovieDetails(movie, false, false);
-
   const movieCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLElement>(null);
 
@@ -128,30 +118,7 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
         ref={cardRef}
         header={{
           backdropImage: (
-            <Image
-              loader={({ src, width }) => {
-                if (
-                  width > 1500 &&
-                  transitionStatus !== TRANSITION_STATUS.OPEN_STARTED
-                )
-                  return `https://image.tmdb.org/t/p/original${src}`;
-                if (width > 780)
-                  return `https://image.tmdb.org/t/p/w1280${src}`;
-                if (width > 300) return `https://image.tmdb.org/t/p/w780${src}`;
-
-                return `https://image.tmdb.org/t/p/w300${src}`;
-              }}
-              src={`${file_path}`}
-              placeholder={'empty'}
-              loading={'lazy'}
-              fill={true}
-              sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1500px) 100vw, 100vw`}
-              quality={100}
-              alt={title}
-              style={{
-                maxWidth: `${headerImgWidth}px`,
-              }}
-            />
+            <MovieBackdrop movie={movie} maxWidth={headerImgWidth} isBackdrop />
           ),
         }}
       >

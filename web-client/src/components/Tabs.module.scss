@@ -1,7 +1,12 @@
 .tabs {
   height: 100%;
   font-weight: normal;
+  // font-size: clamp(1em, 1em + 100%, 4em);
   width: 100%;
+
+  // @media screen and (max-width: 1200px) {
+  //   font-size: clamp(1em, 1em + 0.25%, 4em);
+  // }
 
   .tab-list {
     list-style: none;
@@ -38,6 +43,8 @@
         justify-content: center;
         gap: 0.25em;
         padding: 0 2em;
+        // padding: 0.3em 2em;
+        // font-weight: bold;
 
         &:hover {
           color: white;
@@ -51,6 +58,18 @@
           font-size: 1em;
         }
       }
+    }
+  }
+
+  .icon-pos-left {
+    display: grid;
+    gap: 0.5em;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto;
+    align-items: center;
+
+    label {
+      font-size: 1em;
     }
   }
 }

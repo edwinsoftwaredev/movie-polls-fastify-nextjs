@@ -9,45 +9,18 @@ import { useContext, useEffect, useState } from 'react';
 import { AppContext } from 'app/AppProvider';
 import Button from '../Button';
 import ProgressBar from '../ProgressBar';
+import { useRouter } from 'next/navigation';
+import MovieBackdrop from '../movie-images/MovieBackdrop';
 
 const MoviePoll: React.FC<{
   moviePoll: Poll['MoviePolls']['0'];
 }> = ({ moviePoll }) => {
   const { movie, isLoading } = useMovie({ movieId: moviePoll.movieId });
-  const [isImgLoaded, setIsImgLoaded] = useState(false);
-
   if (isLoading || !movie) return <div className={styles['movie-container']} />;
-
-  const {
-    images: {
-      posters: {
-        '0': { file_path: filePath },
-      },
-    },
-  } = movie;
 
   return (
     <div className={styles['movie-container']}>
-      <Image
-        onLoad={() => {
-          setIsImgLoaded(true);
-        }}
-        style={{ opacity: isImgLoaded ? 1 : 0 }}
-        loader={({ src, width }) => {
-          if (width > 1920) return `https://image.tmdb.org/t/p/original${src}`;
-          if (width > 780) return `https://image.tmdb.org/t/p/w1280${src}`;
-          if (width > 300) return `https://image.tmdb.org/t/p/w780${src}`;
-
-          return `https://image.tmdb.org/t/p/w300${src}`;
-        }}
-        src={`${filePath}`}
-        placeholder={'empty'}
-        loading={'lazy'}
-        fill={true}
-        sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1920px) 100vw, 100vw`}
-        quality={100}
-        alt={movie.title}
-      />
+      <MovieBackdrop movie={movie} isPoster />
     </div>
   );
 };
@@ -72,6 +45,7 @@ const PollCardHeader: React.FC<{ poll: Poll }> = ({ poll }) => {
 };
 
 const CurrentPolls: React.FC = () => {
+  const router = useRouter();
   const { isNarrowViewport } = useContext(AppContext);
   const { inactivePolls, isSuccessInactivePolls } = usePolls({
     fetchInactivePolls: true,
@@ -95,6 +69,7 @@ const CurrentPolls: React.FC = () => {
           <div className={styles['prev']}>
             <Button
               icon
+              type="button"
               onClick={() => {
                 incr &&
                   setIncr((state) => {
@@ -109,6 +84,7 @@ const CurrentPolls: React.FC = () => {
           <div className={styles['next']}>
             <Button
               icon
+              type="button"
               onClick={() => {
                 setIncr((state) => {
                   const temp = state;
@@ -133,12 +109,40 @@ const CurrentPolls: React.FC = () => {
                 header={{ content: <PollCardHeader poll={poll} /> }}
               >
                 <div className={styles['movie-poll-container']}>
-                  {poll.MoviePolls.map((moviePoll) => (
+                  {poll.MoviePolls.slice(0, 3).map((moviePoll) => (
                     <MoviePoll
                       key={`${moviePoll.movieId}-${moviePoll.pollId}`}
                       moviePoll={moviePoll}
                     />
                   ))}
+                </div>
+                <div className={styles['movie-poll-container']}>
+                  {poll.MoviePolls.length > 3 ? (
+                    poll.MoviePolls.slice(3, 5).map((moviePoll) => (
+                      <MoviePoll
+                        key={`${moviePoll.movieId}-${moviePoll.pollId}`}
+                        moviePoll={moviePoll}
+                      />
+                    ))
+                  ) : (
+                    <div className={styles['null-movie-container']} />
+                  )}
+                </div>
+                <div className={styles['card-actions']}>
+                  {/* TODO: update to Link */}
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      router.push(`/polls/${poll.id}`);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  {/* <Tabs
+                    tabs={[{ title: 'Edit', icon: 'edit_square' }]}
+                    onTabClick={() => {}}
+                    iconPos={'left'}
+                  /> */}
                 </div>
               </Card>
             </div>

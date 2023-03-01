@@ -3,16 +3,24 @@
   min-height: 32px;
   min-width: 60px;
   padding: 0.5em;
+
+  outline-style: solid;
+  outline-width: 0.1em;
+  outline-color: transparent;
+  // outline-offset: -0.125em;
+
   border-radius: 0.175em;
   border-style: solid;
   border-width: 0.075em;
   border-color: transparent;
+
   background-color: rgba($color: #ffffff, $alpha: 0.15);
+  // background-color: transparent;
   font-weight: bold;
   cursor: pointer;
-  transition-property: border-color, color, background-color;
-  transition-duration: 150ms, 150ms, 150ms;
-  transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
+  transition-property: border-color, outline-color, color, background-color;
+  transition-duration: 150ms, 150ms, 150ms, 150ms;
+  transition-timing-function: ease-in-out, ease-in-out, ease-in-out, ease-in-out;
   color: inherit;
 
   display: flex;
@@ -36,7 +44,8 @@
 
 .outlined {
   &:hover {
-    border-color: gold !important;
+    // border-color: gold !important;
+    outline-color: gold !important;
     color: gold !important;
   }
 }
@@ -53,7 +62,8 @@
   // font-size: initial;
 
   &:hover {
-    border-color: rgba($color: #ffffff, $alpha: 0.8);
+    // border-color: rgba($color: #ffffff, $alpha: 0.8);
+    outline-color: rgba($color: #ffffff, $alpha: 0.8);
   }
 }
 
@@ -62,7 +72,8 @@
 
   &.outlined {
     &:hover {
-      border-color: rgba($color: #d42424, $alpha: 0.8) !important;
+      // border-color: rgba($color: #d42424, $alpha: 0.8) !important;
+      outline-color: rgba($color: #d42424, $alpha: 0.8) !important;
     }
   }
 

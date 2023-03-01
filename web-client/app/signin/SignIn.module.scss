@@ -1,10 +1,12 @@
 .sign-in-container {
-  width: 25%;
+  // width: 25%;
+  max-width: 25rem;
   margin: auto;
-  padding-top: 6em;
+  padding-top: calc(100vh * (1 / 8));
 
   @media screen and (max-width: 1200px) {
     width: 75%;
+    max-width: 25rem;
   }
 }
 
