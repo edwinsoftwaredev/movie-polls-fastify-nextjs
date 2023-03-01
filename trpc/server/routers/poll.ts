@@ -46,12 +46,24 @@ const pollRouter = router({
       return { poll: result };
     }),
 
+  // GET: /polls/:id
+  getPoll: procedure
+    .input(z.object({ pollId: z.string().uuid() }))
+    .query(async ({ ctx, input }) => {
+      const { fastify, req } = ctx;
+      const userSession = req.session.userSession!;
+      const { pollId } = input;
+
+      const result = await fastify.polls.getPoll(userSession, pollId);
+
+      return { poll: result };
+    }),
+
   // PUT: /polls/1
   updatePoll: procedure
-    .input((val) => ({ poll: val as Poll }))
-    .mutation(async ({ ctx, input }) => {
+    .input((val) => val as Omit<Poll, 'authorId' | 'createdAt'>)
+    .mutation(async ({ ctx, input: poll }) => {
       const { fastify, req } = ctx;
-      const { poll } = input;
       const userSession = req.session.userSession!;
 
       const result = await fastify.polls.updatePoll(userSession, poll);

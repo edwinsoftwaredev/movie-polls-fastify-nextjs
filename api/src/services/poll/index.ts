@@ -79,6 +79,23 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     });
   };
 
+  const getPoll = async (userSession: UserSession, pollId: Poll['id']) => {
+    const poll = await fastify.prismaClient.poll.findUniqueOrThrow({
+      where: {
+        id: pollId,
+      },
+      include: {
+        MoviePolls: true,
+      },
+    });
+
+    if (poll.authorId !== userSession.userId) throw new Error('UNAUTHORIZED');
+
+    const { authorId, ...rest } = poll;
+
+    return rest;
+  };
+
   const updatePoll = async (userSession: UserSession, poll: Poll) => {
     const currentPoll = await fastify.prismaClient.poll.findUniqueOrThrow({
       where: {
@@ -92,9 +109,9 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
 
     // Checks permissions
     if (currentPoll.authorId !== userSession.userId)
-      return new Error('UNAUTHORIZED');
+      throw new Error('UNAUTHORIZED');
 
-    if (currentPoll.isActive && poll.isActive) return new Error('ACTIVE_POLL');
+    if (currentPoll.isActive && poll.isActive) throw new Error('ACTIVE_POLL');
 
     const { authorId, createdAt, id, ...rest } = poll;
 
@@ -137,7 +154,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
 
     // Checks permissions
     if (currentPoll.authorId !== userSession.userId)
-      return new Error('UNAUTHORIZED');
+      throw new Error('UNAUTHORIZED');
 
     // NOTE: Poll deletes cascade to MoviePoll
     return fastify.prismaClient.poll.delete({
@@ -171,7 +188,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
 
     // Checks permissions
     if (currentPoll.authorId !== userSession.userId)
-      return new Error('UNAUTHORIZED');
+      throw new Error('UNAUTHORIZED');
 
     if (currentPoll.isActive) throw new Error('ACTIVE_POLL');
     const moviePollCount = await fastify.prismaClient.moviePoll.count({
@@ -224,6 +241,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     getActivePolls,
     getInactivePolls,
     createPoll,
+    getPoll,
     updatePoll,
     removePoll,
     addMovie,

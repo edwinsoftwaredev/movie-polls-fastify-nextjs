@@ -98,9 +98,13 @@ declare module 'fastify' {
           'authorId'
         >
       >;
+      getPoll: (
+        userName: UserSession,
+        pollId: Poll['id']
+      ) => Promise<Omit<Poll & { MoviePolls: MoviePoll[] }, 'authorId'>>;
       updatePoll: (
         userSession: UserSession,
-        poll: Poll
+        poll: Omit<Poll, 'authorId' | 'createdAt'>
       ) => Promise<Omit<Poll, 'authorId'>>;
       removePoll: (
         userSession: UserSession,
