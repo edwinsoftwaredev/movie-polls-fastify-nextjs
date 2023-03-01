@@ -3,6 +3,7 @@ import useMovieDetails from './useMovieDetails';
 import useUserSessionDetails from './useUserSessionDetails';
 import useMovie from './useMovie';
 import usePolls from './usePolls';
+import useDate from './useDate';
 
 export {
   useEventListener,
@@ -10,4 +11,5 @@ export {
   useUserSessionDetails,
   useMovie,
   usePolls,
+  useDate,
 };
