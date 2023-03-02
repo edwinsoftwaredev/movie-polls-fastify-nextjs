@@ -1,7 +1,8 @@
 'use client';
 
 import { useDate, useMovie, usePolls } from 'hooks';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useTransition } from 'react';
 import trpc from 'src/trpc/client';
 import { Poll, Poll as PollType } from 'types';
 import Button from '../Button';
@@ -146,7 +147,6 @@ const InactivePoll: React.FC<{
   const [endDate, setEndDate] = useState(
     poll.expiresOn || new Date().toISOString()
   );
-  const [removedMovies, setRemovedMovies] = useState<Array<number>>([]);
 
   return (
     <article className={styles['inactive-poll']}>
@@ -194,12 +194,9 @@ const InactivePoll: React.FC<{
         </form>
       </header>
       <MovieList
-        movies={poll.MoviePolls.filter(
-          (movie) => !removedMovies.find((rm) => rm === movie.movieId)
-        )}
+        movies={poll.MoviePolls}
         onRemove={(movieId) => {
           // TODO: update only on success
-          setRemovedMovies((state) => [...state, movieId]);
           onRemoveMovie(movieId);
         }}
       />
@@ -213,44 +210,43 @@ interface PollProps {
 }
 
 const Poll: React.FC<PollProps> = ({ poll }) => {
-  const { removeMovie, updatePoll, isSuccessUpdatePoll } = usePolls({});
-  // TODO: include MoviePoll ?
-  const { data: pollData } = trpc.poll.getPoll.useQuery(
-    { pollId: poll.id },
-    {
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-      enabled: isSuccessUpdatePoll,
-    }
-  );
+  const router = useRouter();
+  const { removeMovie, updatePoll, isSuccessUpdatePoll, isSuccessRemoveMovie } =
+    usePolls({});
 
-  const [currentPoll, setCurrentPoll] = useState({
-    ...poll,
-    ...pollData?.poll,
-  });
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    pollData?.poll && setCurrentPoll({ ...poll, ...pollData?.poll });
-  }, [pollData, poll]);
+    isSuccessUpdatePoll &&
+      startTransition(() => {
+        router.refresh();
+      });
+  }, [isSuccessUpdatePoll]);
+
+  useEffect(() => {
+    isSuccessRemoveMovie &&
+      startTransition(() => {
+        router.refresh();
+      });
+  }, [isSuccessRemoveMovie]);
 
   return (
     <section className={styles['poll']}>
-      {currentPoll.isActive ? (
+      {poll.isActive ? (
         <ActivePoll
-          poll={currentPoll}
-          onUpdate={(poll) => {
-            updatePoll(poll);
+          poll={poll}
+          onUpdate={(p) => {
+            updatePoll(p);
           }}
         />
       ) : (
         <InactivePoll
-          poll={currentPoll}
+          poll={poll}
           onRemoveMovie={(movieId) => {
             removeMovie({ movieId, pollId: poll.id });
           }}
-          onUpdate={(poll) => {
-            updatePoll(poll);
+          onUpdate={(p) => {
+            updatePoll(p);
           }}
         />
       )}
