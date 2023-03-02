@@ -64,12 +64,8 @@
       display: flex;
       flex-direction: column;
 
-      h2 {
+      * {
         width: 100%;
-      }
-
-      button {
-        min-width: 100%;
       }
     }
   }

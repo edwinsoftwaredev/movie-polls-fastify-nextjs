@@ -1,8 +1,9 @@
 import { headers } from 'next/headers';
-import CurrentPolls from 'src/components/current-polls/CurrentPolls';
+import PollSlider from 'src/components/poll-slider/PollSlider';
 import { AppTabs } from 'src/components/responsive-components';
 import Slider from 'src/components/Slider';
 import trpc from 'src/trpc/server';
+import CurrentPolls from './CurrentPolls';
 
 // Base type
 async function PopularSlider() {
@@ -65,6 +66,17 @@ async function NowPlayingSlider() {
   );
 }
 
+async function ActivePolls() {
+  const { polls: activePolls } = await trpc.query(
+    'poll',
+    'activePolls',
+    undefined,
+    headers()
+  );
+
+  return <CurrentPolls activePolls={activePolls} />;
+}
+
 export default async function Home() {
   const { isAuthenticated } = await trpc.query(
     'session',
@@ -79,10 +91,8 @@ export default async function Home() {
       {/** Current polls section */}
       {isAuthenticated ? (
         <section className="slider-container">
-          <CurrentPolls />
-
-          {/** slider */}
-          <section />
+          {/* @ts-expect-error Server Component */}
+          <ActivePolls />
         </section>
       ) : null}
       {/** Popular Movies */}

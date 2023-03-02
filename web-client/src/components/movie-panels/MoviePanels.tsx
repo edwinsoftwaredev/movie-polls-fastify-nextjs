@@ -14,11 +14,14 @@ const tabs: ComponentProps<typeof Panel>['tabs'] = [
 
 const MoviePanels: React.FC<{
   movie: Movie;
+  defaultTab?: 'Title' | 'Polls' | 'Available On';
   hideTitleTab?: boolean;
   hidePollsTab?: boolean;
   hideAvailableTab?: boolean;
-}> = ({ movie, hidePollsTab }) => {
-  const [currentTab, setCurrentTab] = useState('Title');
+}> = ({ movie, defaultTab, hidePollsTab }) => {
+  const [currentTab, setCurrentTab] = useState(
+    (defaultTab as string) || 'Title'
+  );
 
   const { title, providers } = useMovieDetails(
     movie,
@@ -32,7 +35,7 @@ const MoviePanels: React.FC<{
       onTabClick={(tabTitle) => {
         setCurrentTab(tabTitle);
       }}
-      defaultActiveTab={'Title'}
+      defaultActiveTab={defaultTab || 'Title'}
     >
       {currentTab === 'Title' ? <Poster movie={movie} /> : null}
       {currentTab === 'Available On' ? (

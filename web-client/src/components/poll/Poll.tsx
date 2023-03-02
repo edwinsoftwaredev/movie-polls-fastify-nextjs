@@ -33,7 +33,7 @@ const Movie: React.FC<{
         <div className={styles['movie-details']}>
           <MovieDetails movie={movie} />
           <div className={styles['movie-actions']}>
-            <MoviePanels movie={movie} hidePollsTab />
+            <MoviePanels movie={movie} hidePollsTab defaultTab="Available On" />
             {!!onRemove && (
               <Button
                 onClick={() => {
@@ -154,6 +154,8 @@ const InactivePoll: React.FC<{
         <form>
           <Button
             onClick={() => {
+              if (poll.MoviePolls.length < 2) return;
+
               // NOTE: If the property MoviePolls is not removed
               // there will be no type error or warning.
               const { MoviePolls, ...rest } = poll;
@@ -166,6 +168,7 @@ const InactivePoll: React.FC<{
                 isActive: true,
               });
             }}
+            disabled={poll.MoviePolls.length < 2}
             outlined
             type="button"
           >
@@ -210,9 +213,8 @@ interface PollProps {
 }
 
 const Poll: React.FC<PollProps> = ({ poll }) => {
-  const [currentPoll, setCurrentPoll] = useState(poll);
   const { removeMovie, updatePoll, isSuccessUpdatePoll } = usePolls({});
-
+  // TODO: include MoviePoll ?
   const { data: pollData } = trpc.poll.getPoll.useQuery(
     { pollId: poll.id },
     {
@@ -223,9 +225,14 @@ const Poll: React.FC<PollProps> = ({ poll }) => {
     }
   );
 
+  const [currentPoll, setCurrentPoll] = useState({
+    ...poll,
+    ...pollData?.poll,
+  });
+
   useEffect(() => {
-    pollData?.poll && setCurrentPoll(pollData.poll);
-  }, [pollData]);
+    pollData?.poll && setCurrentPoll({ ...poll, ...pollData?.poll });
+  }, [pollData, poll]);
 
   return (
     <section className={styles['poll']}>
