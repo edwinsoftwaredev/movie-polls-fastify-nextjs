@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import PollSlider from 'src/components/poll-slider/PollSlider';
+import { InferQueryOutput } from 'trpc/client/utils';
 import { Poll } from 'types';
 
-const CurrentPolls: React.FC<{ activePolls: Array<Poll> }> = ({
-  activePolls,
-}) => {
+const CurrentPolls: React.FC<{
+  activePolls: InferQueryOutput<'poll'>['activePolls']['polls'];
+}> = ({ activePolls }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -16,7 +17,9 @@ const CurrentPolls: React.FC<{ activePolls: Array<Poll> }> = ({
 
   if (!activePolls.length) return null;
 
-  return <PollSlider title={'Current Polls'} polls={activePolls} />;
+  return (
+    <PollSlider title={'Current Polls'} polls={activePolls as Array<Poll>} />
+  );
 };
 
 export default CurrentPolls;

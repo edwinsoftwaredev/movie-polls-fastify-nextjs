@@ -3,8 +3,7 @@
 import { useDate, useMovie, usePolls } from 'hooks';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
-import trpc from 'src/trpc/client';
-import { Poll, Poll as PollType } from 'types';
+import { InferQueryOutput } from 'trpc/client/utils';
 import Button from '../Button';
 import Card from '../Card';
 import Input from '../Input';
@@ -14,8 +13,10 @@ import MoviePanels from '../movie-panels/MoviePanels';
 import ProgressBar from '../ProgressBar';
 import styles from './Poll.module.scss';
 
+type PollType = InferQueryOutput<'poll'>['getPoll']['poll'];
+
 const Movie: React.FC<{
-  id: Poll['MoviePolls']['0']['movieId'];
+  id: PollType['MoviePoll']['0']['movieId'];
   onRemove?: (movieId: number) => void;
   progress?: number;
 }> = ({ id, onRemove, progress }) => {
@@ -60,7 +61,7 @@ const Movie: React.FC<{
 };
 
 const MovieList: React.FC<{
-  movies: Poll['MoviePolls'];
+  movies: PollType['MoviePoll'];
   onRemove?: (movieId: number) => void;
   pollVotes?: number;
 }> = ({ movies, onRemove, pollVotes }) => {
@@ -130,7 +131,7 @@ const ActivePoll: React.FC<{
           </div>
         </form>
       </header>
-      <MovieList movies={poll.MoviePolls} pollVotes={1} />
+      <MovieList movies={poll.MoviePoll} pollVotes={1} />
     </article>
   );
 };
@@ -154,11 +155,11 @@ const InactivePoll: React.FC<{
         <form>
           <Button
             onClick={() => {
-              if (poll.MoviePolls.length < 2) return;
+              if (poll.MoviePoll.length < 2) return;
 
-              // NOTE: If the property MoviePolls is not removed
+              // NOTE: If the property MoviePoll is not removed
               // there will be no type error or warning.
-              const { MoviePolls, ...rest } = poll;
+              const { MoviePoll, ...rest } = poll;
 
               onUpdate({
                 ...rest,
@@ -168,7 +169,7 @@ const InactivePoll: React.FC<{
                 isActive: true,
               });
             }}
-            disabled={poll.MoviePolls.length < 2}
+            disabled={poll.MoviePoll.length < 2}
             outlined
             type="button"
           >
@@ -194,7 +195,7 @@ const InactivePoll: React.FC<{
         </form>
       </header>
       <MovieList
-        movies={poll.MoviePolls}
+        movies={poll.MoviePoll}
         onRemove={(movieId) => {
           // TODO: update only on success
           onRemoveMovie(movieId);
@@ -204,12 +205,9 @@ const InactivePoll: React.FC<{
   );
 };
 
-interface PollProps {
-  poll: PollType;
-  // TODO: add votes
-}
-
-const Poll: React.FC<PollProps> = ({ poll }) => {
+const Poll: React.FC<{ poll: InferQueryOutput<'poll'>['getPoll']['poll'] }> = ({
+  poll,
+}) => {
   const router = useRouter();
   const { removeMovie, updatePoll, isSuccessUpdatePoll, isSuccessRemoveMovie } =
     usePolls({});

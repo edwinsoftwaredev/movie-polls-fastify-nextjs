@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { procedure, router } from '../init-tRPC';
-import { Poll } from '@prisma/client';
+import { Poll, VotingToken } from '@prisma/client';
 
 // TODO: Add Prisma-Zod generators
 const pollRouter = router({
@@ -21,6 +21,7 @@ const pollRouter = router({
 
     const result = await fastify.polls.getInactivePolls(userSession);
 
+    // TODO: remove authorId
     return { polls: result };
   }),
 
@@ -42,7 +43,7 @@ const pollRouter = router({
       const userSession = req.session.userSession!;
 
       const result = await fastify.polls.createPoll(userSession, name, movieId);
-
+      // TODO: remove authorId
       return { poll: result };
     }),
 
@@ -56,6 +57,7 @@ const pollRouter = router({
 
       const result = await fastify.polls.getPoll(userSession, pollId);
 
+      // TODO: remove authorId
       return { poll: result };
     }),
 
@@ -68,6 +70,7 @@ const pollRouter = router({
 
       const result = await fastify.polls.updatePoll(userSession, poll);
 
+      // TODO: remove authorId
       return { poll: result };
     }),
 
@@ -85,6 +88,7 @@ const pollRouter = router({
 
       const result = await fastify.polls.removePoll(userSession, pollId);
 
+      // TODO: remove authorId
       return { poll: result };
     }),
 
@@ -110,7 +114,7 @@ const pollRouter = router({
   removeMovie: procedure
     .input(
       z.object({
-        pollId: z.string(),
+        pollId: z.string().uuid(),
         movieId: z.number(),
       })
     )
@@ -126,6 +130,59 @@ const pollRouter = router({
       );
 
       return { moviePoll: result };
+    }),
+
+  addVotingTokens: procedure
+    .input(
+      z.object({
+        pollId: z.string().uuid(),
+        amount: z.number().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { fastify, req } = ctx;
+      const { pollId, amount } = input;
+
+      const userSession = req.session.userSession!;
+
+      const result = await fastify.polls.addVotingTokens(
+        userSession,
+        pollId,
+        amount
+      );
+
+      // TODO: remove authorId
+      return { poll: result };
+    }),
+
+  updateVotingToken: procedure
+    .input((val) => val as VotingToken)
+    .mutation(async ({ ctx, input: votingToken }) => {
+      const { fastify, req } = ctx;
+
+      const userSession = req.session.userSession!;
+
+      const result = await fastify.polls.updateVotingToken(
+        userSession,
+        votingToken
+      );
+
+      return { votingToken: result };
+    }),
+
+  removeVotingToken: procedure
+    .input((val) => val as VotingToken)
+    .mutation(async ({ ctx, input: votingToken }) => {
+      const { fastify, req } = ctx;
+      const userSession = req.session.userSession!;
+
+      const result = await fastify.polls.removeVotingToken(
+        userSession,
+        votingToken
+      );
+
+      // TODO: remove authorId
+      return { poll: result };
     }),
 });
 

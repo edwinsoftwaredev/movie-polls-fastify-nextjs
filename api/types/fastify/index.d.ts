@@ -4,6 +4,7 @@ import {
   User,
   Poll,
   MoviePoll,
+  VotingToken,
 } from '@prisma/client';
 import { Redis } from '@upstash/redis';
 import { OAuth2Client, LoginTicket } from 'google-auth-library';
@@ -67,49 +68,41 @@ declare module 'fastify' {
 
     polls: {
       getActivePolls: (userSession: UserSession) => Promise<
-        Array<
-          Omit<
-            Poll & {
-              MoviePolls: MoviePoll[];
-            },
-            'authorId'
-          >
-        >
+        (Poll & {
+          MoviePoll: MoviePoll[];
+        })[]
       >;
       getInactivePolls: (userSession: UserSession) => Promise<
-        Array<
-          Omit<
-            Poll & {
-              MoviePolls: MoviePoll[];
-            },
-            'authorId'
-          >
-        >
+        (Poll & {
+          MoviePoll: MoviePoll[];
+        })[]
       >;
       createPoll: (
         userSession: UserSession,
         pollName: string,
         movieId?: Movie['id']
       ) => Promise<
-        Omit<
-          Poll & {
-            MoviePolls: MoviePoll[];
-          },
-          'authorId'
-        >
+        Poll & {
+          MoviePoll: MoviePoll[];
+        }
       >;
       getPoll: (
         userName: UserSession,
         pollId: Poll['id']
-      ) => Promise<Omit<Poll & { MoviePolls: MoviePoll[] }, 'authorId'>>;
+      ) => Promise<
+        Poll & {
+          MoviePoll: MoviePoll[];
+          VotingToken: VotingToken[];
+        }
+      >;
       updatePoll: (
         userSession: UserSession,
         poll: Omit<Poll, 'authorId' | 'createdAt'>
-      ) => Promise<Omit<Poll, 'authorId'>>;
+      ) => Promise<Poll>;
       removePoll: (
         userSession: UserSession,
         pollId: Poll['id']
-      ) => Promise<Omit<Poll, 'authorId'>>;
+      ) => Promise<Poll>;
       addMovie: (
         userSession: UserSession,
         pollId: Poll['id'],
@@ -120,6 +113,27 @@ declare module 'fastify' {
         pollId: Poll['id'],
         movieId: Movie['id']
       ) => Promise<MoviePoll>;
+      addVotingTokens: (
+        userSession: UserSession,
+        pollId: Poll['id'],
+        tokenCount?: number
+      ) => Promise<
+        Poll & {
+          VotingToken: VotingToken[];
+        }
+      >;
+      updateVotingToken: (
+        userSession: UserSession,
+        votingToken: VotingToken
+      ) => Promise<VotingToken>;
+      removeVotingToken: (
+        userSession: UserSession,
+        votingToken: VotingToken
+      ) => Promise<
+        Poll & {
+          VotingToken: VotingToken[];
+        }
+      >;
     };
   }
 

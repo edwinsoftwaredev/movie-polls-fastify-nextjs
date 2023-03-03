@@ -1,4 +1,4 @@
-import { Poll, Prisma, User, UserSession } from '@prisma/client';
+import { Poll, Prisma, UserSession, VotingToken } from '@prisma/client';
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import { Movie } from '../public-movies/types';
@@ -7,18 +7,14 @@ import routes from './plugins/routes';
 interface PollPluginOpts extends FastifyPluginOptions {}
 
 const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
-  const getInactivePolls = (userSession: UserSession) => {
+  const getInactivePolls = async (userSession: UserSession) => {
     return fastify.prismaClient.poll.findMany({
       where: {
         authorId: userSession.userId!,
         isActive: false,
       },
-      select: {
-        name: true,
-        id: true,
-        expiresOn: true,
-        createdAt: true,
-        MoviePolls: true,
+      include: {
+        MoviePoll: true,
       },
     });
   };
@@ -29,31 +25,25 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
         authorId: userSession.userId!,
         isActive: true,
       },
-      select: {
-        name: true,
-        id: true,
-        expiresOn: true,
-        createdAt: true,
-        MoviePolls: true,
+      include: {
+        MoviePoll: true,
       },
     });
   };
 
   // TODO: rate limit
-  // TODO: set limit
   const createPoll = async (
     userSession: UserSession,
     pollName: string,
     movieId: Movie['id']
   ) => {
-    const inactivePollsCount = await fastify.prismaClient.poll.count({
+    const pollsCount = await fastify.prismaClient.poll.count({
       where: {
         authorId: userSession.userId!,
-        isActive: false,
       },
     });
 
-    if (inactivePollsCount >= 10) throw new Error('LIMIT_REACHED');
+    if (pollsCount > 50) throw new Error('LIMIT_REACHED');
 
     return fastify.prismaClient.poll.create({
       data: {
@@ -61,7 +51,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
         authorId: userSession.userId!,
         ...(movieId
           ? {
-              MoviePolls: {
+              MoviePoll: {
                 create: {
                   movieId: movieId,
                 },
@@ -69,12 +59,8 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
             }
           : {}),
       },
-      select: {
-        name: true,
-        id: true,
-        expiresOn: true,
-        createdAt: true,
-        MoviePolls: true,
+      include: {
+        MoviePoll: true,
       },
     });
   };
@@ -85,15 +71,14 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
         id: pollId,
       },
       include: {
-        MoviePolls: true,
+        MoviePoll: true,
+        VotingToken: true,
       },
     });
 
     if (poll.authorId !== userSession.userId) throw new Error('UNAUTHORIZED');
 
-    const { authorId, ...rest } = poll;
-
-    return rest;
+    return poll;
   };
 
   const updatePoll = async (userSession: UserSession, poll: Poll) => {
@@ -113,6 +98,13 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
 
     if (currentPoll.isActive && poll.isActive) throw new Error('ACTIVE_POLL');
 
+    if (poll.expiresOn) {
+      const maxDate = new Date(poll.expiresOn);
+      maxDate.setDate(maxDate.getDate() + 28);
+
+      if (poll.expiresOn > maxDate) throw new Error('INVALID_DATE');
+    }
+
     const { authorId, createdAt, id, ...rest } = poll;
 
     // NOTE: Poll updates cascade to MoviePoll
@@ -121,23 +113,21 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
         ...rest,
         ...(currentPoll.isActive && !poll.isActive
           ? {
-              MoviePolls: {
+              MoviePoll: {
                 updateMany: {
                   data: { voteCount: 0 },
                   where: { pollId: poll.id },
                 },
+              },
+              votingTokenCount: 0,
+              VotingToken: {
+                deleteMany: { pollId: poll.id },
               },
             }
           : {}),
       },
       where: {
         id: poll.id,
-      },
-      select: {
-        name: true,
-        id: true,
-        expiresOn: true,
-        createdAt: true,
       },
     });
   };
@@ -160,13 +150,6 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     return fastify.prismaClient.poll.delete({
       where: {
         id: pollId,
-      },
-      select: {
-        name: true,
-        id: true,
-        expiresOn: true,
-        createdAt: true,
-        isActive: true,
       },
     });
   };
@@ -196,6 +179,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
         pollId,
       },
     });
+
     if (moviePollCount >= 5) throw new Error('LIMIT_REACHED');
 
     return fastify.prismaClient.moviePoll.create({
@@ -237,6 +221,132 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     });
   };
 
+  const addVotingTokens = async (
+    userSession: UserSession,
+    pollId: Poll['id'],
+    amount: number = 1
+  ) => {
+    if (amount === 0) throw new Error('LIMIT_REACHED');
+
+    const currentPoll = await fastify.prismaClient.poll.findUniqueOrThrow({
+      where: {
+        id: pollId,
+      },
+      select: {
+        authorId: true,
+        isActive: true,
+        votingTokenCount: true,
+      },
+    });
+
+    if (currentPoll.authorId !== userSession.userId)
+      throw new Error('UNAUTHORIZED');
+
+    if (currentPoll.isActive) throw new Error('ACTIVE_POLL');
+
+    if (currentPoll.votingTokenCount + amount > 50)
+      throw new Error('LIMIT_REACHED');
+
+    return fastify.prismaClient.poll.update({
+      where: {
+        id: pollId,
+      },
+      data: {
+        votingTokenCount: currentPoll.votingTokenCount + amount,
+        VotingToken: {
+          createMany: {
+            data: new Array<Prisma.VotingTokenCreateManyPollInput>(amount).fill(
+              {}
+            ),
+          },
+        },
+      },
+      // NOTE: the createMany API does not return the created records
+      // and the include API will return ALL the related records
+      include: {
+        VotingToken: true,
+      },
+    });
+  };
+
+  const updateVotingToken = async (
+    userSession: UserSession,
+    votingToken: VotingToken
+  ) => {
+    const currentPoll = await fastify.prismaClient.poll.findUniqueOrThrow({
+      where: {
+        id: votingToken.pollId,
+      },
+      select: {
+        authorId: true,
+        isActive: true,
+        votingTokenCount: true,
+      },
+    });
+
+    if (currentPoll.authorId !== userSession.userId)
+      throw new Error('UNAUTHORIZED');
+
+    if (currentPoll.isActive) throw new Error('ACTIVE_POLL');
+
+    return fastify.prismaClient.votingToken.update({
+      where: {
+        id_pollId: {
+          id: votingToken.id,
+          pollId: votingToken.pollId,
+        },
+      },
+      data: {
+        label: votingToken.label,
+        unshared: votingToken.unshared,
+      },
+    });
+  };
+
+  const removeVotingToken = async (
+    userSession: UserSession,
+    pollId: Poll['id'],
+    votingTokenId: VotingToken['id']
+  ) => {
+    const currentPoll = await fastify.prismaClient.poll.findUniqueOrThrow({
+      where: {
+        id: pollId,
+      },
+      select: {
+        authorId: true,
+        isActive: true,
+        votingTokenCount: true,
+      },
+    });
+
+    if (currentPoll.authorId !== userSession.userId)
+      throw new Error('UNAUTHORIZED');
+
+    if (currentPoll.isActive) throw new Error('ACTIVE_POLL');
+
+    return fastify.prismaClient.poll.update({
+      where: {
+        id: pollId,
+      },
+      data: {
+        votingTokenCount: currentPoll.votingTokenCount - 1,
+        VotingToken: {
+          delete: {
+            id_pollId: {
+              id: votingTokenId,
+              pollId: pollId,
+            },
+          },
+        },
+      },
+      // NOTE: the createMany API does not return the created records
+      // and the include API will return ALL the related records
+      include: {
+        VotingToken: true,
+      },
+    });
+  };
+
   fastify.decorate('polls', {
     getActivePolls,
     getInactivePolls,
@@ -246,6 +356,9 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     removePoll,
     addMovie,
     removeMovie,
+    addVotingTokens,
+    updateVotingToken,
+    removeVotingToken,
   });
 
   fastify.register(routes, { prefix: '/trpc/pollRoutes' });

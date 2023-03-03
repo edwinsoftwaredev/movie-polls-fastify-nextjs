@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import MovieBackdrop from '../movie-images/MovieBackdrop';
 
 const MoviePoll: React.FC<{
-  moviePoll: Poll['MoviePolls']['0'];
+  moviePoll: Poll['MoviePoll']['0'];
 }> = ({ moviePoll }) => {
   const { movie, isLoading } = useMovie({ movieId: moviePoll.movieId });
   if (isLoading || !movie) return <div className={styles['movie-container']} />;
@@ -64,7 +64,7 @@ const PollCard: React.FC<{ poll: Poll }> = ({ poll }) => {
         header={{ content: <PollCardHeader poll={poll} /> }}
       >
         <div className={styles['movie-poll-container']}>
-          {poll.MoviePolls.slice(0, 3).map((moviePoll) => (
+          {poll.MoviePoll.slice(0, 3).map((moviePoll) => (
             <MoviePoll
               key={`${moviePoll.movieId}-${moviePoll.pollId}`}
               moviePoll={moviePoll}
@@ -72,8 +72,8 @@ const PollCard: React.FC<{ poll: Poll }> = ({ poll }) => {
           ))}
         </div>
         <div className={styles['movie-poll-container']}>
-          {poll.MoviePolls.length > 3 ? (
-            poll.MoviePolls.slice(3, 5).map((moviePoll) => (
+          {poll.MoviePoll.length > 3 ? (
+            poll.MoviePoll.slice(3, 5).map((moviePoll) => (
               <MoviePoll
                 key={`${moviePoll.movieId}-${moviePoll.pollId}`}
                 moviePoll={moviePoll}

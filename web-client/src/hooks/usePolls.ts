@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import trpc from 'src/trpc/client';
-import { Poll } from 'src/types/poll';
+import { Poll as PollType } from 'src/types/poll';
 import { InferQueryOutput } from 'trpc/client/utils';
 import { Movie } from 'types';
 
@@ -9,11 +9,23 @@ interface UsePollsOpts {
   fetchInactivePolls?: boolean;
 }
 
+type Poll = Omit<PollType, 'MoviePoll' | 'VotingToken'> & {
+  MoviePoll?: PollType['MoviePoll'];
+  VotingToken?: PollType['VotingToken'];
+};
+
 const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
   // NOTE: using useRef instead of useState.
   // onMutate may set state after onError.
-  const removedPolls = useRef<Array<Poll>>([]);
-  const removedMovies = useRef<Poll['MoviePolls']>([]);
+  const removedPolls = useRef<InferQueryOutput<'poll'>['removePoll']['poll'][]>(
+    []
+  );
+  const removedMovies = useRef<
+    InferQueryOutput<'poll'>['removeMovie']['moviePoll'][]
+  >([]);
+  const removedVotingTokens = useRef<
+    InferQueryOutput<'poll'>['removeVotingToken']['poll']['VotingToken']
+  >([]);
 
   const { poll: pollContext } = trpc.useContext();
 
@@ -83,13 +95,13 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
         ? pollContext.inactivePolls.setData(undefined, {
             polls: [
               ...(pollContext.inactivePolls.getData()?.polls || []),
-              poll as Poll,
+              poll as InferQueryOutput<'poll'>['createPoll']['poll'],
             ],
           })
         : pollContext.activePolls.setData(undefined, {
             polls: [
               ...(pollContext.activePolls.getData()?.polls || []),
-              poll as Poll,
+              poll as InferQueryOutput<'poll'>['createPoll']['poll'],
             ],
           }));
   };
@@ -167,12 +179,6 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
       upsertOrRemovePoll(removedPoll as Poll, 'remove');
     },
     onSuccess: async (input) => {
-      const removedPoll = removedPolls.current.find(
-        (poll) => poll.id === input.poll.id
-      );
-
-      if (!removedPoll) return;
-
       removedPolls.current = removedPolls.current.filter(
         (poll) => poll.id !== input.poll.id
       );
@@ -213,7 +219,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
       if (!poll) return;
 
       upsertOrRemovePoll(
-        { ...poll, MoviePolls: [...poll.MoviePolls, input.moviePoll] },
+        { ...poll, MoviePoll: [...poll.MoviePoll, input.moviePoll] },
         'update'
       );
     },
@@ -229,7 +235,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
       const poll = inactivePolls?.polls
         .filter((p) => p.id === input.pollId)
         .shift();
-      const moviePoll = poll?.MoviePolls.find(
+      const moviePoll = poll?.MoviePoll.find(
         (moviePoll) =>
           moviePoll.pollId === input.pollId &&
           moviePoll.movieId === input.movieId
@@ -242,8 +248,8 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
         upsertOrRemovePoll(
           {
             ...poll,
-            MoviePolls: [
-              ...(poll?.MoviePolls.filter(
+            MoviePoll: [
+              ...(poll?.MoviePoll.filter(
                 (mp) =>
                   !(mp.movieId === input.movieId && mp.pollId === input.pollId)
               ) || []),
@@ -253,19 +259,11 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
         );
     },
     onSuccess: async (input) => {
-      const removedMovie = removedMovies.current.find(
-        (moviePoll) =>
-          moviePoll.pollId === input.moviePoll.pollId &&
-          moviePoll.movieId === input.moviePoll.movieId
+      removedMovies.current = removedMovies.current.filter(
+        (movie) =>
+          movie.pollId !== input.moviePoll.pollId &&
+          movie.movieId !== input.moviePoll.movieId
       );
-
-      if (removedMovie) {
-        removedMovies.current = removedMovies.current.filter(
-          (movie) =>
-            movie.pollId !== input.moviePoll.pollId &&
-            movie.movieId !== input.moviePoll.movieId
-        );
-      }
     },
     onError: async (_error, data) => {
       const inactivePoll = pollContext.inactivePolls.getData();
@@ -280,7 +278,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
       removedMovie &&
         poll &&
         upsertOrRemovePoll(
-          { ...poll, MoviePolls: [...poll.MoviePolls, removedMovie] },
+          { ...poll, MoviePoll: [...poll.MoviePoll, removedMovie] },
           'update'
         );
 
@@ -291,6 +289,108 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
       // TODO: show error message
     },
     // TODO: update
+    retry: false,
+  });
+
+  const {
+    mutate: addVotingTokens,
+    isSuccess: isSuccessAddVotingTokens,
+    isLoading: isLoadingAddVotingTokens,
+  } = trpc.poll.addVotingTokens.useMutation({
+    onSuccess: async (input) => {
+      // await pollContext.inactivePolls.cancel();
+      const inactivePolls = pollContext.inactivePolls.getData();
+      const poll = inactivePolls?.polls.find(
+        (poll) => poll.id === input.poll.id
+      );
+
+      if (!poll) return;
+
+      upsertOrRemovePoll(
+        {
+          ...poll,
+          votingTokenCount: poll.votingTokenCount,
+          VotingToken: [
+            ...((poll as Poll)?.VotingToken || []),
+            ...input.poll.VotingToken,
+          ],
+        },
+        'update'
+      );
+    },
+  });
+
+  const {
+    mutate: removeVotingToken,
+    isSuccess: isSuccessRemoveVotingToken,
+    isLoading: isLoadingRemoveVotingToken,
+  } = trpc.poll.removeVotingToken.useMutation({
+    onMutate: async (input) => {
+      const inactivePolls = pollContext.inactivePolls.getData();
+      const poll = inactivePolls?.polls
+        .filter((p) => p.id === input.pollId)
+        .shift();
+      const votingToken = (poll as Poll)?.VotingToken?.find(
+        (votingToken) =>
+          votingToken.pollId === input.pollId && votingToken.id === input.id
+      );
+
+      if (votingToken)
+        removedVotingTokens.current = [
+          ...removedVotingTokens.current,
+          votingToken,
+        ];
+
+      poll &&
+        upsertOrRemovePoll(
+          {
+            ...poll,
+            votingTokenCount: poll.votingTokenCount - 1,
+            VotingToken: [
+              ...((poll as Poll)?.VotingToken?.filter(
+                (vt) => !(vt.id === input.id && vt.pollId === input.pollId)
+              ) || []),
+            ],
+          },
+          'update'
+        );
+    },
+    onSuccess: async (input) => {
+      removedVotingTokens.current = removedVotingTokens.current.filter(
+        (votingToken) =>
+          votingToken.pollId !== input.poll.id &&
+          !input.poll.VotingToken.find((vt) => vt.id === votingToken.id)
+      );
+    },
+    onError: async (_error, data) => {
+      const inactivePoll = pollContext.inactivePolls.getData();
+      const removedVotingToken = removedVotingTokens.current.find(
+        (removedVotingToken) =>
+          removedVotingToken.pollId === data.pollId &&
+          removedVotingToken.id === data.id
+      );
+      const poll = inactivePoll?.polls?.find(
+        (p) => p.id === removedVotingToken?.pollId
+      );
+
+      removedVotingToken &&
+        poll &&
+        upsertOrRemovePoll(
+          {
+            ...poll,
+            VotingToken: [
+              ...((poll as Poll).VotingToken || []),
+              removedVotingToken,
+            ],
+          },
+          'update'
+        );
+
+      removedVotingTokens.current = removedVotingTokens.current.filter(
+        (votingToken) =>
+          votingToken.pollId !== data.pollId && votingToken.id !== data.id
+      );
+    },
     retry: false,
   });
 
@@ -316,6 +416,12 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     removeMovie,
     isLoadingRemoveMovie,
     isSuccessRemoveMovie,
+    addVotingTokens,
+    isSuccessAddVotingTokens,
+    isLoadingAddVotingTokens,
+    removeVotingToken,
+    isSuccessRemoveVotingToken,
+    isLoadingRemoveVotingToken,
   };
 };
 

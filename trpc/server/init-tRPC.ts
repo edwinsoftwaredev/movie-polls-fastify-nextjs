@@ -76,6 +76,18 @@ const t = initTRPC.context<Context>().create({
           break;
         }
 
+        case error.cause.message === 'INVALID_DATE': {
+          shape = {
+            ...shape,
+            data: {
+              ...shape.data,
+              code: 'BAD_REQUEST',
+              httpStatus: 400,
+            },
+            message: 'Invalid date.',
+          };
+        }
+
         default: {
           break;
         }

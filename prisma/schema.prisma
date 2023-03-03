@@ -37,15 +37,17 @@ model UserSession {
 }
 
 model Poll {
-  id         String      @id @default(uuid())
-  name       String
-  createdAt  DateTime    @default(now())
-  expiresOn  DateTime?
-  isActive   Boolean?    @default(false)
+  id                String      @id @default(uuid())
+  name              String
+  createdAt         DateTime    @default(now())
+  expiresOn         DateTime?
+  isActive          Boolean?    @default(false)
   // NOTE: User deletes cascade to Poll (As an alternative remove record on schedule).
-  author     User        @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  authorId   String
-  MoviePolls MoviePoll[]
+  author            User        @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId          String
+  MoviePoll         MoviePoll[]
+  votingTokenCount  Int         @default(0)
+  VotingToken       VotingToken[]
 
   @@index([authorId])
 }
@@ -58,5 +60,18 @@ model MoviePoll {
   voteCount Int?   @default(0)
 
   @@id([pollId, movieId])
+  @@index([pollId])
+}
+
+model VotingToken {
+  id            String      @default(uuid())
+  pollId        String
+  poll          Poll        @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  unused        Boolean     @default(false)
+  unshared      Boolean     @default(false)
+  label         String?
+  createdAt     DateTime    @default(now())
+
+  @@id([id, pollId])
   @@index([pollId])
 }

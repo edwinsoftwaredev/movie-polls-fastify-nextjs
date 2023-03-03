@@ -44,7 +44,7 @@ const Movie: React.FC<MovieProps> = ({ movieId }) => {
 };
 
 interface PollMovieListProps {
-  movies: Poll['MoviePolls'];
+  movies: Poll['MoviePoll'];
   removeClbk: (movieId: Movie['id']) => void;
 }
 
@@ -89,16 +89,16 @@ const PollItemControls: React.FC<PollItemControlsProps> = ({
 }) => {
   const isMovieInPoll = useMemo(
     () =>
-      poll.MoviePolls.find((moviePoll) => {
+      poll.MoviePoll.find((moviePoll) => {
         return moviePoll.movieId === movieId;
       }),
-    [movieId, poll.MoviePolls]
+    [movieId, poll.MoviePoll]
   );
 
   return (
     <>
       <span className={styles['poll-item-name']}>{poll.name}</span>
-      {poll.MoviePolls.length < 5 && !isMovieInPoll ? (
+      {poll.MoviePoll.length < 5 && !isMovieInPoll ? (
         <Button
           icon
           title="Add movie to this poll"
@@ -187,7 +187,7 @@ const PollItem: React.FC<PollItemProps> = ({
       >
         <PollMovieList
           key={poll.id}
-          movies={poll.MoviePolls}
+          movies={poll.MoviePoll}
           removeClbk={removeMovieClbk}
         />
         <Button del large outlined onClick={removePollClbk}>
@@ -291,7 +291,10 @@ const Polls: React.FC<PollsProps> = ({ movieId }) => {
       {!isAuthenticated ? (
         <Anonymous />
       ) : (
-        <InactivePollList inactivePolls={inactivePolls} movieId={movieId} />
+        <InactivePollList
+          inactivePolls={inactivePolls as Array<Poll>}
+          movieId={movieId}
+        />
       )}
     </div>
   );
