@@ -9,7 +9,9 @@ interface InputProps {
   placeholder?: string;
   onChange: (value: string) => void;
   disabled?: boolean;
-  inputType?: 'text' | 'date';
+  inputType?: 'text' | 'date' | 'number';
+  minValue?: string | number | Date;
+  maxValue?: string | number | Date;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -18,14 +20,26 @@ const Input: React.FC<InputProps> = ({
   onChange,
   disabled,
   inputType,
+  minValue,
+  maxValue,
 }) => {
   const [active, setActive] = useState(
-    defaultValue ? true : inputType === 'date' ? true : false
+    typeof defaultValue !== 'undefined'
+      ? true
+      : inputType === 'date'
+      ? true
+      : false
   );
 
-  const [minDate] = useState(new Date().toISOString().slice(0, 16));
-
   const { getClientDateFromServerDate } = useDate();
+
+  const [minDate] = useState(
+    getClientDateFromServerDate(new Date().toISOString()).slice(0, 16)
+  );
+
+  const [maxDate] = useState(
+    maxValue instanceof Date ? maxValue.toISOString().slice(0, 16) : null
+  );
 
   const [currentDate] = useState(
     getClientDateFromServerDate(
@@ -63,9 +77,23 @@ const Input: React.FC<InputProps> = ({
           disabled={disabled ?? false}
           defaultValue={currentDate}
           min={minDate}
+          max={maxDate ?? undefined}
           onChange={(ev) => {
             setActive(true);
             onChange(`${ev.target.value}:00.000Z` || '');
+          }}
+        />
+      )}
+      {inputType === 'number' && (
+        <input
+          type="number"
+          disabled={disabled ?? false}
+          defaultValue={defaultValue ?? 0}
+          min={minValue as number | undefined}
+          max={maxValue as number | undefined}
+          onChange={(ev) => {
+            setActive(true);
+            onChange(ev.target.value);
           }}
         />
       )}

@@ -2,18 +2,229 @@
 
 import { useDate, useMovie, usePolls } from 'hooks';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useMemo, useState, useTransition } from 'react';
+import trpc from 'src/trpc/client';
 import { InferQueryOutput } from 'trpc/client/utils';
 import Button from '../Button';
 import Card from '../Card';
 import Input from '../Input';
+import Label from '../Label';
 import MovieDetails from '../movie-details/MovieDetails';
 import MovieBackdrop from '../movie-images/MovieBackdrop';
 import MoviePanels from '../movie-panels/MoviePanels';
+import PollProgress from '../poll-progress/PollProgress';
 import ProgressBar from '../ProgressBar';
 import styles from './Poll.module.scss';
 
 type PollType = InferQueryOutput<'poll'>['getPoll']['poll'];
+
+const VotingToken: React.FC<{
+  pollId: PollType['id'];
+  pollName: string;
+  votingToken: InferQueryOutput<'poll'>['votingTokens']['tokens']['0'];
+  index: number;
+}> = ({ pollName, votingToken, pollId, index }) => {
+  const canShare = window.navigator.canShare;
+  const share = window.navigator.share;
+
+  const router = useRouter();
+
+  const { data: whoaimData } = trpc.account.whoami.useQuery(undefined, {
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const { updateVotingToken, removeVotingToken } = usePolls({});
+
+  const [tokenLabel, setTokenLabel] = useState(votingToken.label || '');
+  const [inviteData, setInviteData] = useState<{
+    url: string;
+    title: string;
+    text: string;
+  }>();
+
+  useEffect(() => {
+    setTokenLabel(votingToken.label || '');
+  }, [votingToken.label]);
+
+  useEffect(() => {
+    setInviteData({
+      url: `${window.location.host}/vote?=${votingToken.id}`,
+      title: pollName,
+      text: `${whoaimData?.whoami?.displayName} would like you to participate in a movie poll.`,
+    });
+  }, [votingToken.id, pollName, whoaimData?.whoami?.displayName]);
+
+  return (
+    <div className={styles['token-item']}>
+      <b className={styles['token-index']}>
+        {`${(index + 1).toString().padStart(2, '0')} - `}
+      </b>
+      <div className={styles['token-label-input']}>
+        <Input
+          defaultValue={tokenLabel}
+          onChange={(val) => {
+            setTokenLabel(val);
+          }}
+          placeholder="Invite note"
+          inputType="text"
+        />
+      </div>
+      <div className={styles['token-labels-container']}>
+        <Label outlined>{votingToken.unused ? 'UNUSED' : 'USED'}</Label>
+        <Label outlined>{votingToken.unshared ? 'UNSHARED' : 'SHARED'}</Label>
+      </div>
+      <div className={styles['actions-container']}>
+        <Button
+          type="button"
+          onPointerDown={() => {
+            inviteData?.url && navigator.clipboard.writeText(inviteData.url);
+          }}
+          title="Copy Invite Link"
+        >
+          <span className="material-symbols-rounded">content_copy</span>
+        </Button>
+        {inviteData && canShare && canShare(inviteData) && (
+          <Button
+            type="button"
+            onClick={(e) => {
+              share(inviteData).then(() => {
+                updateVotingToken({
+                  ...votingToken,
+                  unshared: false,
+                });
+              });
+            }}
+            title="Share Invite"
+          >
+            <span className="material-symbols-rounded">share</span>
+          </Button>
+        )}
+        <Button
+          type="button"
+          onClick={() => {
+            updateVotingToken({
+              ...votingToken,
+              label: tokenLabel,
+            });
+          }}
+          title="Update Invite"
+          warn={(votingToken.label ?? '') !== tokenLabel}
+        >
+          <span className="material-symbols-rounded">save</span>
+        </Button>
+        <Button
+          del
+          type="button"
+          onClick={() => {
+            removeVotingToken(
+              {
+                id: votingToken.id,
+                pollId: votingToken.pollId,
+              },
+              {
+                onSuccess: () => {
+                  // updates poll progress bar
+                  router.refresh();
+                },
+              }
+            );
+          }}
+          title="Remove Invite"
+        >
+          <span className="material-symbols-rounded">delete</span>
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const VotingTokens: React.FC<{
+  poll: PollType;
+}> = ({ poll }) => {
+  const router = useRouter();
+
+  const { data: votingTokensData } = trpc.poll.votingTokens.useQuery(
+    { pollId: poll.id },
+    {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const [newVotingTokenAmount, setNewVotingTokenAmount] = useState(0);
+  const [formVersion, setFormVersion] = useState(0);
+
+  const votingTokens = useMemo(
+    () =>
+      votingTokensData?.tokens.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      ),
+    [votingTokensData?.tokens]
+  );
+
+  const { addVotingTokens } = usePolls({});
+
+  return (
+    <article className={styles['voting-tokens']}>
+      <div className={styles['voting-tokens-header']}>
+        <h3>INVITE LINKS</h3>
+        <div className={styles['new-voting-tokens-form']}>
+          <Input
+            key={formVersion}
+            inputType="number"
+            defaultValue={newVotingTokenAmount}
+            maxValue={
+              50 - (votingTokensData?.tokens.length || poll.votingTokenCount)
+            }
+            onChange={(val) => {
+              setNewVotingTokenAmount(Number.parseInt(val || '0'));
+            }}
+            placeholder={'Number of new invite links'}
+          />
+          <Button
+            onClick={() => {
+              newVotingTokenAmount &&
+                newVotingTokenAmount > 0 &&
+                addVotingTokens(
+                  {
+                    pollId: poll.id,
+                    amount: newVotingTokenAmount,
+                  },
+                  {
+                    onSuccess: () => {
+                      setNewVotingTokenAmount(0);
+                      setFormVersion((state) => state + 1);
+                      // updates poll progress bar
+                      router.refresh();
+                    },
+                  }
+                );
+            }}
+            type="button"
+          >
+            ADD INVITE LINKS
+          </Button>
+        </div>
+      </div>
+      <ul>
+        {votingTokens?.map((token, index) => (
+          <li key={token.id}>
+            <VotingToken
+              votingToken={token}
+              pollName={poll.name}
+              pollId={poll.id}
+              index={index}
+            />
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+};
 
 const Movie: React.FC<{
   id: PollType['MoviePoll']['0']['movieId'];
@@ -50,7 +261,7 @@ const Movie: React.FC<{
             {typeof progress !== 'undefined' && (
               <div className={styles['poll-progress']}>
                 <span>Progress</span>
-                <ProgressBar value={50} />
+                <ProgressBar value={progress} />
               </div>
             )}
           </div>
@@ -63,8 +274,25 @@ const Movie: React.FC<{
 const MovieList: React.FC<{
   movies: PollType['MoviePoll'];
   onRemove?: (movieId: number) => void;
-  pollVotes?: number;
-}> = ({ movies, onRemove, pollVotes }) => {
+}> = ({ movies, onRemove }) => {
+  const [totalVotes, setTotalVotes] = useState(
+    movies.reduce((prev, acc) => {
+      if (!prev) return acc.voteCount ?? 0;
+
+      return prev + (acc.voteCount ?? 0);
+    }, 0)
+  );
+
+  useEffect(() => {
+    setTotalVotes(
+      movies.reduce((prev: number, acc) => {
+        if (!prev) return acc.voteCount ?? 0;
+
+        return prev + (acc.voteCount ?? 0);
+      }, 0)
+    );
+  }, [movies]);
+
   return (
     <section className={styles['movie-list']}>
       {movies.map((movie) => (
@@ -72,7 +300,11 @@ const MovieList: React.FC<{
           key={movie.movieId}
           id={movie.movieId}
           onRemove={onRemove}
-          progress={typeof pollVotes !== 'undefined' ? 50 : undefined}
+          progress={
+            totalVotes
+              ? Math.round(((movie.voteCount ?? 0) / totalVotes) * 100)
+              : 0
+          }
         />
       ))}
     </section>
@@ -86,6 +318,7 @@ const ActivePoll: React.FC<{
   ) => void;
 }> = ({ poll, onUpdate }) => {
   const [endsOn, setEndsOn] = useState('');
+  const { getServerDateFromClientDate } = useDate();
 
   useEffect(() => {
     setEndsOn(
@@ -101,26 +334,8 @@ const ActivePoll: React.FC<{
   return (
     <article className={styles['active-poll']}>
       <header className={styles['header']}>
-        <form>
-          <Button
-            outlined
-            onClick={() => {
-              onUpdate({
-                ...poll,
-                expiresOn: new Date(poll.expiresOn!),
-                isActive: false,
-              });
-            }}
-            type="button"
-          >
-            CLOSE POLL
-          </Button>
+        <div className={styles['form-container']}>
           <h2>{`${poll.name}`}</h2>
-          <div />
-          <div className={styles['poll-progress']}>
-            <span>Poll Progress</span>
-            <ProgressBar value={50} />
-          </div>
           <div className={styles['poll-end-date']}>
             {!!endsOn && (
               <>
@@ -129,9 +344,32 @@ const ActivePoll: React.FC<{
               </>
             )}
           </div>
-        </form>
+          <div className={styles['poll-progress']}>
+            <span>Poll Progress</span>
+            <PollProgress poll={poll} />
+          </div>
+          <Button
+            outlined
+            onClick={() => {
+              const { MoviePoll, ...rest } = poll;
+              onUpdate({
+                ...rest,
+                expiresOn: new Date(
+                  getServerDateFromClientDate(
+                    new Date(poll.expiresOn!).toISOString()
+                  )
+                ),
+                isActive: false,
+              });
+            }}
+            type="button"
+          >
+            CLOSE POLL
+          </Button>
+        </div>
+        <VotingTokens poll={poll} />
       </header>
-      <MovieList movies={poll.MoviePoll} pollVotes={1} />
+      <MovieList movies={poll.MoviePoll} />
     </article>
   );
 };
@@ -143,16 +381,48 @@ const InactivePoll: React.FC<{
     ...args: Parameters<ReturnType<typeof usePolls>['updatePoll']>
   ) => void;
 }> = ({ poll, onRemoveMovie, onUpdate }) => {
+  const now = new Date();
+  const endDateTemp = new Date();
+
   const { getServerDateFromClientDate } = useDate();
   const [pollName, setPollName] = useState(poll.name);
   const [endDate, setEndDate] = useState(
-    poll.expiresOn || new Date().toISOString()
+    poll.expiresOn ||
+      new Date(endDateTemp.setDate(endDateTemp.getDate() + 1)).toISOString()
   );
+  const [maxDate, setMaxDate] = useState<Date>();
+
+  useEffect(() => {
+    setMaxDate(new Date(now.setDate(now.getDate() + 28)));
+    setEndDate(
+      poll.expiresOn ||
+        new Date(
+          endDateTemp.setHours(endDateTemp.getHours() + 12)
+        ).toISOString()
+    );
+  }, []);
 
   return (
     <article className={styles['inactive-poll']}>
       <header className={styles['header']}>
-        <form>
+        <div className={styles['form-container']}>
+          <Input
+            defaultValue={poll.name}
+            placeholder="Poll Name"
+            onChange={(val) => {
+              setPollName(val);
+            }}
+            inputType="text"
+          />
+          <Input
+            defaultValue={endDate}
+            maxValue={maxDate}
+            placeholder="End Date"
+            onChange={(val) => {
+              setEndDate(getServerDateFromClientDate(val));
+            }}
+            inputType="date"
+          />
           <Button
             onClick={() => {
               if (poll.MoviePoll.length < 2) return;
@@ -175,24 +445,8 @@ const InactivePoll: React.FC<{
           >
             START POLL
           </Button>
-          <Input
-            defaultValue={poll.name}
-            placeholder="Poll Name"
-            onChange={(val) => {
-              setPollName(val);
-            }}
-            inputType="text"
-          />
-          <div />
-          <Input
-            defaultValue={endDate}
-            placeholder="End Date"
-            onChange={(val) => {
-              setEndDate(getServerDateFromClientDate(val));
-            }}
-            inputType="date"
-          />
-        </form>
+        </div>
+        <VotingTokens poll={poll} />
       </header>
       <MovieList
         movies={poll.MoviePoll}
@@ -209,6 +463,9 @@ const Poll: React.FC<{ poll: InferQueryOutput<'poll'>['getPoll']['poll'] }> = ({
   poll,
 }) => {
   const router = useRouter();
+  const {
+    poll: { votingTokens },
+  } = trpc.useContext();
   const { removeMovie, updatePoll, isSuccessUpdatePoll, isSuccessRemoveMovie } =
     usePolls({});
 
@@ -234,7 +491,14 @@ const Poll: React.FC<{ poll: InferQueryOutput<'poll'>['getPoll']['poll'] }> = ({
         <ActivePoll
           poll={poll}
           onUpdate={(p) => {
-            updatePoll(p);
+            updatePoll(p, {
+              onSuccess: (input) => {
+                // Tokens will be flagged as unused
+                poll.isActive &&
+                  !input.poll.isActive &&
+                  votingTokens.refetch({ pollId: poll.id });
+              },
+            });
           }}
         />
       ) : (

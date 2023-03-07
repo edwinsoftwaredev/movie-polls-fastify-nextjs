@@ -82,3 +82,19 @@
     color: rgba($color: #ffffff, $alpha: 1) !important;
   }
 }
+
+.warn {
+  color: #fbbf24;
+
+  &.outlined {
+    &:hover {
+      // border-color: rgba($color: #d42424, $alpha: 0.8) !important;
+      outline-color: rgba($color: #fbbf24, $alpha: 0.8) !important;
+    }
+  }
+
+  &:hover {
+    background-color: rgba($color: #fbbf24, $alpha: 0.4);
+    color: rgba($color: #ffffff, $alpha: 1) !important;
+  }
+}

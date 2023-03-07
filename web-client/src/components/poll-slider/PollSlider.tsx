@@ -7,9 +7,9 @@ import styles from './PollSlider.module.scss';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from 'app/AppProvider';
 import Button from '../Button';
-import ProgressBar from '../ProgressBar';
 import { useRouter } from 'next/navigation';
 import MovieBackdrop from '../movie-images/MovieBackdrop';
+import PollProgress from '../poll-progress/PollProgress';
 
 const MoviePoll: React.FC<{
   moviePoll: Poll['MoviePoll']['0'];
@@ -44,7 +44,7 @@ const PollCardHeader: React.FC<{ poll: Poll }> = ({ poll }) => {
         <div className={styles['expire-on-date']}>{expiresOn}</div>
       </div>
       <div className={styles['poll-progress']}>
-        <ProgressBar value={50} />
+        <PollProgress poll={poll} />
       </div>
     </div>
   );

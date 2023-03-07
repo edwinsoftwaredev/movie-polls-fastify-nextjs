@@ -2,16 +2,14 @@ import { useRef, useState } from 'react';
 import trpc from 'src/trpc/client';
 import { Poll as PollType } from 'src/types/poll';
 import { InferQueryOutput } from 'trpc/client/utils';
-import { Movie } from 'types';
 
 interface UsePollsOpts {
   fetchActivePolls?: boolean;
   fetchInactivePolls?: boolean;
 }
 
-type Poll = Omit<PollType, 'MoviePoll' | 'VotingToken'> & {
+type Poll = Omit<PollType, 'MoviePoll'> & {
   MoviePoll?: PollType['MoviePoll'];
-  VotingToken?: PollType['VotingToken'];
 };
 
 const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
@@ -111,8 +109,9 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     isLoading: isLoadingActivePolls,
     isSuccess: isSuccessActivePolls,
   } = trpc.poll.activePolls.useQuery(undefined, {
-    enabled: fetchActivePolls,
+    enabled: fetchActivePolls ?? false,
     refetchOnMount: false,
+    refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     onSuccess: (data) =>
       data.polls.sort(
@@ -127,6 +126,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
   } = trpc.poll.inactivePolls.useQuery(undefined, {
     enabled: fetchInactivePolls ?? false,
     refetchOnMount: false,
+    refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     onSuccess: (data) =>
       data.polls.sort(
@@ -232,9 +232,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
   } = trpc.poll.removeMovie.useMutation({
     onMutate: async (input) => {
       const inactivePolls = pollContext.inactivePolls.getData();
-      const poll = inactivePolls?.polls
-        .filter((p) => p.id === input.pollId)
-        .shift();
+      const poll = inactivePolls?.polls.find((p) => p.id === input.pollId);
       const moviePoll = poll?.MoviePoll.find(
         (moviePoll) =>
           moviePoll.pollId === input.pollId &&
@@ -292,6 +290,10 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     retry: false,
   });
 
+  /**
+   * NOTE: Adding, updating or removing voting tokens only happend on client side.
+   * The poll should be refetched using router.refresh or getPoll.refetch api
+   * */
   const {
     mutate: addVotingTokens,
     isSuccess: isSuccessAddVotingTokens,
@@ -299,23 +301,37 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
   } = trpc.poll.addVotingTokens.useMutation({
     onSuccess: async (input) => {
       // await pollContext.inactivePolls.cancel();
-      const inactivePolls = pollContext.inactivePolls.getData();
-      const poll = inactivePolls?.polls.find(
-        (poll) => poll.id === input.poll.id
-      );
-
-      if (!poll) return;
-
-      upsertOrRemovePoll(
+      pollContext.votingTokens.setData(
+        { pollId: input.poll.id },
         {
-          ...poll,
-          votingTokenCount: poll.votingTokenCount,
-          VotingToken: [
-            ...((poll as Poll)?.VotingToken || []),
-            ...input.poll.VotingToken,
-          ],
-        },
-        'update'
+          tokens: input.poll.VotingToken.sort(
+            (a, b) =>
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          ),
+        }
+      );
+    },
+  });
+
+  const {
+    mutate: updateVotingToken,
+    isLoading: isLoadingUpdateVotingToken,
+    isSuccess: isSuccessUpdateVotingToken,
+  } = trpc.poll.updateVotingToken.useMutation({
+    onSuccess: async (input) => {
+      // await pollContext.inactivePolls.cancel();
+      const votingTokens = pollContext.votingTokens.getData({
+        pollId: input.votingToken.pollId,
+      });
+      pollContext.votingTokens.setData(
+        { pollId: input.votingToken.pollId },
+        {
+          tokens:
+            votingTokens?.tokens.map((vt) => {
+              if (vt.id === input.votingToken.id) return input.votingToken;
+              return vt;
+            }) || [],
+        }
       );
     },
   });
@@ -326,34 +342,30 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     isLoading: isLoadingRemoveVotingToken,
   } = trpc.poll.removeVotingToken.useMutation({
     onMutate: async (input) => {
-      const inactivePolls = pollContext.inactivePolls.getData();
-      const poll = inactivePolls?.polls
-        .filter((p) => p.id === input.pollId)
-        .shift();
-      const votingToken = (poll as Poll)?.VotingToken?.find(
-        (votingToken) =>
-          votingToken.pollId === input.pollId && votingToken.id === input.id
+      const votingTokens = pollContext.votingTokens.getData({
+        pollId: input.pollId,
+      });
+
+      if (!votingTokens) return;
+
+      const votingToken = votingTokens?.tokens.find(
+        (p) => p.id === input.id && p.pollId === input.pollId
       );
 
-      if (votingToken)
-        removedVotingTokens.current = [
-          ...removedVotingTokens.current,
-          votingToken,
-        ];
+      if (!votingToken) return;
 
-      poll &&
-        upsertOrRemovePoll(
-          {
-            ...poll,
-            votingTokenCount: poll.votingTokenCount - 1,
-            VotingToken: [
-              ...((poll as Poll)?.VotingToken?.filter(
-                (vt) => !(vt.id === input.id && vt.pollId === input.pollId)
-              ) || []),
-            ],
-          },
-          'update'
-        );
+      removedVotingTokens.current = [
+        ...removedVotingTokens.current,
+        votingToken,
+      ];
+
+      pollContext.votingTokens.setData(
+        { pollId: input.pollId },
+        {
+          tokens:
+            votingTokens.tokens.filter((vt) => vt.id !== votingToken.id) || [],
+        }
+      );
     },
     onSuccess: async (input) => {
       removedVotingTokens.current = removedVotingTokens.current.filter(
@@ -363,27 +375,24 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
       );
     },
     onError: async (_error, data) => {
-      const inactivePoll = pollContext.inactivePolls.getData();
+      const votingTokens = pollContext.votingTokens.getData({
+        pollId: data.pollId,
+      });
+
+      if (!votingTokens) return;
+
       const removedVotingToken = removedVotingTokens.current.find(
         (removedVotingToken) =>
           removedVotingToken.pollId === data.pollId &&
           removedVotingToken.id === data.id
       );
-      const poll = inactivePoll?.polls?.find(
-        (p) => p.id === removedVotingToken?.pollId
-      );
+
+      if (!removedVotingToken) return;
 
       removedVotingToken &&
-        poll &&
-        upsertOrRemovePoll(
-          {
-            ...poll,
-            VotingToken: [
-              ...((poll as Poll).VotingToken || []),
-              removedVotingToken,
-            ],
-          },
-          'update'
+        pollContext.votingTokens.setData(
+          { pollId: data.pollId },
+          { tokens: [...(votingTokens?.tokens || []), removedVotingToken] }
         );
 
       removedVotingTokens.current = removedVotingTokens.current.filter(
@@ -419,6 +428,9 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     addVotingTokens,
     isSuccessAddVotingTokens,
     isLoadingAddVotingTokens,
+    updateVotingToken,
+    isLoadingUpdateVotingToken,
+    isSuccessUpdateVotingToken,
     removeVotingToken,
     isSuccessRemoveVotingToken,
     isLoadingRemoveVotingToken,
