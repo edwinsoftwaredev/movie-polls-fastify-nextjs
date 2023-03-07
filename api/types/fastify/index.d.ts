@@ -92,7 +92,6 @@ declare module 'fastify' {
       ) => Promise<
         Poll & {
           MoviePoll: MoviePoll[];
-          VotingToken: VotingToken[];
         }
       >;
       updatePoll: (
@@ -122,13 +121,18 @@ declare module 'fastify' {
           VotingToken: VotingToken[];
         }
       >;
+      getVotingTokens: (
+        userSession: UserSession,
+        pollId: Poll['id']
+      ) => Promise<VotingToken[]>;
       updateVotingToken: (
         userSession: UserSession,
-        votingToken: VotingToken
+        votingToken: Omit<VotingToken, 'createdAt' | 'id' | 'pollId'>
       ) => Promise<VotingToken>;
       removeVotingToken: (
         userSession: UserSession,
-        votingToken: VotingToken
+        pollId: Poll['id'],
+        votingTokenId: VotingToken['id']
       ) => Promise<
         Poll & {
           VotingToken: VotingToken[];

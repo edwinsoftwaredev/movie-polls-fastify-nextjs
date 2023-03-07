@@ -33,7 +33,7 @@ const pollRouter = router({
           .string()
           .trim()
           .max(80, { message: 'Must be 80 or fewer characters long.' })
-          .min(2, { message: 'Must be 80 or more characters long.' }),
+          .min(2, { message: 'Must be 2 or more characters long.' }),
         movieId: z.optional(z.number()),
       })
     )
@@ -78,7 +78,7 @@ const pollRouter = router({
   removePoll: procedure
     .input(
       z.object({
-        pollId: z.string(),
+        pollId: z.string().uuid(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -96,7 +96,7 @@ const pollRouter = router({
   addMovie: procedure
     .input(
       z.object({
-        pollId: z.string(),
+        pollId: z.string().uuid(),
         movieId: z.number(),
       })
     )
@@ -132,11 +132,24 @@ const pollRouter = router({
       return { moviePoll: result };
     }),
 
+  votingTokens: procedure
+    .input(
+      z.object({
+        pollId: z.string().uuid(),
+      })
+    )
+    .query(async ({ ctx, input: { pollId } }) => {
+      const { fastify, req } = ctx;
+      const userSession = req.session.userSession!;
+      const result = await fastify.polls.getVotingTokens(userSession, pollId);
+      return { tokens: result };
+    }),
+
   addVotingTokens: procedure
     .input(
       z.object({
         pollId: z.string().uuid(),
-        amount: z.number().optional(),
+        amount: z.number().gte(1).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -156,7 +169,7 @@ const pollRouter = router({
     }),
 
   updateVotingToken: procedure
-    .input((val) => val as VotingToken)
+    .input((val) => val as Omit<VotingToken, 'createdAt'>)
     .mutation(async ({ ctx, input: votingToken }) => {
       const { fastify, req } = ctx;
 
@@ -171,14 +184,18 @@ const pollRouter = router({
     }),
 
   removeVotingToken: procedure
-    .input((val) => val as VotingToken)
+    .input(z.object({
+      pollId: z.string().uuid(),
+      id: z.string().uuid()
+    }))
     .mutation(async ({ ctx, input: votingToken }) => {
       const { fastify, req } = ctx;
       const userSession = req.session.userSession!;
 
       const result = await fastify.polls.removeVotingToken(
         userSession,
-        votingToken
+        votingToken.pollId,
+        votingToken.id
       );
 
       // TODO: remove authorId

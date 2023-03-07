@@ -72,7 +72,6 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       },
       include: {
         MoviePoll: true,
-        VotingToken: true,
       },
     });
 
@@ -89,6 +88,8 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       select: {
         authorId: true,
         isActive: true,
+        expiresOn: true,
+        votingTokenCount: true,
       },
     });
 
@@ -96,32 +97,48 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     if (currentPoll.authorId !== userSession.userId)
       throw new Error('UNAUTHORIZED');
 
+    if (
+      currentPoll.isActive &&
+      currentPoll.expiresOn &&
+      currentPoll.expiresOn < new Date()
+    )
+      throw new Error('ACTIVE_POLL');
+
     if (currentPoll.isActive && poll.isActive) throw new Error('ACTIVE_POLL');
 
+    if (!currentPoll.isActive && poll.isActive && !poll.expiresOn)
+      throw new Error('INVALID_DATE');
+
     if (poll.expiresOn) {
-      const maxDate = new Date(poll.expiresOn);
+      const maxDate = new Date();
       maxDate.setDate(maxDate.getDate() + 28);
 
       if (poll.expiresOn > maxDate) throw new Error('INVALID_DATE');
     }
 
-    const { authorId, createdAt, id, ...rest } = poll;
-
     // NOTE: Poll updates cascade to MoviePoll
     return fastify.prismaClient.poll.update({
       data: {
-        ...rest,
+        isActive: poll.isActive,
+        name: poll.name,
+        expiresOn: poll.expiresOn,
         ...(currentPoll.isActive && !poll.isActive
           ? {
+              expiresOn: null,
+              remainingVotingTokenCount: currentPoll.votingTokenCount,
               MoviePoll: {
                 updateMany: {
                   data: { voteCount: 0 },
                   where: { pollId: poll.id },
                 },
               },
-              votingTokenCount: 0,
               VotingToken: {
-                deleteMany: { pollId: poll.id },
+                updateMany: {
+                  where: { pollId: poll.id },
+                  data: {
+                    unused: true,
+                  },
+                },
               },
             }
           : {}),
@@ -174,6 +191,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       throw new Error('UNAUTHORIZED');
 
     if (currentPoll.isActive) throw new Error('ACTIVE_POLL');
+
     const moviePollCount = await fastify.prismaClient.moviePoll.count({
       where: {
         pollId,
@@ -226,7 +244,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     pollId: Poll['id'],
     amount: number = 1
   ) => {
-    if (amount === 0) throw new Error('LIMIT_REACHED');
+    if (amount < 1) throw new Error('LIMIT_REACHED');
 
     const currentPoll = await fastify.prismaClient.poll.findUniqueOrThrow({
       where: {
@@ -235,14 +253,21 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       select: {
         authorId: true,
         isActive: true,
+        expiresOn: true,
         votingTokenCount: true,
+        remainingVotingTokenCount: true,
       },
     });
 
     if (currentPoll.authorId !== userSession.userId)
       throw new Error('UNAUTHORIZED');
 
-    if (currentPoll.isActive) throw new Error('ACTIVE_POLL');
+    if (
+      currentPoll.isActive &&
+      currentPoll.expiresOn &&
+      currentPoll.expiresOn < new Date()
+    )
+      throw new Error('ACTIVE_POLL');
 
     if (currentPoll.votingTokenCount + amount > 50)
       throw new Error('LIMIT_REACHED');
@@ -253,6 +278,8 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       },
       data: {
         votingTokenCount: currentPoll.votingTokenCount + amount,
+        remainingVotingTokenCount:
+          currentPoll.remainingVotingTokenCount + amount,
         VotingToken: {
           createMany: {
             data: new Array<Prisma.VotingTokenCreateManyPollInput>(amount).fill(
@@ -269,6 +296,25 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     });
   };
 
+  const getVotingTokens = async (
+    userSession: UserSession,
+    pollId: Poll['id']
+  ) => {
+    const poll = await fastify.prismaClient.poll.findUniqueOrThrow({
+      where: {
+        id: pollId,
+      },
+      select: {
+        VotingToken: true,
+        authorId: true,
+      },
+    });
+
+    if (poll.authorId !== userSession.userId) throw new Error('UNAUTHORIZED');
+
+    return poll.VotingToken;
+  };
+
   const updateVotingToken = async (
     userSession: UserSession,
     votingToken: VotingToken
@@ -280,6 +326,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       select: {
         authorId: true,
         isActive: true,
+        expiresOn: true,
         votingTokenCount: true,
       },
     });
@@ -287,7 +334,12 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     if (currentPoll.authorId !== userSession.userId)
       throw new Error('UNAUTHORIZED');
 
-    if (currentPoll.isActive) throw new Error('ACTIVE_POLL');
+    if (
+      currentPoll.isActive &&
+      currentPoll.expiresOn &&
+      currentPoll.expiresOn < new Date()
+    )
+      throw new Error('ACTIVE_POLL');
 
     return fastify.prismaClient.votingToken.update({
       where: {
@@ -315,14 +367,27 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       select: {
         authorId: true,
         isActive: true,
+        expiresOn: true,
         votingTokenCount: true,
+        remainingVotingTokenCount: true,
+        VotingToken: {
+          where: {
+            id: votingTokenId,
+            pollId: pollId,
+          },
+        },
       },
     });
 
     if (currentPoll.authorId !== userSession.userId)
       throw new Error('UNAUTHORIZED');
 
-    if (currentPoll.isActive) throw new Error('ACTIVE_POLL');
+    if (
+      currentPoll.isActive &&
+      currentPoll.expiresOn &&
+      currentPoll.expiresOn < new Date()
+    )
+      throw new Error('ACTIVE_POLL');
 
     return fastify.prismaClient.poll.update({
       where: {
@@ -330,6 +395,9 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
       },
       data: {
         votingTokenCount: currentPoll.votingTokenCount - 1,
+        remainingVotingTokenCount:
+          currentPoll.remainingVotingTokenCount -
+          (currentPoll.VotingToken.at(0)?.unused ? 1 : 0),
         VotingToken: {
           delete: {
             id_pollId: {
@@ -347,6 +415,11 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     });
   };
 
+  const voteHandler = async (
+    pollId: Poll['id'],
+    votingTokenId: VotingToken['id']
+  ) => false;
+
   fastify.decorate('polls', {
     getActivePolls,
     getInactivePolls,
@@ -357,6 +430,7 @@ const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
     addMovie,
     removeMovie,
     addVotingTokens,
+    getVotingTokens,
     updateVotingToken,
     removeVotingToken,
   });
