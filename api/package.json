@@ -12,7 +12,7 @@
     "@fastify/formbody": "^7.3.0",
     "@fastify/helmet": "^10.0.0",
     "@fastify/session": "^10.0.0",
-    "@prisma/client": "latest",
+    "@prisma/client": "^4.11.0",
     "@trpc/server": "^10.7.0",
     "@upstash/redis": "^1.16.0",
     "@vercel/edge": "^0.2.1",

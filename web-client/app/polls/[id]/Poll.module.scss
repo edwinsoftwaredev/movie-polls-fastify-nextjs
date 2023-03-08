@@ -1,0 +1,39 @@
+.poll-container {
+  width: 100%;
+  margin-top: 0.75em;
+  padding: 0 calc(4% + 0.5em);
+
+  > article {
+    background-color: rgba($color: #ffffff, $alpha: 0.125);
+    border-radius: 0.175em;
+    padding: 1em;
+  }
+
+  @media screen and (max-width: 1200px) {
+    padding: 0 0.5em;
+
+    > article {
+      padding: 0.5em;
+    }
+  }
+}
+
+.poll {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  color: rgba($color: #ffffff, $alpha: 0.85);
+  background-color: rgba(15, 15, 15, 1);
+  padding: 1em;
+  border-radius: 0.175em;
+
+  @media screen and (max-width: 1200px) {
+    padding: 0.75em;
+  }
+}

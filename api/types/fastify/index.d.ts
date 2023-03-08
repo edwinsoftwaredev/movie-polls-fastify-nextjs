@@ -41,7 +41,7 @@ declare module 'fastify' {
     // services
     account: {
       user: {
-        getUser: (id: string) => Promise<Omit<User, 'id'> | null>;
+        getUser: (id: string) => Promise<User | null>;
       };
     };
 

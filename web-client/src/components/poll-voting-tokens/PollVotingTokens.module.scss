@@ -1,0 +1,165 @@
+.voting-tokens {
+  width: 100%;
+  padding: 0 !important;
+  background-color: transparent !important;
+
+  ul {
+    list-style: none;
+    display: block;
+    max-height: 25vh;
+    overflow: hidden;
+    overflow-y: auto;
+    padding-inline: 0;
+    scroll-snap-type: y mandatory;
+
+    &::-webkit-scrollbar {
+      width: 0.225em;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    li {
+      width: 100%;
+      padding-bottom: 0.25em;
+      scroll-snap-stop: always;
+      scroll-snap-align: start;
+
+      &:first-of-type {
+        padding-top: 0;
+      }
+
+      &:last-of-type {
+        padding-bottom: 0;
+      }
+
+      @media screen and (max-width: 1200px) {
+        padding-bottom: 0.75em;
+      }
+    }
+  }
+
+  .token-item {
+    font-size: 0.75em;
+    padding: 0.5em 1em;
+
+    background-color: rgba($color: #000000, $alpha: 0.5);
+    border-radius: 0.175em;
+    display: flex;
+    align-items: normal;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+    width: 100%;
+
+    .token-index {
+      margin: auto 0;
+    }
+
+    b {
+      flex-grow: 0;
+    }
+
+    label {
+      align-self: center;
+    }
+
+    .token-label-input {
+      flex-grow: 25;
+    }
+
+    .token-labels-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75em;
+      flex-grow: 2;
+    }
+
+    .actions-container {
+      display: flex;
+      flex-direction: row;
+      flex-grow: 1;
+      align-items: center;
+      gap: 1em;
+
+      button {
+        flex-grow: 1;
+      }
+    }
+
+    @media screen and (max-width: 1200px) {
+      padding: 0.5em 0.5em;
+
+      b {
+        display: none;
+      }
+
+      .token-label-input {
+        flex-grow: 6;
+      }
+
+      .token-labels-container {
+        flex-grow: 2;
+      }
+
+      .actions-container {
+        flex-basis: 100%;
+        order: 1;
+      }
+    }
+  }
+
+  .voting-tokens-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: rgba($color: #ffffff, $alpha: 0.85);
+    padding: 0 !important;
+
+    h3 {
+      margin-block: 0;
+      margin: auto;
+      flex-grow: 5;
+    }
+
+    .new-voting-tokens-form {
+      font-size: 0.75em;
+      display: flex;
+      flex-direction: row;
+      align-items: normal;
+      gap: 1em;
+      margin: auto;
+      flex-grow: 1;
+
+      * {
+        flex-grow: 4;
+      }
+
+      button {
+        flex-grow: 1;
+      }
+    }
+
+    @media screen and (max-width: 1200px) {
+      font-size: 1em;
+      padding: 0.5em;
+      flex-direction: column;
+      gap: 0.5em;
+
+      h3 {
+        margin-block: 0.25em;
+      }
+
+      * {
+        width: 100%;
+      }
+    }
+  }
+}

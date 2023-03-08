@@ -1,19 +1,29 @@
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import Poll from 'src/components/poll/Poll';
+import PollForm from 'src/components/poll-form/PollForm';
+import PollVotingTokens from 'src/components/poll-voting-tokens/PollVotingTokens';
 import trpc from 'src/trpc/server';
+import { InferQueryOutput } from 'trpc/client/utils';
+
+const PollFormWithVotingTokens: React.FC<{
+  poll: InferQueryOutput<'poll'>['getPoll']['poll'];
+}> = ({ poll }) => {
+  return (
+    <>
+      <PollForm poll={poll} />
+      <PollVotingTokens poll={poll} />
+    </>
+  );
+};
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
 
-  const { isAuthenticated } = await trpc.query(
-    'session',
-    'getSession',
+  const { whoami } = await trpc.query(
+    'account',
+    'whoami',
     undefined,
     headers()
   );
-
-  if (!isAuthenticated) redirect('/');
 
   const { poll } = await trpc.query(
     'poll',
@@ -22,5 +32,9 @@ export default async function Page({ params }: { params: { id: string } }) {
     headers()
   );
 
-  return <Poll poll={poll} />;
+  const isOwner = whoami ? whoami.id === poll.authorId : false;
+
+  if (isOwner) return <PollFormWithVotingTokens poll={poll} />;
+
+  return null;
 }

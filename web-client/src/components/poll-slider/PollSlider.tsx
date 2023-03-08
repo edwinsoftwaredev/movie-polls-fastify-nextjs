@@ -44,7 +44,12 @@ const PollCardHeader: React.FC<{ poll: Poll }> = ({ poll }) => {
         <div className={styles['expire-on-date']}>{expiresOn}</div>
       </div>
       <div className={styles['poll-progress']}>
-        <PollProgress poll={poll} />
+        <PollProgress
+          value={poll.votingTokenCount - poll.remainingVotingTokenCount}
+          maxValue={poll.votingTokenCount}
+          type={'poll'}
+          hideTitle
+        />
       </div>
     </div>
   );

@@ -13,8 +13,22 @@ const userAuthRouteGuard: FastifyPluginAsync = async (fastify) => {
     if (req.session.userSession?.userId) return;
 
     // rejects request
+    // https://trpc.io/docs/rpc#error-response
     res.code(401);
-    res.send();
+    res.send({
+      id: null,
+      error: {
+        message: 'UNAUTHORIZED',
+        code: -32001,
+        data: {
+          code: 'UNAUTHORIZED',
+          httpStatus: 401,
+          stack: '',
+          path: '',
+        },
+      },
+    });
+
     return res;
   });
 };

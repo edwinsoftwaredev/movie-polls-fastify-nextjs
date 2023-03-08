@@ -1,0 +1,80 @@
+.form-container {
+  display: flex;
+  flex-direction: row;
+  align-items: normal;
+  flex-wrap: wrap;
+  gap: 1em;
+
+  & > * {
+    flex-grow: 15;
+  }
+
+  h2 {
+    padding: 0em;
+    margin-block: 0;
+    align-self: center;
+  }
+}
+
+.poll-end-date {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+
+  * {
+    flex-grow: unset !important;
+  }
+}
+
+.active-poll {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+
+  .form-container {
+    & > :nth-child(2) {
+      flex-grow: 0;
+    }
+
+    & > :nth-child(3) {
+      flex-grow: 3;
+    }
+
+    & > :nth-child(4) {
+      flex-grow: 2;
+    }
+  }
+}
+
+.inactive-poll {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+
+  .form-container {
+    & > :nth-child(2) {
+      flex-grow: 3;
+    }
+
+    & > :nth-child(3) {
+      flex-grow: 2;
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    .form-container {
+      & > :nth-child(1) {
+        flex-grow: 1;
+      }
+
+      & > :nth-child(2) {
+        flex-grow: 1;
+      }
+
+      & > :nth-child(3) {
+        flex-basis: 100%;
+      }
+    }
+  }
+}

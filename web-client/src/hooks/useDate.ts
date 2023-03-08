@@ -3,13 +3,13 @@ const useDate = () => {
     getServerDateFromClientDate: (isoDate: string) => {
       const date = new Date(isoDate);
       // Reverting timezone operations made by Date constructor.
-      date.setMinutes(date.getTimezoneOffset());
+      date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
       return date.toISOString();
     },
     getClientDateFromServerDate: (isoDate: string) => {
       const date = new Date(isoDate);
       // Reverting timezone operations made by Date constructor.
-      date.setMinutes(-date.getTimezoneOffset());
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
       return date.toISOString();
     },
   };

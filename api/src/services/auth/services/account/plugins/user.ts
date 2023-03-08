@@ -14,6 +14,7 @@ const user: FastifyPluginAsync = async (fastify) => {
         email: true,
         emailVerified: true,
         picture: true,
+        id: true,
       },
     });
 
