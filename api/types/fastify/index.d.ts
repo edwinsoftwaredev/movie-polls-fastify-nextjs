@@ -17,6 +17,12 @@ import {
   MoviesByGenre,
 } from '../../src/services/public-movies/types';
 
+import type {
+  GetPoll,
+  GetVotingToken,
+  VoteHandler,
+} from '../../src/services/public-poll/types/decorators';
+
 // Importing these type declaration allows the LSP to
 // provide methods and properties from them.
 // (type/module/global module augmentation)
@@ -30,11 +36,6 @@ import type * as FastifySession from '@fastify/session';
 import type * as FastifyCsrf from '@fastify/csrf-protection';
 import type * as Fastify from 'fastify';
 import { Pipeline } from '@upstash/redis/types/pkg/pipeline';
-import type {
-  GetPoll,
-  GetVotingToken,
-  VoteHandler,
-} from 'src/services/public-poll/types/decorators';
 
 declare module 'fastify' {
   interface FastifyInstance {
