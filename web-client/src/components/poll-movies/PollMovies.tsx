@@ -16,9 +16,10 @@ type PollType = InferQueryOutput<'poll'>['getPoll']['poll'];
 
 const Movie: React.FC<{
   id: PollType['MoviePoll']['0']['movieId'];
-  onRemove?: (movieId: number) => void;
   progress?: number;
-}> = ({ id, onRemove, progress }) => {
+  onVote?: (movieId: number) => void;
+  onRemove?: (movieId: number) => void;
+}> = ({ id, progress, onVote, onRemove }) => {
   const { movie, isLoading } = useMovie({ movieId: id });
 
   if (isLoading || !movie) return null;
@@ -49,6 +50,17 @@ const Movie: React.FC<{
             {typeof progress !== 'undefined' && (
               <PollProgress progress={progress} type={'movie'} />
             )}
+            {!!onVote && (
+              <Button
+                outlined
+                onClick={() => {
+                  onVote(id);
+                }}
+                type="button"
+              >
+                VOTE FOR THIS MOVIE
+              </Button>
+            )}
           </div>
         </div>
       </Card>
@@ -59,8 +71,9 @@ const Movie: React.FC<{
 const PollMovies: React.FC<{
   movies: PollType['MoviePoll'];
   showProgress?: boolean;
+  onVote?: (movieId: number) => void;
   onRemoveMovie?: (movieId: number) => void;
-}> = ({ movies, showProgress, onRemoveMovie }) => {
+}> = ({ movies, showProgress, onVote, onRemoveMovie }) => {
   const [totalVotes, setTotalVotes] = useState(
     movies.reduce((prev, acc) => {
       if (!prev) return acc.voteCount ?? 0;
@@ -95,6 +108,11 @@ const PollMovies: React.FC<{
                   : 0,
               }
             : {})}
+          {...(
+            onVote ? {
+              onVote
+            } : {}
+          )}
         />
       ))}
     </section>

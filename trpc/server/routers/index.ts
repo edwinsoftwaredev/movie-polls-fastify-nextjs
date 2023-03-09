@@ -4,6 +4,7 @@ import googleAuthRouter from './google-auth';
 import moviesRouter from './movies';
 import publicMoviesRouter from './public-movies';
 import pollRouter from './poll';
+import publicPollRouter from './public-poll';
 
 export {
   sessionRouter,
@@ -12,4 +13,5 @@ export {
   moviesRouter,
   publicMoviesRouter,
   pollRouter,
+  publicPollRouter,
 };

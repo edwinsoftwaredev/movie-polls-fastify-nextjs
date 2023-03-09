@@ -1,3 +1,4 @@
+import { TRPCClientError } from '@trpc/client';
 import { headers } from 'next/headers';
 import PollForm from 'src/components/poll-form/PollForm';
 import PollVotingTokens from 'src/components/poll-voting-tokens/PollVotingTokens';
@@ -25,16 +26,27 @@ export default async function Page({ params }: { params: { id: string } }) {
     headers()
   );
 
-  const { poll } = await trpc.query(
-    'poll',
-    'getPoll',
-    { pollId: id },
-    headers()
-  );
+  const { poll } = whoami
+    ? await trpc
+        .query('poll', 'getPoll', { pollId: id }, headers())
+        .catch((err) => {
+          if (err instanceof TRPCClientError) {
+            if (err.data.code === 'UNAUTHORIZED') {
+              return { poll: null };
+            }
+          }
 
-  const isOwner = whoami ? whoami.id === poll.authorId : false;
+          throw err;
+        })
+    : { poll: null };
 
-  if (isOwner) return <PollFormWithVotingTokens poll={poll} />;
+  const isOwner = whoami
+    ? poll === null
+      ? false
+      : whoami.id === poll.authorId
+    : false;
+
+  if (isOwner) return <PollFormWithVotingTokens poll={poll!} />;
 
   return null;
 }

@@ -1,5 +1,4 @@
 import { headers } from 'next/headers';
-import PollSlider from 'src/components/poll-slider/PollSlider';
 import { AppTabs } from 'src/components/responsive-components';
 import Slider from 'src/components/Slider';
 import trpc from 'src/trpc/server';

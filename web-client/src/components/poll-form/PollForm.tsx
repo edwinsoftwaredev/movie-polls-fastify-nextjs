@@ -106,7 +106,7 @@ const InactivePoll: React.FC<{
   }, []);
 
   return (
-    <div className={styles['active-poll']}>
+    <div className={styles['inactive-poll']}>
       <div className={styles['form-container']}>
         <Input
           defaultValue={poll.name}
@@ -127,8 +127,7 @@ const InactivePoll: React.FC<{
         />
         <Button
           onClick={() => {
-            if (poll.MoviePoll.length < 2 || new Date(endDate) <= new Date())
-              return;
+            if (new Date(endDate) <= new Date()) return;
 
             // NOTE: If the property MoviePoll is not removed
             // there will be no type error or warning.
@@ -142,7 +141,7 @@ const InactivePoll: React.FC<{
               isActive: true,
             });
           }}
-          disabled={poll.MoviePoll.length < 2}
+          disabled={new Date(endDate) <= new Date()}
           outlined
           type="button"
         >

@@ -39,5 +39,10 @@
     "../api/types/fastify/index.d.ts",
     ".next/types/**/*.ts"
   ],
+  "references": [
+    {
+      "path": "../trpc"
+    }
+  ],
   "exclude": ["node_modules"]
 }

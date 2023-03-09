@@ -30,6 +30,11 @@ import type * as FastifySession from '@fastify/session';
 import type * as FastifyCsrf from '@fastify/csrf-protection';
 import type * as Fastify from 'fastify';
 import { Pipeline } from '@upstash/redis/types/pkg/pipeline';
+import type {
+  GetPoll,
+  GetVotingToken,
+  VoteHandler,
+} from 'src/services/public-poll/types/decorators';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -138,6 +143,12 @@ declare module 'fastify' {
           VotingToken: VotingToken[];
         }
       >;
+    };
+
+    publicPolls: {
+      getPoll: GetPoll;
+      getVotingToken: GetVotingToken;
+      voteHandler: VoteHandler;
     };
   }
 

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import trpc from 'src/trpc/server';
 import PollMovies from './PollMovies';
 import styles from './Poll.module.scss';
-import { TRPCError } from '@trpc/server';
+import { TRPCClientError } from '@trpc/client';
 
 export default async function PollLayout({
   children,
@@ -21,33 +21,58 @@ export default async function PollLayout({
     headers()
   );
 
-  const { poll } = await trpc
-    .query('poll', 'getPoll', { pollId: id }, headers())
-    .catch((err: TRPCError) => {
-      if (err.code === 'UNAUTHORIZED') {
-        return { poll: null };
-      }
+  const { poll } = whoami
+    ? await trpc
+        .query('poll', 'getPoll', { pollId: id }, headers())
+        .catch((err) => {
+          if (err instanceof TRPCClientError) {
+            if (err.data.code === 'UNAUTHORIZED') {
+              return { poll: null };
+            }
+          }
 
-      throw err;
-    });
+          throw err;
+        })
+    : { poll: null };
 
-  if (!poll) return null;
+  const isOwner = whoami
+    ? poll === null
+      ? false
+      : whoami.id === poll.authorId
+    : false;
 
-  const isOwner = whoami ? whoami.id === poll.authorId : false;
+  const { poll: publicPoll } = !isOwner
+    ? await trpc
+        .query('publicPoll', 'poll', { pollId: id }, headers())
+        .catch((err) => {
+          if (err instanceof TRPCClientError) {
+            if (err.data.code === 'UNAUTHORIZED') {
+              redirect('/');
+            }
+          }
 
-  if (!poll.isActive && !isOwner) redirect('/');
+          throw err;
+        })
+    : { poll: null };
 
-  const movies = poll.MoviePoll;
+  const currentPoll = isOwner ? poll : publicPoll;
+
+  if (!currentPoll) redirect('/');
+
+  const isPollExpired = currentPoll.expiresOn
+    ? new Date(currentPoll.expiresOn) < new Date()
+    : null;
 
   return (
     <section className={styles['poll-container']}>
       <article className={styles['poll']}>
         <header className={styles['header']}>{children}</header>
         <PollMovies
-          pollId={poll.id}
-          movies={movies}
+          pollId={currentPoll.id}
+          movies={currentPoll.MoviePoll}
           isPollOwner={isOwner}
-          isActivePoll={poll.isActive ?? false}
+          isActivePoll={currentPoll.isActive ?? false}
+          isPollExpired={isPollExpired}
         />
       </article>
     </section>

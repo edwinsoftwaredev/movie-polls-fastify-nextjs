@@ -39,7 +39,7 @@ const VotingToken: React.FC<{
 
   useEffect(() => {
     setInviteData({
-      url: `${window.location.origin}/vote?=${votingToken.id}`,
+      url: `${window.location.host}/polls/${votingToken.pollId}/vote?vt=${votingToken.id}`,
       title: `${pollName} movie poll`,
       text: `${
         whoaimData?.whoami?.displayName || ''

@@ -97,7 +97,7 @@ const t = initTRPC.context<Context>().create({
         ...shape,
         data: {
           ...shape.data,
-          code: 'INTERNAL_SERVER_ERROR',
+          code: shape.data.code ?? 'INTERNAL_SERVER_ERROR',
         },
       };
     }

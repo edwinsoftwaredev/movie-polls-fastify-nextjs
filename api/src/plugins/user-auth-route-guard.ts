@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { FastifyPluginAsync } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 
@@ -15,19 +16,11 @@ const userAuthRouteGuard: FastifyPluginAsync = async (fastify) => {
     // rejects request
     // https://trpc.io/docs/rpc#error-response
     res.code(401);
-    res.send({
-      id: null,
-      error: {
-        message: 'UNAUTHORIZED',
-        code: -32001,
-        data: {
-          code: 'UNAUTHORIZED',
-          httpStatus: 401,
-          stack: '',
-          path: '',
-        },
-      },
-    });
+    res.send(
+      new TRPCError({
+        code: 'UNAUTHORIZED',
+      })
+    );
 
     return res;
   });

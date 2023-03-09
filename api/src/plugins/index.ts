@@ -4,6 +4,7 @@ import authPlugin from './auth-plugin';
 import publicMoviesPlugin from './public-movie-plugin';
 import moviesPlugin from './movies-plugin';
 import pollPlugin from './poll-plugin';
+import publicPollPlugin from './public-poll-plugin';
 
 export {
   prismaClient,
@@ -12,4 +13,5 @@ export {
   publicMoviesPlugin,
   moviesPlugin,
   pollPlugin,
+  publicPollPlugin,
 };

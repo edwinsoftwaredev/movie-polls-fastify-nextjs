@@ -29,6 +29,7 @@ const useMovieDetails = (
         enabled: fetchProviders ?? false,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
+        refetchOnReconnect: false,
       }
     );
 

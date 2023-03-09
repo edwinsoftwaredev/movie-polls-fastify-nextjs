@@ -4,9 +4,9 @@
   min-width: 60px;
   padding: 0.5em;
 
-  outline-style: solid;
-  outline-width: 0.1em;
-  outline-color: transparent;
+  // outline-style: solid;
+  // outline-width: 0.1em;
+  // outline-color: transparent;
   // outline-offset: -0.125em;
 
   border-radius: 0.175em;
@@ -44,7 +44,7 @@
 
 .outlined {
   &:hover {
-    // border-color: gold !important;
+    border-color: gold !important;
     outline-color: gold !important;
     color: gold !important;
   }

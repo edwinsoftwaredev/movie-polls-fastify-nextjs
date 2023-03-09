@@ -6,9 +6,11 @@ import {
   publicMoviesPlugin,
   moviesPlugin,
   pollPlugin,
+  publicPollPlugin,
 } from './plugins';
 import * as dotenv from 'dotenv';
 import fastifyHelmet from '@fastify/helmet';
+
 dotenv.config();
 
 const serverlessFunc: FastifyPluginAsync = async (fastify) => {
@@ -29,6 +31,8 @@ const serverlessFunc: FastifyPluginAsync = async (fastify) => {
     instance.register(authPlugin);
     instance.register(pollPlugin);
     instance.register(moviesPlugin);
+
+    fastify.register(publicPollPlugin);
   });
 
   // Public routes
