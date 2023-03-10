@@ -8,10 +8,9 @@ import { InferQueryOutput } from 'trpc/client/utils';
 import Button from '../Button';
 import Input from '../Input';
 import PollProgress from '../poll-progress/PollProgress';
-import PollVotingTokens from '../poll-voting-tokens/PollVotingTokens';
 import styles from './PollForm.module.scss';
 
-type PollType = InferQueryOutput<'poll'>['getPoll']['poll'];
+type PollType = Omit<InferQueryOutput<'poll'>['getPoll']['poll'], 'createdAt'>;
 
 const ActivePoll: React.FC<{
   poll: PollType;

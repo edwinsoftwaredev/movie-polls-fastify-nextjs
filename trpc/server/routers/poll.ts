@@ -63,7 +63,7 @@ const pollRouter = router({
 
   // PUT: /polls/1
   updatePoll: procedure
-    .input((val) => val as Poll)
+    .input((val) => val as Omit<Poll, 'createdAt'>)
     .mutation(async ({ ctx, input: poll }) => {
       const { fastify, req } = ctx;
       const userSession = req.session.userSession!;
@@ -169,7 +169,7 @@ const pollRouter = router({
     }),
 
   updateVotingToken: procedure
-    .input((val) => val as VotingToken)
+    .input((val) => val as Omit<VotingToken, 'createdAt'>)
     .mutation(async ({ ctx, input: votingToken }) => {
       const { fastify, req } = ctx;
 
@@ -177,7 +177,7 @@ const pollRouter = router({
 
       const result = await fastify.polls.updateVotingToken(
         userSession,
-        votingToken
+        votingToken as VotingToken
       );
 
       return { votingToken: result };

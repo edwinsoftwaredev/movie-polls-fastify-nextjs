@@ -6,4 +6,6 @@ export type Movies =
 export type MovieProviders =
   InferQueryOutput<'publicMovies'>['movieProviders']['movieProviders'];
 
-export type Movie = Movies[0];
+export type Movie = NonNullable<
+  InferQueryOutput<'publicMovies'>['movie']['movie']
+>;

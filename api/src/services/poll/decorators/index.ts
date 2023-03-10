@@ -1,6 +1,6 @@
 import { Poll, Prisma, UserSession, VotingToken } from '@prisma/client';
 import { FastifyInstance } from 'fastify';
-import { Movie } from 'src/services/public-movies/types';
+import { Movie } from '../../../../src/services/public-movies/types';
 
 export const getInactivePolls =
   (fastify: FastifyInstance) => async (userSession: UserSession) => {
@@ -82,7 +82,8 @@ export const getPoll =
   };
 
 export const updatePoll =
-  (fastify: FastifyInstance) => async (userSession: UserSession, poll: Poll) =>
+  (fastify: FastifyInstance) =>
+  async (userSession: UserSession, poll: Omit<Poll, 'createdAt'>) =>
     fastify.prismaClient.$transaction(
       async (tx) => {
         const currentPoll = await tx.poll.findUniqueOrThrow({
