@@ -1,11 +1,11 @@
 import { fetch } from 'undici';
-import { Movie } from '../types';
+import { Movie as MovieType } from '../types';
 
 const imageLanguage: Record<string, string> = {
   'en-US': 'en',
 };
 
-export const movie = async (movieId: Movie['id'], language = 'en-US') => {
+export const movie = async (movieId: MovieType['id'], language = 'en-US') => {
   const TMDB_API_URL = process.env.TMDB_API_URL || '';
   const TMDB_API_KEY = process.env.TMDB_API_KEY || '';
   const urlSearchParams = new URLSearchParams();
@@ -21,7 +21,7 @@ export const movie = async (movieId: Movie['id'], language = 'en-US') => {
     `${TMDB_API_URL}/movie/${movieId}?${urlSearchParams.toString()}`
   );
 
-  const result: Movie = (await data.json()) as any;
+  const result: MovieType = (await data.json()) as any;
 
   if (!result || result?.adult) return null;
 
@@ -90,3 +90,5 @@ export const movie = async (movieId: Movie['id'], language = 'en-US') => {
     },
   };
 };
+
+export type Movie = typeof movie;

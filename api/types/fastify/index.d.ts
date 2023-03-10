@@ -1,27 +1,43 @@
-import {
-  UserSession,
-  PrismaClient,
-  User,
-  Poll,
-  MoviePoll,
-  VotingToken,
-} from '@prisma/client';
+import { UserSession, PrismaClient } from '@prisma/client';
 import { Redis } from '@upstash/redis';
 import { OAuth2Client, LoginTicket } from 'google-auth-library';
 // Current project configuration requires to define full path
 // (e.g "paths" is not defined in tsconfig.json)
-import {
-  Movie,
-  MovieDetail,
-  MovieProviders,
-  MoviesByGenre,
-} from '../../src/services/public-movies/types';
-
 import type {
-  GetPoll,
+  GetPoll as GetPublicPoll,
   GetVotingToken,
   VoteHandler,
-} from '../../src/services/public-poll/types/decorators';
+} from '../../src/services/public-poll/decorators';
+
+import type {
+  Movie,
+  MovieDetails,
+  MovieProviders,
+} from '../../src/services/public-movies/decorators';
+
+import type { SearchMovies } from '../../src/services/movies/decorators';
+
+import type { GetUser } from '../../src/services/auth/services/account/decorators';
+
+import type {
+  AddMovie,
+  AddVotingTokens,
+  CreatePoll,
+  GetActivePolls,
+  GetInactivePolls,
+  GetPoll,
+  GetVotingTokens,
+  RemoveMovie,
+  RemovePoll,
+  RemoveVotingToken,
+  UpdatePoll,
+  UpdateVotingToken,
+} from '../../src/services/poll/decorators';
+
+import {
+  Movie as MovieType,
+  MoviesByGenre,
+} from '../../src/services/public-movies/types';
 
 // Importing these type declaration allows the LSP to
 // provide methods and properties from them.
@@ -47,107 +63,42 @@ declare module 'fastify' {
     // services
     account: {
       user: {
-        getUser: (id: string) => Promise<User | null>;
+        getUser: GetUser;
       };
     };
 
     movies: {
-      nowPlaying: (redisPipeline: Pipeline) => Promise<Array<Movie>>;
-      popular: (redisPipeline: Pipeline) => Promise<Array<Movie>>;
-      trending: (redisPipeline: Pipeline) => Promise<Array<Movie>>;
-      trendingByGenre: (
-        redisPipeline: Pipeline
-      ) => Promise<Array<MoviesByGenre>>;
+      nowPlaying: (redisPipeline: Pipeline) => Array<MovieType>;
+      popular: (redisPipeline: Pipeline) => Array<MovieType>;
+      trending: (redisPipeline: Pipeline) => Array<MovieType>;
+      trendingByGenre: (redisPipeline: Pipeline) => Array<MoviesByGenre>;
       popularByDecadeAndGenre: (
         redisPipeline: Pipeline,
         decade: number
-      ) => Promise<Array<MoviesByGenre>>;
-      search: (
-        userSession: UserSession,
-        searchTerm: string
-      ) => Promise<Array<{ id: number }>>;
-      genreNamesByIds: (genreIds: Array<number>) => Promise<Array<string>>;
-      movie: (movieId: number) => Promise<Movie | null>;
-      movieDetails: (movieId: number) => Promise<MovieDetail | null>;
-      movieProviders: (movieId: number) => Promise<MovieProviders>;
+      ) => Array<MoviesByGenre>;
+      search: SearchMovies;
+      movie: Movie;
+      movieDetails: MovieDetails;
+      movieProviders: MovieProviders;
     };
 
     polls: {
-      getActivePolls: (userSession: UserSession) => Promise<
-        (Poll & {
-          MoviePoll: MoviePoll[];
-        })[]
-      >;
-      getInactivePolls: (userSession: UserSession) => Promise<
-        (Poll & {
-          MoviePoll: MoviePoll[];
-        })[]
-      >;
-      createPoll: (
-        userSession: UserSession,
-        pollName: string,
-        movieId?: Movie['id']
-      ) => Promise<
-        Poll & {
-          MoviePoll: MoviePoll[];
-        }
-      >;
-      getPoll: (
-        userName: UserSession,
-        pollId: Poll['id']
-      ) => Promise<
-        Poll & {
-          MoviePoll: MoviePoll[];
-        }
-      >;
-      updatePoll: (
-        userSession: UserSession,
-        poll: Omit<Poll, 'authorId' | 'createdAt'>
-      ) => Promise<Poll>;
-      removePoll: (
-        userSession: UserSession,
-        pollId: Poll['id']
-      ) => Promise<Poll>;
-      addMovie: (
-        userSession: UserSession,
-        pollId: Poll['id'],
-        movieId: Movie['id']
-      ) => Promise<MoviePoll>;
-      removeMovie: (
-        userSession: UserSession,
-        pollId: Poll['id'],
-        movieId: Movie['id']
-      ) => Promise<MoviePoll>;
-      addVotingTokens: (
-        userSession: UserSession,
-        pollId: Poll['id'],
-        tokenCount?: number
-      ) => Promise<
-        Poll & {
-          VotingToken: VotingToken[];
-        }
-      >;
-      getVotingTokens: (
-        userSession: UserSession,
-        pollId: Poll['id']
-      ) => Promise<VotingToken[]>;
-      updateVotingToken: (
-        userSession: UserSession,
-        votingToken: Omit<VotingToken, 'createdAt' | 'id' | 'pollId'>
-      ) => Promise<VotingToken>;
-      removeVotingToken: (
-        userSession: UserSession,
-        pollId: Poll['id'],
-        votingTokenId: VotingToken['id']
-      ) => Promise<
-        Poll & {
-          VotingToken: VotingToken[];
-        }
-      >;
+      getActivePolls: GetActivePolls;
+      getInactivePolls: GetInactivePolls;
+      createPoll: CreatePoll;
+      getPoll: GetPoll;
+      updatePoll: UpdatePoll;
+      removePoll: RemovePoll;
+      addMovie: AddMovie;
+      removeMovie: RemoveMovie;
+      addVotingTokens: AddVotingTokens;
+      getVotingTokens: GetVotingTokens;
+      updateVotingToken: UpdateVotingToken;
+      removeVotingToken: RemoveVotingToken;
     };
 
     publicPolls: {
-      getPoll: GetPoll;
+      getPoll: GetPublicPoll;
       getVotingToken: GetVotingToken;
       voteHandler: VoteHandler;
     };

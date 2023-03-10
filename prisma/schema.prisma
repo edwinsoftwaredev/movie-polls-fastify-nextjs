@@ -54,11 +54,12 @@ model Poll {
 }
 
 model MoviePoll {
-  pollId    String
+  pollId            String
   // NOTE: Poll deletes cascade to MoviePoll (As an alternative remove record on schedule).
-  poll      Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  movieId   Int
-  voteCount Int?   @default(0)
+  poll              Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  movieId           Int
+  voteCount         Int?   @default(0)
+  VotingToken       VotingToken[]
 
   @@id([pollId, movieId])
   @@index([pollId])
@@ -68,11 +69,13 @@ model VotingToken {
   id            String      @default(uuid())
   pollId        String
   poll          Poll        @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  movieId       Int?         
+  Movie         MoviePoll?  @relation(fields: [pollId, movieId], references: [pollId, movieId], onDelete: Cascade, onUpdate: Cascade)
   unused        Boolean     @default(true)
   unshared      Boolean     @default(true)
   label         String?
   createdAt     DateTime    @default(now())
 
   @@id([id, pollId])
-  @@index([pollId])
+  @@index([pollId, movieId])
 }

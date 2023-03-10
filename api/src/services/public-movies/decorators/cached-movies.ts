@@ -8,27 +8,33 @@ const enum CachedMoviesKeys {
   TrendingMoviesByGenre = 'TrendingMoviesByGenre',
 }
 
-export const nowPlaying = async (redisPipeline: Pipeline) => {
+export const nowPlaying = (redisPipeline: Pipeline) => {
   return redisPipeline.get<Array<Movie>>(CachedMoviesKeys.NowPlayingMovies);
 };
 
-export const popular = async (redisPipeline: Pipeline) => {
+export const popular = (redisPipeline: Pipeline) => {
   return redisPipeline.get<Array<Movie>>(CachedMoviesKeys.TopPopularMovies);
 };
 
-export const trending = async (redisPipeline: Pipeline) => {
+export const trending = (redisPipeline: Pipeline) => {
   return redisPipeline.get<Array<Movie>>(CachedMoviesKeys.TopTrendingMovies);
 };
 
-export const trendingByGenre = async (redisPipeline: Pipeline) => {
+export const trendingByGenre = (redisPipeline: Pipeline) => {
   return redisPipeline.get<Array<MoviesByGenre>>(
     CachedMoviesKeys.TrendingMoviesByGenre
   );
 };
 
-export const popularByDecadeAndGenre = async (
+export const popularByDecadeAndGenre = (
   redisPipeline: Pipeline,
   decade: number
 ) => {
   return redisPipeline.get<Array<MoviesByGenre>>(`movies_${decade}`);
 };
+
+export type NowPlaying = typeof nowPlaying;
+export type Popular = typeof popular;
+export type Trending = typeof trending;
+export type TrendingByGenre = typeof trendingByGenre;
+export type PopularByDecadeAndGenre = typeof popularByDecadeAndGenre;

@@ -101,7 +101,6 @@ export const voteHandler =
             },
           });
         },
-        // VotingTokens are unique so a write lock is applied to a give VotingToken
         { isolationLevel: 'Serializable' }
       )
       .then(async (vt) => {
@@ -124,6 +123,14 @@ export const voteHandler =
                 data: {
                   voteCount: {
                     increment: 1,
+                  },
+                  VotingToken: {
+                    connect: {
+                      id_pollId: {
+                        id: votingTokenId,
+                        pollId,
+                      },
+                    },
                   },
                 },
               },

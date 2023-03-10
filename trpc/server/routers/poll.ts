@@ -34,7 +34,7 @@ const pollRouter = router({
           .trim()
           .max(80, { message: 'Must be 80 or fewer characters long.' })
           .min(2, { message: 'Must be 2 or more characters long.' }),
-        movieId: z.optional(z.number()),
+        movieId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -63,7 +63,7 @@ const pollRouter = router({
 
   // PUT: /polls/1
   updatePoll: procedure
-    .input((val) => val as Omit<Poll, 'authorId' | 'createdAt'>)
+    .input((val) => val as Poll)
     .mutation(async ({ ctx, input: poll }) => {
       const { fastify, req } = ctx;
       const userSession = req.session.userSession!;
@@ -169,7 +169,7 @@ const pollRouter = router({
     }),
 
   updateVotingToken: procedure
-    .input((val) => val as Omit<VotingToken, 'createdAt'>)
+    .input((val) => val as VotingToken)
     .mutation(async ({ ctx, input: votingToken }) => {
       const { fastify, req } = ctx;
 
@@ -184,10 +184,12 @@ const pollRouter = router({
     }),
 
   removeVotingToken: procedure
-    .input(z.object({
-      pollId: z.string().uuid(),
-      id: z.string().uuid()
-    }))
+    .input(
+      z.object({
+        pollId: z.string().uuid(),
+        id: z.string().uuid(),
+      })
+    )
     .mutation(async ({ ctx, input: votingToken }) => {
       const { fastify, req } = ctx;
       const userSession = req.session.userSession!;

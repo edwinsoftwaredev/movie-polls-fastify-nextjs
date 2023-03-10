@@ -1,9 +1,9 @@
 import { fetch } from 'undici';
-import { MovieProviders } from '../types';
+import { MovieProviders as MovieProvidersType } from '../types';
 
 export const movieProviders = async (
   movieId: number
-): Promise<MovieProviders> => {
+): Promise<MovieProvidersType> => {
   const TMDB_API_URL = process.env.TMDB_API_URL || '';
   const TMDB_API_KEY = process.env.TMDB_API_KEY || '';
 
@@ -26,3 +26,5 @@ export const movieProviders = async (
     buy: providers['buy'] ?? [],
   };
 };
+
+export type MovieProviders = typeof movieProviders;

@@ -1,7 +1,9 @@
 import { fetch } from 'undici';
 import { MovieDetail } from '../types';
 
-export const movieDetails = async (movieId: number): Promise<MovieDetail | null> => {
+export const movieDetails = async (
+  movieId: number
+): Promise<MovieDetail | null> => {
   const TMDB_API_URL = process.env.TMDB_API_URL || '';
   const TMDB_API_KEY = process.env.TMDB_API_KEY || '';
 
@@ -17,7 +19,7 @@ export const movieDetails = async (movieId: number): Promise<MovieDetail | null>
   );
 
   const movieDetails = (await result.json()) as any;
-  
+
   if (!movieDetails || movieDetails?.adult) return null;
 
   const { release_dates, iso_3166_1 } =
@@ -37,3 +39,5 @@ export const movieDetails = async (movieId: number): Promise<MovieDetail | null>
     iso_3166_1,
   };
 };
+
+export type MovieDetails = typeof movieDetails;

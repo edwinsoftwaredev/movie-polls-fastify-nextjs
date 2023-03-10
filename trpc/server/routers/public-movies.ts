@@ -31,6 +31,7 @@ const publicMoviesRouter = router({
     const result = await p.exec<
       [Awaited<ReturnType<typeof fastify.movies.trendingByGenre>>]
     >();
+
     return { trendingByGenre: result[0] };
   }),
   popularByDecadeAndGenre: procedure
