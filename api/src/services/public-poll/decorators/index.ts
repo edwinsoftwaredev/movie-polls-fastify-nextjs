@@ -75,26 +75,38 @@ export const voteHandler =
     fastify.prismaClient
       .$transaction(
         async (tx) => {
-          const currentVotingToken = await tx.votingToken.findFirstOrThrow({
+          const currentPoll = await tx.poll.findUniqueOrThrow({
             where: {
-              id: votingTokenId,
-              pollId: pollId,
-              unused: true,
-              movieId: null,
+              id: pollId,
             },
             select: {
-              id: true,
-              poll: true,
+              expiresOn: true,
+              isActive: true,
+              MoviePoll: {
+                where: {
+                  movieId,
+                  pollId,
+                },
+              },
+              VotingToken: {
+                where: {
+                  id: votingTokenId,
+                  pollId,
+                },
+              },
             },
           });
 
           if (
-            !currentVotingToken.poll.isActive ||
-            !currentVotingToken.poll.expiresOn
+            !currentPoll.MoviePoll.at(0) ||
+            !currentPoll.VotingToken.at(0) ||
+            !currentPoll.isActive ||
+            !currentPoll.expiresOn ||
+            currentPoll.VotingToken.at(0)?.unused === false
           )
             throw new TRPCError({ code: 'UNAUTHORIZED' });
 
-          if (currentVotingToken.poll.expiresOn < new Date())
+          if (currentPoll.expiresOn < new Date())
             throw new TRPCError({
               code: 'BAD_REQUEST',
               message: 'Poll is expired.',
@@ -103,13 +115,13 @@ export const voteHandler =
           return tx.votingToken.update({
             where: {
               id_pollId: {
-                id: currentVotingToken.id,
+                id: currentPoll.VotingToken.at(0)!.id,
                 pollId,
               },
             },
             data: {
               unused: false,
-              movieId: movieId,
+              movieId: currentPoll.MoviePoll.at(0)!.movieId,
             },
             select: {
               id: true,
