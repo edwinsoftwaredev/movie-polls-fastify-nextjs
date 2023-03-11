@@ -4,12 +4,13 @@ import { useMovie } from 'hooks';
 import { Poll } from 'src/types/poll';
 import Card from '../Card';
 import styles from './PollSlider.module.scss';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useTransition } from 'react';
 import { AppContext } from 'app/AppProvider';
 import Button from '../Button';
 import { useRouter } from 'next/navigation';
 import MovieBackdrop from '../movie-images/MovieBackdrop';
 import PollProgress from '../poll-progress/PollProgress';
+import trpc from 'src/trpc/client';
 
 const MoviePoll: React.FC<{
   moviePoll: Poll['MoviePoll']['0'];
@@ -55,7 +56,10 @@ const PollCardHeader: React.FC<{ poll: Poll }> = ({ poll }) => {
   );
 };
 
-const PollCard: React.FC<{ poll: Poll }> = ({ poll }) => {
+const PollCard: React.FC<{
+  poll: Poll;
+  onRemove: (pollId: Poll['id']) => void;
+}> = ({ poll, onRemove }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -96,13 +100,17 @@ const PollCard: React.FC<{ poll: Poll }> = ({ poll }) => {
               router.push(`/polls/${poll.id}`);
             }}
           >
-            Edit
+            EDIT
           </Button>
-          {/* <Tabs
-            tabs={[{ title: 'Edit', icon: 'edit_square' }]}
-            onTabClick={() => {}}
-            iconPos={'left'}
-          /> */}
+          <Button
+            type="button"
+            del
+            onClick={() => {
+              onRemove(poll.id);
+            }}
+          >
+            DELETE
+          </Button>
         </div>
       </Card>
     </div>
@@ -113,10 +121,13 @@ const PollSlider: React.FC<{
   title: string;
   polls: Array<Poll>;
 }> = ({ title, polls }) => {
+  const { mutate: removePoll } = trpc.poll.removePoll.useMutation();
   const { isNarrowViewport } = useContext(AppContext);
+  const router = useRouter();
 
   const [sliceSize, setSliceSize] = useState(3);
   const [incr, setIncr] = useState(0);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     isNarrowViewport && setSliceSize(1);
@@ -165,7 +176,22 @@ const PollSlider: React.FC<{
         {polls
           .slice(0 + sliceSize * incr, sliceSize * (incr + 1))
           .map((poll) => (
-            <PollCard key={poll.id} poll={poll} />
+            <PollCard
+              key={poll.id}
+              poll={poll}
+              onRemove={(pollId) => {
+                removePoll(
+                  { pollId },
+                  {
+                    onSuccess: () => {
+                      startTransition(() => {
+                        router.refresh();
+                      });
+                    },
+                  }
+                );
+              }}
+            />
           ))}
       </section>
     </article>

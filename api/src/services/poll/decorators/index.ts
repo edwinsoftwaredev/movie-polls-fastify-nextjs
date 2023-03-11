@@ -1,32 +1,101 @@
 import { Poll, Prisma, UserSession, VotingToken } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import { FastifyInstance } from 'fastify';
 import { Movie } from '../../../../src/services/public-movies/types';
 
 export const getInactivePolls =
-  (fastify: FastifyInstance) => async (userSession: UserSession) => {
-    return fastify.prismaClient.poll.findMany({
-      where: {
-        authorId: userSession.userId!,
-        isActive: false,
-      },
-      include: {
-        MoviePoll: true,
-      },
-    });
-  };
+  (fastify: FastifyInstance) => async (userSession: UserSession) =>
+    fastify.prismaClient.poll
+      .findMany({
+        where: {
+          authorId: userSession.userId!,
+          isActive: false,
+        },
+        select: {
+          authorId: true,
+          createdAt: true,
+          id: true,
+          expiresOn: true,
+          isActive: true,
+          name: true,
+          MoviePoll: {
+            select: {
+              movieId: true,
+              pollId: true,
+              _count: {
+                select: {
+                  VotingToken: true,
+                },
+              },
+            },
+          },
+          VotingToken: {
+            select: {
+              unused: true,
+            },
+          },
+        },
+      })
+      .then((polls) =>
+        polls.map((p) => {
+          const { VotingToken, ...rest } = p;
+
+          return {
+            ...rest,
+            votingTokenCount: VotingToken.length,
+            remainingVotingTokenCount: VotingToken.filter(
+              (vt) => vt.unused === true
+            ).length,
+          };
+        })
+      );
 
 export const getActivePolls =
-  (fastify: FastifyInstance) => async (userSession: UserSession) => {
-    return fastify.prismaClient.poll.findMany({
-      where: {
-        authorId: userSession.userId!,
-        isActive: true,
-      },
-      include: {
-        MoviePoll: true,
-      },
-    });
-  };
+  (fastify: FastifyInstance) => async (userSession: UserSession) =>
+    fastify.prismaClient.poll
+      .findMany({
+        where: {
+          authorId: userSession.userId!,
+          isActive: true,
+        },
+        select: {
+          authorId: true,
+          createdAt: true,
+          id: true,
+          expiresOn: true,
+          isActive: true,
+          name: true,
+          MoviePoll: {
+            select: {
+              movieId: true,
+              pollId: true,
+              _count: {
+                select: {
+                  VotingToken: true,
+                },
+              },
+            },
+          },
+          VotingToken: {
+            select: {
+              unused: true,
+            },
+          },
+        },
+      })
+      .then((polls) =>
+        polls.map((p) => {
+          const { VotingToken, ...rest } = p;
+
+          return {
+            ...rest,
+            votingTokenCount: VotingToken.length,
+            remainingVotingTokenCount: VotingToken.filter(
+              (vt) => vt.unused === true
+            ).length,
+          };
+        })
+      );
 
 // TODO: rate limit
 export const createPoll =
@@ -67,18 +136,46 @@ export const createPoll =
 export const getPoll =
   (fastify: FastifyInstance) =>
   async (userSession: UserSession, pollId: Poll['id']) => {
-    const poll = await fastify.prismaClient.poll.findUniqueOrThrow({
+    const result = await fastify.prismaClient.poll.findUniqueOrThrow({
       where: {
         id: pollId,
       },
-      include: {
-        MoviePoll: true,
+      select: {
+        authorId: true,
+        createdAt: true,
+        id: true,
+        expiresOn: true,
+        isActive: true,
+        name: true,
+        MoviePoll: {
+          select: {
+            movieId: true,
+            pollId: true,
+            _count: {
+              select: {
+                VotingToken: true,
+              },
+            },
+          },
+        },
+        VotingToken: {
+          select: {
+            unused: true,
+          },
+        },
       },
     });
 
-    if (poll.authorId !== userSession.userId) throw new Error('UNAUTHORIZED');
+    if (result.authorId !== userSession.userId) throw new Error('UNAUTHORIZED');
 
-    return poll;
+    const { VotingToken, ...rest } = result;
+
+    return {
+      ...rest,
+      votingTokenCount: VotingToken.length,
+      remainingVotingTokenCount: VotingToken.filter((vt) => vt.unused === true)
+        .length,
+    };
   };
 
 export const updatePoll =
@@ -94,7 +191,6 @@ export const updatePoll =
             authorId: true,
             isActive: true,
             expiresOn: true,
-            votingTokenCount: true,
           },
         });
 
@@ -131,18 +227,12 @@ export const updatePoll =
             ...(currentPoll.isActive && !poll.isActive
               ? {
                   expiresOn: null,
-                  remainingVotingTokenCount: currentPoll.votingTokenCount,
-                  MoviePoll: {
-                    updateMany: {
-                      data: { voteCount: 0 },
-                      where: { pollId: poll.id },
-                    },
-                  },
                   VotingToken: {
                     updateMany: {
                       where: { pollId: poll.id },
                       data: {
                         unused: true,
+                        movieId: null,
                       },
                     },
                   },
@@ -272,7 +362,11 @@ export const addVotingTokens =
             authorId: true,
             isActive: true,
             expiresOn: true,
-            votingTokenCount: true,
+            _count: {
+              select: {
+                VotingToken: true,
+              },
+            },
           },
         });
 
@@ -286,7 +380,7 @@ export const addVotingTokens =
         )
           throw new Error('ACTIVE_POLL');
 
-        if (currentPoll.votingTokenCount + amount > 50)
+        if (currentPoll._count.VotingToken + amount > 50)
           throw new Error('LIMIT_REACHED');
 
         return tx.poll.update({
@@ -294,12 +388,6 @@ export const addVotingTokens =
             id: pollId,
           },
           data: {
-            votingTokenCount: {
-              increment: amount,
-            },
-            remainingVotingTokenCount: {
-              increment: amount,
-            },
             VotingToken: {
               createMany: {
                 data: new Array<Prisma.VotingTokenCreateManyPollInput>(
@@ -349,7 +437,6 @@ export const updateVotingToken =
             authorId: true,
             isActive: true,
             expiresOn: true,
-            votingTokenCount: true,
           },
         });
 
@@ -396,8 +483,6 @@ export const removeVotingToken =
             authorId: true,
             isActive: true,
             expiresOn: true,
-            votingTokenCount: true,
-            remainingVotingTokenCount: true,
             VotingToken: {
               where: {
                 id: votingTokenId,
@@ -419,59 +504,18 @@ export const removeVotingToken =
 
         const votingToken = currentPoll.VotingToken.at(0);
 
-        return tx.poll.update({
+        if (!votingToken)
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'VotingToken not found.',
+          });
+
+        return tx.votingToken.delete({
           where: {
-            id: pollId,
-          },
-          data: {
-            votingTokenCount: {
-              decrement: 1,
+            id_pollId: {
+              id: votingToken.id,
+              pollId,
             },
-            remainingVotingTokenCount: {
-              decrement: votingToken?.unused ? 1 : 0,
-            },
-            VotingToken: {
-              delete: {
-                id_pollId: {
-                  id: votingTokenId,
-                  pollId: pollId,
-                },
-              },
-            },
-            MoviePoll: {
-              ...(votingToken &&
-              votingToken.unused === false &&
-              votingToken.movieId
-                ? {
-                    update: {
-                      where: {
-                        pollId_movieId: {
-                          pollId: pollId,
-                          movieId: votingToken.movieId,
-                        },
-                      },
-                      data: {
-                        voteCount: {
-                          decrement: 1,
-                        },
-                        VotingToken: {
-                          disconnect: {
-                            id_pollId: {
-                              id: votingToken.id,
-                              pollId: votingToken.pollId,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  }
-                : {}),
-            },
-          },
-          // NOTE: the createMany API does not return the created records
-          // and the include API will return ALL the related records
-          include: {
-            VotingToken: true,
           },
         });
       },

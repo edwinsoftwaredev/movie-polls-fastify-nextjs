@@ -46,8 +46,6 @@ model Poll {
   author                      User        @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   authorId                    String
   MoviePoll                   MoviePoll[]
-  votingTokenCount            Int         @default(0)
-  remainingVotingTokenCount   Int         @default(0)
   VotingToken                 VotingToken[]
 
   @@index([authorId])
@@ -58,7 +56,6 @@ model MoviePoll {
   // NOTE: Poll deletes cascade to MoviePoll (As an alternative remove record on schedule).
   poll              Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   movieId           Int
-  voteCount         Int?   @default(0)
   VotingToken       VotingToken[]
 
   @@id([pollId, movieId])

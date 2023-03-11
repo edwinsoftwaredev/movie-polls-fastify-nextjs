@@ -8,9 +8,7 @@ interface UsePollsOpts {
   fetchInactivePolls?: boolean;
 }
 
-type Poll = Omit<PollType, 'MoviePoll'> & {
-  MoviePoll?: PollType['MoviePoll'];
-};
+type Poll = InferQueryOutput<'poll'>['getPoll']['poll'];
 
 const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
   // NOTE: using useRef instead of useState.
@@ -22,7 +20,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     InferQueryOutput<'poll'>['removeMovie']['moviePoll'][]
   >([]);
   const removedVotingTokens = useRef<
-    InferQueryOutput<'poll'>['removeVotingToken']['poll']['VotingToken']
+    Array<InferQueryOutput<'poll'>['removeVotingToken']['votingToken']>
   >([]);
 
   const { poll: pollContext } = trpc.useContext();
@@ -93,13 +91,13 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
         ? pollContext.inactivePolls.setData(undefined, {
             polls: [
               ...(pollContext.inactivePolls.getData()?.polls || []),
-              poll as InferQueryOutput<'poll'>['createPoll']['poll'],
+              poll as InferQueryOutput<'poll'>['getPoll']['poll'],
             ],
           })
         : pollContext.activePolls.setData(undefined, {
             polls: [
               ...(pollContext.activePolls.getData()?.polls || []),
-              poll as InferQueryOutput<'poll'>['createPoll']['poll'],
+              poll as InferQueryOutput<'poll'>['getPoll']['poll'],
             ],
           }));
   };
@@ -142,7 +140,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     onSuccess: async (input) => {
       if (!(input && input.poll)) return;
       // await pollContext.inactivePolls.cancel();
-      upsertOrRemovePoll(input.poll, 'add');
+      upsertOrRemovePoll(input.poll as Poll, 'add');
     },
   });
 
@@ -219,7 +217,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
       if (!poll) return;
 
       upsertOrRemovePoll(
-        { ...poll, MoviePoll: [...poll.MoviePoll, input.moviePoll] },
+        { ...poll, MoviePoll: [...poll.MoviePoll, input.moviePoll] } as Poll,
         'update'
       );
     },
@@ -276,7 +274,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
       removedMovie &&
         poll &&
         upsertOrRemovePoll(
-          { ...poll, MoviePoll: [...poll.MoviePoll, removedMovie] },
+          { ...poll, MoviePoll: [...poll.MoviePoll, removedMovie] } as Poll,
           'update'
         );
 
@@ -369,9 +367,7 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     },
     onSuccess: async (input) => {
       removedVotingTokens.current = removedVotingTokens.current.filter(
-        (votingToken) =>
-          votingToken.pollId !== input.poll.id &&
-          !input.poll.VotingToken.find((vt) => vt.id === votingToken.id)
+        (votingToken) => votingToken.pollId !== input.votingToken.id
       );
     },
     onError: async (_error, data) => {

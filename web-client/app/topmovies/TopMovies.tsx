@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import Slider from 'src/components/Slider';
 import trpc from 'src/trpc/server';
 
@@ -6,8 +5,7 @@ export default async function TopMovies({ d }: { d?: number }) {
   const { popularByGenre } = await trpc.query(
     'publicMovies',
     'popularByDecadeAndGenre',
-    { decade: d ?? 2020 },
-    headers()
+    { decade: d ?? 2020 }
   );
 
   return (

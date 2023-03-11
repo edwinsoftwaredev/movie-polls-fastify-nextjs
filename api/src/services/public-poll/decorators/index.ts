@@ -3,27 +3,50 @@ import { TRPCError } from '@trpc/server';
 import { FastifyInstance } from 'fastify';
 
 export const getPoll =
-  (fastify: FastifyInstance) => async (pollId: Poll['id']) =>
-    fastify.prismaClient.poll.findUniqueOrThrow({
+  (fastify: FastifyInstance) => async (pollId: Poll['id']) => {
+    const result = await fastify.prismaClient.poll.findUniqueOrThrow({
       where: {
         id: pollId,
       },
       select: {
         id: true,
         name: true,
-        remainingVotingTokenCount: true,
-        votingTokenCount: true,
         author: {
           select: {
             displayName: true,
             picture: true,
           },
         },
-        MoviePoll: true,
+        MoviePoll: {
+          select: {
+            movieId: true,
+            pollId: true,
+            _count: {
+              select: {
+                VotingToken: true,
+              },
+            },
+          },
+        },
+        VotingToken: {
+          select: {
+            unused: true,
+          },
+        },
         isActive: true,
         expiresOn: true,
       },
     });
+
+    const { VotingToken, ...rest } = result;
+
+    return {
+      ...rest,
+      votingTokenCount: VotingToken.length,
+      remainingVotingTokenCount: VotingToken.filter((vt) => vt.unused === true)
+        .length,
+    };
+  };
 
 export const getVotingToken =
   (fastify: FastifyInstance) =>
@@ -52,33 +75,26 @@ export const voteHandler =
     fastify.prismaClient
       .$transaction(
         async (tx) => {
-          const currentPoll = await tx.poll.findUniqueOrThrow({
+          const currentVotingToken = await tx.votingToken.findFirstOrThrow({
             where: {
-              id: pollId,
+              id: votingTokenId,
+              pollId: pollId,
+              unused: true,
+              movieId: null,
             },
             select: {
-              expiresOn: true,
-              isActive: true,
-              VotingToken: {
-                where: {
-                  id: votingTokenId,
-                  pollId,
-                },
-                select: {
-                  unused: true,
-                },
-              },
+              id: true,
+              poll: true,
             },
           });
 
           if (
-            !currentPoll.isActive ||
-            !currentPoll.expiresOn ||
-            currentPoll.VotingToken.at(0)?.unused === false
+            !currentVotingToken.poll.isActive ||
+            !currentVotingToken.poll.expiresOn
           )
             throw new TRPCError({ code: 'UNAUTHORIZED' });
 
-          if (currentPoll.expiresOn < new Date())
+          if (currentVotingToken.poll.expiresOn < new Date())
             throw new TRPCError({
               code: 'BAD_REQUEST',
               message: 'Poll is expired.',
@@ -87,59 +103,24 @@ export const voteHandler =
           return tx.votingToken.update({
             where: {
               id_pollId: {
-                id: votingTokenId,
+                id: currentVotingToken.id,
                 pollId,
               },
             },
             data: {
               unused: false,
+              movieId: movieId,
             },
             select: {
               id: true,
               pollId: true,
+              movieId: true,
               unused: true,
             },
           });
         },
         { isolationLevel: 'Serializable' }
       )
-      .then(async (vt) => {
-        await fastify.prismaClient.poll.update({
-          where: {
-            id: pollId,
-          },
-          data: {
-            remainingVotingTokenCount: {
-              decrement: 1,
-            },
-            MoviePoll: {
-              update: {
-                where: {
-                  pollId_movieId: {
-                    pollId: pollId,
-                    movieId: movieId,
-                  },
-                },
-                data: {
-                  voteCount: {
-                    increment: 1,
-                  },
-                  VotingToken: {
-                    connect: {
-                      id_pollId: {
-                        id: votingTokenId,
-                        pollId,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        });
-
-        return vt;
-      })
       .catch((err) => {
         if (err instanceof Prisma.PrismaClientKnownRequestError) {
           if (err.code === 'P2034') {

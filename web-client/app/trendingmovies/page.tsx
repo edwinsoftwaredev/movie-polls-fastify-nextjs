@@ -1,21 +1,10 @@
-import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
-import trpc from 'src/trpc/server';
 import TrendingMovies from './TrendingMovies';
 import { AppTabs } from 'src/components/responsive-components';
 import styles from './TrendingMovies.module.scss';
+import { headers } from 'next/headers';
 
 export default async function Page() {
-  const { isAuthenticated } = await trpc.query(
-    'session',
-    'getSession',
-    undefined,
-    headers()
-  );
-
-  // if (!isAuthenticated) {
-  //   redirect('/');
-  // }
+  headers();
 
   return (
     <>

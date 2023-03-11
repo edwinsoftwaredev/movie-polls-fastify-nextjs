@@ -1,8 +1,7 @@
-import { headers } from 'next/headers';
-import { AppTabs } from 'src/components/responsive-components';
 import Slider from 'src/components/Slider';
 import trpc from 'src/trpc/server';
-import CurrentPolls from './CurrentPolls';
+import { AppTabs } from 'src/components/responsive-components';
+import { headers } from 'next/headers';
 
 // Base type
 async function PopularSlider() {
@@ -13,8 +12,7 @@ async function PopularSlider() {
           const { popular } = await trpc.query(
             'publicMovies',
             'homeMovies',
-            undefined,
-            headers()
+            undefined
           );
           return popular;
         }}
@@ -33,8 +31,7 @@ async function TrendingSlider() {
           const { trending } = await trpc.query(
             'publicMovies',
             'homeMovies',
-            undefined,
-            headers()
+            undefined
           );
           return trending;
         }}
@@ -53,8 +50,7 @@ async function NowPlayingSlider() {
           const { nowPlaying } = await trpc.query(
             'publicMovies',
             'homeMovies',
-            undefined,
-            headers()
+            undefined
           );
           return nowPlaying;
         }}
@@ -65,36 +61,17 @@ async function NowPlayingSlider() {
   );
 }
 
-async function ActivePolls() {
-  const { polls: activePolls } = await trpc.query(
-    'poll',
-    'activePolls',
-    undefined,
-    headers()
-  );
-
-  return <CurrentPolls activePolls={activePolls} />;
-}
-
-export default async function Home() {
-  const { isAuthenticated } = await trpc.query(
-    'session',
-    'getSession',
-    undefined,
-    headers()
-  );
+export default async function HomeLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  headers();
 
   return (
     <>
       <AppTabs currentPath="/" />
-      {/** Current polls section */}
-      {isAuthenticated ? (
-        <section className="slider-container">
-          {/* @ts-expect-error Server Component */}
-          <ActivePolls />
-        </section>
-      ) : null}
-      {/** Popular Movies */}
+      {children}
       <section className="slider-container">
         {/** slider */}
         <section>

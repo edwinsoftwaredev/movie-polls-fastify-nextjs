@@ -106,4 +106,14 @@
 .card-actions {
   // background-color: rgba(255, 255, 255, 0.05);
   padding: 1em;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1em;
+
+  > * {
+    flex-grow: 1;
+    flex-basis: 50%;
+  }
 }

@@ -46,7 +46,7 @@ const trpc = {
       routerKey: RouterKey,
       procKey: ProcKey,
       procInput: ProcInput,
-      headers: Headers | undefined
+      headers?: Headers | undefined
     ): Promise<inferRouterOutputs<AppRouter[RouterKey]>[ProcKey]> => {
       const trpcClient = createTRPCClient(headers);
       return (trpcClient as any)[routerKey][procKey].query(procInput);

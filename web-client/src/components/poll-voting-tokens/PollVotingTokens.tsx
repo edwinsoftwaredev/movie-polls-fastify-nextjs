@@ -13,11 +13,12 @@ type PollType = InferQueryOutput<'poll'>['getPoll']['poll'];
 const VotingToken: React.FC<{
   pollName: string;
   votingToken: InferQueryOutput<'poll'>['votingTokens']['tokens']['0'];
+  isActive: boolean;
   index: number;
   onRemove: (
     votingToken: InferQueryOutput<'poll'>['votingTokens']['tokens']['0']
   ) => void;
-}> = ({ pollName, votingToken, index, onRemove }) => {
+}> = ({ pollName, votingToken, isActive, index, onRemove }) => {
   const { data: whoaimData } = trpc.account.whoami.useQuery(undefined, {
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -66,62 +67,64 @@ const VotingToken: React.FC<{
         <Label outlined>{votingToken.unused ? 'UNUSED' : 'USED'}</Label>
         <Label outlined>{votingToken.unshared ? 'UNSHARED' : 'SHARED'}</Label>
       </div>
-      <div className={styles['actions-container']}>
-        <Button
-          type="button"
-          onPointerDown={() => {
-            inviteData?.url && navigator.clipboard.writeText(inviteData.url);
-          }}
-          title="Copy Invite Link"
-        >
-          <span className="material-symbols-rounded">content_copy</span>
-        </Button>
-        {typeof window !== 'undefined' &&
-          inviteData &&
-          navigator.canShare &&
-          navigator.canShare(inviteData) && (
-            <Button
-              type="button"
-              onClick={(e) => {
-                navigator
-                  .share(inviteData)
-                  .then(() => {
-                    updateVotingToken({
-                      ...votingToken,
-                      unshared: false,
-                    });
-                  })
-                  .catch((err) => {});
-              }}
-              title="Share Invite"
-            >
-              <span className="material-symbols-rounded">share</span>
-            </Button>
-          )}
-        <Button
-          type="button"
-          onClick={() => {
-            updateVotingToken({
-              ...votingToken,
-              label: tokenLabel,
-            });
-          }}
-          title="Update Invite"
-          warn={(votingToken.label ?? '') !== tokenLabel}
-        >
-          <span className="material-symbols-rounded">save</span>
-        </Button>
-        <Button
-          del
-          type="button"
-          onClick={() => {
-            onRemove(votingToken);
-          }}
-          title="Remove Invite"
-        >
-          <span className="material-symbols-rounded">delete</span>
-        </Button>
-      </div>
+      {isActive && (
+        <div className={styles['actions-container']}>
+          <Button
+            type="button"
+            onPointerDown={() => {
+              inviteData?.url && navigator.clipboard.writeText(inviteData.url);
+            }}
+            title="Copy Invite Link"
+          >
+            <span className="material-symbols-rounded">content_copy</span>
+          </Button>
+          {typeof window !== 'undefined' &&
+            inviteData &&
+            navigator.canShare &&
+            navigator.canShare(inviteData) && (
+              <Button
+                type="button"
+                onClick={(e) => {
+                  navigator
+                    .share(inviteData)
+                    .then(() => {
+                      updateVotingToken({
+                        ...votingToken,
+                        unshared: false,
+                      });
+                    })
+                    .catch((err) => {});
+                }}
+                title="Share Invite"
+              >
+                <span className="material-symbols-rounded">share</span>
+              </Button>
+            )}
+          <Button
+            type="button"
+            onClick={() => {
+              updateVotingToken({
+                ...votingToken,
+                label: tokenLabel,
+              });
+            }}
+            title="Update Invite"
+            warn={(votingToken.label ?? '') !== tokenLabel}
+          >
+            <span className="material-symbols-rounded">save</span>
+          </Button>
+          <Button
+            del
+            type="button"
+            onClick={() => {
+              onRemove(votingToken);
+            }}
+            title="Remove Invite"
+          >
+            <span className="material-symbols-rounded">delete</span>
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
@@ -142,6 +145,7 @@ const PollVotingTokens: React.FC<{
 
   const [newVotingTokenAmount, setNewVotingTokenAmount] = useState(0);
   const [formVersion, setFormVersion] = useState(0);
+  const [isActive, setIsActive] = useState(false);
 
   const [isPending, startTransition] = useTransition();
 
@@ -156,49 +160,59 @@ const PollVotingTokens: React.FC<{
 
   const { addVotingTokens, removeVotingToken } = usePolls({});
 
+  useEffect(() => {
+    if (poll.isActive && poll.expiresOn) {
+      setIsActive(new Date(poll.expiresOn) >= new Date());
+    } else {
+      setIsActive(true);
+    }
+  }, [poll.isActive, poll.expiresOn]);
+
   return (
     <article className={styles['voting-tokens']}>
       <div className={styles['voting-tokens-header']}>
         <h3>INVITE LINKS</h3>
-        <div className={styles['new-voting-tokens-form']}>
-          <Input
-            key={formVersion}
-            inputType="number"
-            defaultValue={newVotingTokenAmount}
-            maxValue={
-              50 - (votingTokensData?.tokens.length || poll.votingTokenCount)
-            }
-            onChange={(val) => {
-              setNewVotingTokenAmount(Number.parseInt(val || '0'));
-            }}
-            placeholder={'Number of new invites'}
-          />
-          <Button
-            onClick={() => {
-              newVotingTokenAmount &&
-                newVotingTokenAmount > 0 &&
-                addVotingTokens(
-                  {
-                    pollId: poll.id,
-                    amount: newVotingTokenAmount,
-                  },
-                  {
-                    onSuccess: () => {
-                      setNewVotingTokenAmount(0);
-                      setFormVersion((state) => state + 1);
-                      // updates poll progress bar
-                      startTransition(() => {
-                        router.refresh();
-                      });
+        {isActive && (
+          <div className={styles['new-voting-tokens-form']}>
+            <Input
+              key={formVersion}
+              inputType="number"
+              defaultValue={newVotingTokenAmount}
+              maxValue={
+                50 - (votingTokensData?.tokens.length || poll.votingTokenCount)
+              }
+              onChange={(val) => {
+                setNewVotingTokenAmount(Number.parseInt(val || '0'));
+              }}
+              placeholder={'Number of new invites'}
+            />
+            <Button
+              onClick={() => {
+                newVotingTokenAmount &&
+                  newVotingTokenAmount > 0 &&
+                  addVotingTokens(
+                    {
+                      pollId: poll.id,
+                      amount: newVotingTokenAmount,
                     },
-                  }
-                );
-            }}
-            type="button"
-          >
-            ADD INVITE LINKS
-          </Button>
-        </div>
+                    {
+                      onSuccess: () => {
+                        setNewVotingTokenAmount(0);
+                        setFormVersion((state) => state + 1);
+                        // updates poll progress bar
+                        startTransition(() => {
+                          router.refresh();
+                        });
+                      },
+                    }
+                  );
+              }}
+              type="button"
+            >
+              ADD INVITE LINKS
+            </Button>
+          </div>
+        )}
       </div>
       <ul>
         {votingTokens?.map((token, index) => (
@@ -207,6 +221,7 @@ const PollVotingTokens: React.FC<{
               votingToken={token}
               pollName={poll.name}
               index={index}
+              isActive={isActive}
               onRemove={(votingToken) => {
                 removeVotingToken(
                   {

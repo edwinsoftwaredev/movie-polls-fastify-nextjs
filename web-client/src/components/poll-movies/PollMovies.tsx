@@ -76,18 +76,18 @@ const PollMovies: React.FC<{
 }> = ({ movies, showProgress, onVote, onRemoveMovie }) => {
   const [totalVotes, setTotalVotes] = useState(
     movies.reduce((prev, acc) => {
-      if (!prev) return acc.voteCount ?? 0;
+      if (!prev) return acc._count.VotingToken ?? 0;
 
-      return prev + (acc.voteCount ?? 0);
+      return prev + (acc._count.VotingToken ?? 0);
     }, 0)
   );
 
   useEffect(() => {
     setTotalVotes(
       movies.reduce((prev: number, acc) => {
-        if (!prev) return acc.voteCount ?? 0;
+        if (!prev) return acc._count.VotingToken ?? 0;
 
-        return prev + (acc.voteCount ?? 0);
+        return prev + (acc._count.VotingToken ?? 0);
       }, 0)
     );
   }, [movies]);
@@ -103,16 +103,17 @@ const PollMovies: React.FC<{
             ? {
                 progress: totalVotes
                   ? Math.round(
-                      ((movie.voteCount ?? 0) / (totalVotes ?? 1)) * 100
+                      ((movie._count.VotingToken ?? 0) / (totalVotes ?? 1)) *
+                        100
                     )
                   : 0,
               }
             : {})}
-          {...(
-            onVote ? {
-              onVote
-            } : {}
-          )}
+          {...(onVote
+            ? {
+                onVote,
+              }
+            : {})}
         />
       ))}
     </section>

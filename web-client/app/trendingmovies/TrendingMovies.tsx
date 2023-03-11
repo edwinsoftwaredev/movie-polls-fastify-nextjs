@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import Slider from 'src/components/Slider';
 import trpc from 'src/trpc/server';
 
@@ -6,8 +5,7 @@ export default async function TrendingMovies() {
   const { trendingByGenre } = await trpc.query(
     'publicMovies',
     'trendingByGenre',
-    undefined,
-    headers()
+    undefined
   );
 
   return (

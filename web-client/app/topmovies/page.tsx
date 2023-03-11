@@ -1,8 +1,6 @@
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { AppTabs } from 'src/components/responsive-components';
 import DSelect from 'src/components/top-movies/DSelect';
-import trpc from 'src/trpc/server';
 import TopMovies from './TopMovies';
 
 const d: Record<string, number> = {
@@ -19,17 +17,7 @@ export default async function Page({
 }: {
   searchParams: Record<string, string>;
 }) {
-  const { isAuthenticated } = await trpc.query(
-    'session',
-    'getSession',
-    undefined,
-    headers()
-  );
-
-  // if (!isAuthenticated) {
-  //   redirect('/');
-  // }
-
+  headers();
   return (
     <>
       <AppTabs currentPath="/topmovies" />

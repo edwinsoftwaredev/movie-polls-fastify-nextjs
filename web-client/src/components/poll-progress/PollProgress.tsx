@@ -21,7 +21,7 @@ const PollProgress: React.FC<{
         value={
           typeof progress !== 'undefined'
             ? progress
-            : Math.round(((value ?? 0) / (maxValue ?? 1)) * 100)
+            : Math.round(((value ?? 0) / (maxValue || 1)) * 100)
         }
         label={`${
           typeof progress !== 'undefined'

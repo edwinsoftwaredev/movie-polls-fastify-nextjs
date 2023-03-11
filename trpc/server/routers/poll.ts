@@ -201,7 +201,7 @@ const pollRouter = router({
       );
 
       // TODO: remove authorId
-      return { poll: result };
+      return { votingToken: result };
     }),
 });
 
