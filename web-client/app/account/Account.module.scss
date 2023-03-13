@@ -1,0 +1,77 @@
+.account-container {
+  width: 100%;
+  padding: 0 calc(4% + 0.5em);
+  padding-top: calc(100vh * (1 / 8));
+  max-width: 50%;
+  min-width: 30em;
+}
+
+.header {
+  padding: 1em;
+
+  h2 {
+    margin-block: 0;
+  }
+}
+
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em;
+}
+
+.account-profile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+
+  padding: 1em;
+
+  * > div {
+    flex-grow: 1;
+  }
+
+  & > :first-child {
+    flex-basis: 15%;
+  }
+}
+
+.account-picture {
+  position: relative;
+  aspect-ratio: 1;
+
+  & > img {
+    border-radius: 50%;
+    object-fit: contain;
+  }
+}
+
+.settings {
+  padding: 1em;
+}
+
+.settings-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.settings-item-title {
+  font-size: 1.25em;
+  h4 {
+    margin: 0;
+  }
+}
+
+.settings-item-content {
+  ul {
+    margin: 1em 0;
+
+    li {
+      margin: 0.5em 0;
+    }
+  }
+}
