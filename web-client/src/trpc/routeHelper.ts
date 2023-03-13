@@ -6,6 +6,7 @@ const trpcRoutersPaths: { [key: string]: string } = {
   'publicMovies.': 'publicMoviesRoutes/publicMovies.',
   'poll.': 'pollRoutes/poll.',
   'publicPoll.': 'publicPollRoutes/publicPoll.',
+  'privateAccount.': 'privateAccountRoutes/privateAccount.',
 };
 
 export const getRoute = (aUrl: string) => {

@@ -18,6 +18,11 @@ const accountRouter = router({
       .destroy()
       .then(() => res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`));
   }),
+  delete: procedure.mutation(async ({ ctx }) => {
+    const { fastify, req } = ctx;
+    const userSession = req.session.userSession!;
+    return fastify.account.user.deleteAccount(userSession);
+  }),
 });
 
 export default router({ account: accountRouter });

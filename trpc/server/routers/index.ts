@@ -5,6 +5,7 @@ import moviesRouter from './movies';
 import publicMoviesRouter from './public-movies';
 import pollRouter from './poll';
 import publicPollRouter from './public-poll';
+import privateAccountRouter from './private-account';
 
 export {
   sessionRouter,
@@ -14,4 +15,5 @@ export {
   publicMoviesRouter,
   pollRouter,
   publicPollRouter,
+  privateAccountRouter,
 };

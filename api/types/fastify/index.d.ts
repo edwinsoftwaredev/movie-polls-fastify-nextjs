@@ -17,7 +17,10 @@ import type {
 
 import type { SearchMovies } from '../../src/services/movies/decorators';
 
-import type { GetUser } from '../../src/services/auth/services/account/decorators';
+import type {
+  DeleteAccount,
+  GetUser,
+} from '../../src/services/auth/services/account/decorators';
 
 import type {
   AddMovie,
@@ -64,6 +67,7 @@ declare module 'fastify' {
     account: {
       user: {
         getUser: GetUser;
+        deleteAccount: DeleteAccount;
       };
     };
 

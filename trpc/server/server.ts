@@ -7,6 +7,7 @@ import {
   sessionRouter,
   pollRouter,
   publicPollRouter,
+  privateAccountRouter,
 } from './routers';
 
 // Add routes to appRouter -------
@@ -17,7 +18,8 @@ const appRouter = mergeRouters(
   moviesRouter,
   publicMoviesRouter,
   pollRouter,
-  publicPollRouter
+  publicPollRouter,
+  privateAccountRouter
 );
 // -------------------------------
 
