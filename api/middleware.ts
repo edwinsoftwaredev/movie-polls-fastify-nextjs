@@ -3,7 +3,7 @@ import { ipRateLimit } from './lib/ip-rate-limit';
 
 export const config = {
   // TODO: should be /trpc/publicMoviesRoutes/publicMovies.movieDetails
-  matcher: ['/trpc/publicMoviesRoutes/:path*'],
+  matcher: ['/trpc/publicMoviesRoutes/:path*', '/trpc/publicPollRoutes/:path*'],
   runtime: 'edge',
   regions: ['iad1'], // only execute this function on iad1
 };

@@ -4,6 +4,8 @@ import type { Context } from './context';
 
 const t = initTRPC.context<Context>().create({
   errorFormatter: ({ error, type, path, input, ctx, shape }) => {
+    shape = { ...shape, data: { ...shape.data, stack: undefined } };
+
     if (error.cause instanceof Prisma.PrismaClientKnownRequestError) {
       switch (true) {
         case error.cause.code === 'P2002': {

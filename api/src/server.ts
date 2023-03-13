@@ -32,7 +32,7 @@ const serverlessFunc: FastifyPluginAsync = async (fastify) => {
     instance.register(pollPlugin);
     instance.register(moviesPlugin);
 
-    fastify.register(publicPollPlugin);
+    instance.register(publicPollPlugin);
   });
 
   // Public routes

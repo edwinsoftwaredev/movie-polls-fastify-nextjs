@@ -10,7 +10,7 @@ export const ipRateLimit = initRateLimit((request) => ({
   id: `ip:${getIP(request)}`,
   count: increment,
   // TODO: change limit for authenticated users
-  limit: 250,
+  limit: 500,
   timeframe: 3600 * 24, // limit: 250 reqs per day (including OPTIONS request)
 }));
 
