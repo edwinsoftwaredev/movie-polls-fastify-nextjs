@@ -33,6 +33,10 @@ const MovieList: React.FC<{
       refetchOnMount: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
+      retry: true,
+      retryDelay(failureCount, error) {
+        return 5;
+      },
     }
   );
   const { mutate: mutateVote, isSuccess: isSuccessVote } =

@@ -7,7 +7,7 @@ import styles from './Panel.module.scss';
 interface PanelProps extends PropsWithChildren {
   tabs?: Array<{
     title: string;
-    icon?: 'image' | 'leaderboard' | 'subscriptions';
+    icon?: 'image' | 'fact_check' | 'subscriptions';
   }>;
   onTabClick: (tabTitle: string) => void;
   defaultActiveTab?: string;

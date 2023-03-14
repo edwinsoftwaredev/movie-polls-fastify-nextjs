@@ -87,10 +87,10 @@
   background-color: rgb(20, 20, 20);
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: 1em;
 
   &.active {
-    padding: 0.75em 0.5em;
+    padding: 1em 0.5em;
     height: auto;
 
     .expand-more-icon {
@@ -107,13 +107,14 @@
 }
 
 .poll-movie-list-item {
+  font-size: 1.25em;
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto;
   gap: 0.25em;
   width: 100%;
 
-  * {
+  & > * {
     margin: auto 0;
   }
 }

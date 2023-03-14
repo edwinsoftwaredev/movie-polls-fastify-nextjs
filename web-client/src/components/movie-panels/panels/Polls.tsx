@@ -191,8 +191,7 @@ const PollItem: React.FC<PollItemProps> = ({
           removeClbk={removeMovieClbk}
         />
         <Button del large outlined onClick={removePollClbk}>
-          <span className="material-symbols-rounded">delete</span>
-          Delete Poll
+          DELETE
         </Button>
       </div>
     </div>
@@ -250,7 +249,7 @@ const InactivePollList: React.FC<InactivePollListProps> = ({
               key={`poll-name-input-${formVersion}`}
             />
             <Button type="submit" large outlined disabled={isLoadingCreatePoll}>
-              Add New Poll
+              ADD NEW POLL
             </Button>
           </div>
         </form>

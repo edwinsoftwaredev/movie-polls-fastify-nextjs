@@ -1,7 +1,7 @@
 // TODO: consider refactor into a server component
 'use client';
 
-import { useMovie, usePolls } from 'hooks';
+import { useMovie } from 'hooks';
 import { useEffect, useState } from 'react';
 import { InferQueryOutput } from 'trpc/client/utils';
 import Button from '../Button';

@@ -8,7 +8,7 @@ import Poster from './panels/Poster';
 
 const tabs: ComponentProps<typeof Panel>['tabs'] = [
   { title: 'Title', icon: 'image' },
-  { title: 'Polls', icon: 'leaderboard' }, // ?
+  { title: 'Polls', icon: 'fact_check' }, // ?
   { title: 'Available On', icon: 'subscriptions' },
 ];
 
