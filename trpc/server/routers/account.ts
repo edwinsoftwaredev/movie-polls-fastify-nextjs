@@ -19,9 +19,13 @@ const accountRouter = router({
       .then(() => res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`));
   }),
   delete: procedure.mutation(async ({ ctx }) => {
-    const { fastify, req } = ctx;
+    const { fastify, req, res } = ctx;
     const userSession = req.session.userSession!;
-    return fastify.account.user.deleteAccount(userSession);
+
+    await fastify.account.user.deleteAccount(userSession);
+    await req.session.destroy();
+
+    return res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`);
   }),
 });
 
