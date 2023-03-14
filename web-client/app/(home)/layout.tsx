@@ -9,7 +9,7 @@ import SlideSkeleton from 'src/components/SlideSkeleton';
 import Slide from 'src/components/Slide';
 import { InferQueryOutput } from 'trpc/client/utils';
 
-export async function SlideItems({
+async function SlideItems({
   items,
   slideSize,
 }: {

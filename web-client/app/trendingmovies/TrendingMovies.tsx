@@ -15,7 +15,7 @@ const getData = async () => {
   return trendingByGenre;
 };
 
-export async function SlideItems({
+async function SlideItems({
   items,
 }: {
   items: Awaited<ReturnType<typeof getData>>['0']['results'];
