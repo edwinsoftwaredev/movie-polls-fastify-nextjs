@@ -10,7 +10,8 @@ const MovieBackdrop: React.FC<{
   maxWidth?: number | string;
   isPoster?: boolean;
   isBackdrop?: boolean;
-}> = ({ movie, maxWidth, isPoster, isBackdrop }) => {
+  showHD?: boolean;
+}> = ({ movie, maxWidth, isPoster, isBackdrop, showHD }) => {
   const { isNarrowViewport } = useContext(AppContext);
 
   const {
@@ -69,17 +70,31 @@ const MovieBackdrop: React.FC<{
           setIsImgLoaded(true);
         }}
         loader={({ src, width }) => {
-          if (width > 1920) return `https://image.tmdb.org/t/p/original${src}`;
-          if (width > 780) return `https://image.tmdb.org/t/p/w1280${src}`;
-          if (width > 300) return `https://image.tmdb.org/t/p/w780${src}`;
+          if (showHD && !isNarrowViewport) {
+            if (width > 1920)
+              return `https://image.tmdb.org/t/p/original${src}`;
+            if (width > 780) return `https://image.tmdb.org/t/p/w1280${src}`;
+            if (width > 300) return `https://image.tmdb.org/t/p/w780${src}`;
 
-          return `https://image.tmdb.org/t/p/w300${src}`;
+            return `https://image.tmdb.org/t/p/w300${src}`;
+          } else {
+            if (width > 1920) return `https://image.tmdb.org/t/p/w1280${src}`;
+            if (width > 300) return `https://image.tmdb.org/t/p/w780${src}`;
+
+            return `https://image.tmdb.org/t/p/w300${src}`;
+          }
         }}
         src={`${filePath}`}
         placeholder={'empty'}
         loading={'lazy'}
         fill={true}
-        sizes={`(min-width: 300px) 780px, (min-width: 780px) 1280px, (min-width: 1280px) 1280px, (min-width: 1920px) 100vw, 100vw`}
+        sizes={`(min-width: 300px) 780px, (min-width: 780px) ${
+          showHD && !isNarrowViewport ? '1280px' : '780px'
+        } , (min-width: 1280px) ${
+          showHD && !isNarrowViewport ? '1280px' : '780px'
+        }, (min-width: 1920px) ${
+          showHD && !isNarrowViewport ? '100vw' : '780px'
+        }, 100vw`}
         quality={100}
         alt={title}
       />

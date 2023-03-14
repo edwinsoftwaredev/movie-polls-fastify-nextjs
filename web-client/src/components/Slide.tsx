@@ -7,11 +7,10 @@ import style from './Slide.module.scss';
 import { SliderContext } from './SliderProvider';
 
 interface SlideProps extends PropsWithChildren {
-  items: Movies;
   slideSize: 3 | 4 | 5;
 }
 
-const Slide: React.FC<SlideProps> = ({ items, slideSize }) => {
+const Slide: React.FC<SlideProps> = ({ slideSize, children }) => {
   const slideRef = useRef<HTMLDivElement>(null);
   const { addListener } = useContext(SliderContext);
   type SliderCtrlEventType = Parameters<Parameters<typeof addListener>[0]>[0];
@@ -36,13 +35,7 @@ const Slide: React.FC<SlideProps> = ({ items, slideSize }) => {
       // TODO: defined the slide size using css variables
       className={`${style['slide']} ${style[`slide-s-${slideSize}`]}`}
     >
-      {items.map((item) => (
-        <div key={item.id} className="slide-item">
-          {/* TODO: pass itemAspectRatio to Card component */}
-          {/* TODO: default cards in Slide to preview mode */}
-          <MovieCard movie={item} />
-        </div>
-      ))}
+      {children}
     </div>
   );
 };

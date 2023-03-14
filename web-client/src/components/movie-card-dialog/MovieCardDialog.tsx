@@ -118,7 +118,12 @@ const MovieCardPortal: React.FC<MovieCardDialogProps> = ({
         ref={cardRef}
         header={{
           backdropImage: (
-            <MovieBackdrop movie={movie} maxWidth={headerImgWidth} isBackdrop />
+            <MovieBackdrop
+              movie={movie}
+              maxWidth={headerImgWidth}
+              isBackdrop
+              showHD
+            />
           ),
         }}
       >

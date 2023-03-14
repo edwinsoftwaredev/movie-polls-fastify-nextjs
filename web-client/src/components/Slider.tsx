@@ -1,33 +1,13 @@
-import { PropsWithChildren, Suspense } from 'react';
-import { Movies } from 'types';
+import { PropsWithChildren } from 'react';
 import styles from './Slider.module.scss';
-import SlideSkeleton from './SlideSkeleton';
-import Slide from './Slide';
 import SliderProvider from './SliderProvider';
 import SliderCtrl from './SliderCtrl';
 
 interface SliderProps extends PropsWithChildren {
-  // TODO: create SliderItem type
-  fetchItems: () => Promise<Movies>;
-  slideSize: 3 | 4 | 5;
-  slideItemsGap?: 7;
-  slideItemAspectRatio?: '16/9' | '4/3';
   title?: string;
 }
 
-const Slider: React.FC<SliderProps> = ({
-  fetchItems,
-  slideSize,
-  slideItemAspectRatio,
-  slideItemsGap,
-  title,
-}) => {
-  const RenderSlide = async () => {
-    const items = await fetchItems();
-
-    return <Slide items={items} slideSize={slideSize} />;
-  };
-
+const Slider: React.FC<SliderProps> = ({ title, children }) => {
   return (
     <SliderProvider>
       <div className={`${styles['slider']}`}>
@@ -47,12 +27,7 @@ const Slider: React.FC<SliderProps> = ({
               }}
             />
           </div>
-          <div className={styles['slide-container']}>
-            <Suspense fallback={<SlideSkeleton slideSize={slideSize} />}>
-              {/* @ts-expect-error Server Component */}
-              <RenderSlide />
-            </Suspense>
-          </div>
+          <div className={styles['slide-container']}>{children}</div>
           <div
             className="forward-ctrl slider-ctrl"
             style={{

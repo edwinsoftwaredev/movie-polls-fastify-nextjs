@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  PropsWithChildren,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { Movie } from 'types';
 import Card from '../Card';
 import styles from './MovieCard.module.scss';
@@ -17,9 +12,10 @@ import MovieBackdrop from '../movie-images/MovieBackdrop';
 
 interface MovieCard extends PropsWithChildren {
   movie: Movie;
+  showHD?: boolean;
 }
 
-const MovieCard: React.FC<MovieCard> = ({ movie }) => {
+const MovieCard: React.FC<MovieCard> = ({ movie, showHD }) => {
   const movieCardRef = useRef<HTMLDivElement>(null);
   const [movieCardDialogProps, setMovieCardDialogProps] = useState({
     x: 0,
@@ -31,11 +27,11 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
 
   const resizeObserverRef = useRef<ResizeObserver>();
 
-  const {
-    title,
-    vote_average,
-    genresLabel,
-  } = useMovieDetails(movie, false, false);
+  const { title, vote_average, genresLabel } = useMovieDetails(
+    movie,
+    false,
+    false
+  );
 
   useEffect(() => {
     resizeObserverRef.current = new window.ResizeObserver(() => {
@@ -95,9 +91,7 @@ const MovieCard: React.FC<MovieCard> = ({ movie }) => {
               </div>
             </div>
           ),
-          backdropImage: (
-            <MovieBackdrop movie={movie} />
-          ),
+          backdropImage: <MovieBackdrop movie={movie} showHD={showHD} />,
         }}
       />
       <Dialog isOpen={!movieCardDialogProps.isPreview}>
