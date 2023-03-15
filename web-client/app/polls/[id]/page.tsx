@@ -1,9 +1,20 @@
 import { TRPCClientError } from '@trpc/client';
+import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import PollForm from 'src/components/poll-form/PollForm';
 import PollVotingTokens from 'src/components/poll-voting-tokens/PollVotingTokens';
 import trpc from 'src/trpc/server';
 import { InferQueryOutput } from 'trpc/client/utils';
+
+export async function generateMetadata({}): Promise<Metadata> {
+  const { csrfToken } = await trpc.query(
+    'session',
+    'getSession',
+    undefined,
+    headers()
+  );
+  return { title: 'Poll', other: { 'csrf-token': csrfToken } };
+}
 
 const PollFormWithVotingTokens: React.FC<{
   poll: InferQueryOutput<'poll'>['getPoll']['poll'];

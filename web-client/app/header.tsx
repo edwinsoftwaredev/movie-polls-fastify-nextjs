@@ -1,7 +1,7 @@
 import styles from './header.module.scss';
 import Link from 'next/link';
 import { headers } from 'next/headers';
-import { Voltaire } from '@next/font/google';
+import { Voltaire } from 'next/font/google';
 import trpc from 'src/trpc/server';
 import { NavigationOverlay } from 'src/components/responsive-components';
 

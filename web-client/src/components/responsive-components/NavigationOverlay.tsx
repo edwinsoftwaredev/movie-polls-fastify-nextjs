@@ -32,9 +32,12 @@ const AnonymousUserNavOptions: React.FC = () => (
 );
 
 const NavOptions: React.FC = () => {
-  const { data: sessionData } = trpc.session.getSession.useQuery(undefined, {
-    enabled: false,
-  });
+  const csrftoken =
+    typeof window !== 'undefined'
+      ? document
+          .querySelector("meta[name='csrf-token']")
+          ?.getAttribute('content')
+      : 'undefined';
 
   return (
     <ul>
@@ -66,11 +69,7 @@ const NavOptions: React.FC = () => {
           method="post"
           action={`${process.env.NEXT_PUBLIC_API_HOST_URL}/trpc/accountRoutes/account.logout`}
         >
-          <input
-            type="hidden"
-            name="_csrf"
-            value={sessionData?.csrfToken || ''}
-          />
+          <input type="hidden" name="_csrf" value={csrftoken || ''} />
           <Button type="submit">Sign Out</Button>
         </form>
       </li>

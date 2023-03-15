@@ -8,7 +8,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/font": "^13.0.0",
     "@tanstack/react-query": "^4.20.4",
     "@trpc/client": "^10.7.0",
     "@trpc/react-query": "^10.7.0",
@@ -26,6 +25,6 @@
     "eslint": "8.23.1",
     "eslint-config-next": "latest",
     "sass": "^1.58.0",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.5"
   }
 }

@@ -25,11 +25,11 @@ const MovieList: React.FC<{
   } = trpc.useContext();
   const { data: votingTokenData } = trpc.publicPoll.votingToken.useQuery(
     {
-      id: searchParams.get('vt') ?? '',
+      id: searchParams?.get('vt') ?? '',
       pollId,
     },
     {
-      enabled: searchParams.has('vt'),
+      enabled: searchParams?.has('vt') ?? false,
       refetchOnMount: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,

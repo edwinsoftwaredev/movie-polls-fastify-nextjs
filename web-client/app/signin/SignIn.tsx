@@ -1,4 +1,4 @@
-import { Voltaire } from '@next/font/google';
+import { Voltaire } from 'next/font/google';
 import React from 'react';
 import Card from 'src/components/Card';
 import { SignInWithGoogle } from './sign-in-with';

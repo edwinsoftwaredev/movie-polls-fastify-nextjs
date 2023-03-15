@@ -6,6 +6,17 @@ import trpc from 'src/trpc/server';
 import { InferQueryOutput } from 'trpc/client/utils';
 import styles from './Account.module.scss';
 import { DeleteAccountAction } from './ClientComponents';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({}): Promise<Metadata> {
+  const { csrfToken } = await trpc.query(
+    'session',
+    'getSession',
+    undefined,
+    headers()
+  );
+  return { title: 'Account', other: { 'csrf-token': csrfToken } };
+}
 
 const getData = async () => {
   const { whoami } = await trpc.query(

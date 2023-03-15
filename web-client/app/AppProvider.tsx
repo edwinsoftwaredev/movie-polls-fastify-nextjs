@@ -6,6 +6,8 @@ import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import trpc from 'src/trpc/client';
 import { getRoute } from 'src/trpc/routeHelper';
 
+// NOTE: Next.js caches pages and requests for 60 seconds.
+// sessionId cookie should be clear and then fetched.
 const SessionHandler: React.FC = () => {
   const { data: sessionData } = trpc.session.getSession.useQuery(undefined, {
     // TODO: update
@@ -16,8 +18,8 @@ const SessionHandler: React.FC = () => {
     sessionData &&
       document
         .getElementsByName('csrf-token')
-        .item(0)
-        .setAttribute('content', sessionData.csrfToken);
+        ?.item(0)
+        ?.setAttribute('content', sessionData.csrfToken);
   }, [sessionData?.csrfToken]);
 
   return null;

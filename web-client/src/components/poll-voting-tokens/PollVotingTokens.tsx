@@ -40,7 +40,7 @@ const VotingToken: React.FC<{
 
   useEffect(() => {
     setInviteData({
-      url: `${window.location.host}/polls/${votingToken.pollId}/vote?vt=${votingToken.id}`,
+      url: `/polls/${votingToken.pollId}/vote?vt=${votingToken.id}`,
       title: `${pollName} movie poll`,
       text: `${
         whoaimData?.whoami?.displayName || ''
@@ -72,7 +72,10 @@ const VotingToken: React.FC<{
           <Button
             type="button"
             onPointerDown={() => {
-              inviteData?.url && navigator.clipboard.writeText(inviteData.url);
+              inviteData?.url &&
+                navigator.clipboard.writeText(
+                  `${window.location.host}${inviteData.url}`
+                );
             }}
             title="Copy Invite Link"
           >

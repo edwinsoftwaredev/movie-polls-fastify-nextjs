@@ -1,7 +1,19 @@
+import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { AppTabs } from 'src/components/responsive-components';
 import DSelect from 'src/components/top-movies/DSelect';
+import trpc from 'src/trpc/server';
 import TopMovies from './TopMovies';
+
+export async function generateMetadata({}): Promise<Metadata> {
+  const { csrfToken } = await trpc.query(
+    'session',
+    'getSession',
+    undefined,
+    headers()
+  );
+  return { title: 'Popular Movies', other: { 'csrf-token': csrfToken } };
+}
 
 const d: Record<string, number> = {
   2020: 2020,

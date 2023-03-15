@@ -14,18 +14,11 @@ const accountRouter = router({
   }),
   logout: procedure.mutation(async ({ ctx }) => {
     const { req, res } = ctx;
+    res.clearCookie('sessionId');
+    
     return req.session
       .destroy()
-      .then(() => res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`));
-  }),
-  delete: procedure.mutation(async ({ ctx }) => {
-    const { fastify, req, res } = ctx;
-    const userSession = req.session.userSession!;
-
-    await fastify.account.user.deleteAccount(userSession);
-    await req.session.destroy();
-
-    return res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`);
+      .then(async () => res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`));
   }),
 });
 
