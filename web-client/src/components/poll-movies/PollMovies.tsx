@@ -28,7 +28,7 @@ const Movie: React.FC<{
     <div className={styles['movie']}>
       <Card
         header={{
-          backdropImage: <MovieBackdrop movie={movie} isBackdrop />,
+          backdropImage: <MovieBackdrop movie={movie} isBackdrop showHD />,
         }}
       >
         <div className={styles['backdrop-shadow']} />

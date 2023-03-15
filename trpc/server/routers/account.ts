@@ -14,11 +14,19 @@ const accountRouter = router({
   }),
   logout: procedure.mutation(async ({ ctx }) => {
     const { req, res } = ctx;
-    res.clearCookie('sessionId');
-    
-    return req.session
-      .destroy()
-      .then(async () => res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`));
+
+    return req.session.destroy().then(async () => {
+      const isDevEnv = process.env.NODE_ENV === 'development';
+      const domain = process.env.APP_DOMAIN || '';
+      res.clearCookie('sessionId', {
+        httpOnly: true,
+        secure: !isDevEnv,
+        sameSite: 'strict',
+        domain,
+      });
+
+      return res.redirect(`${process.env.WEB_CLIENT_ORIGIN}/`);
+    });
   }),
 });
 

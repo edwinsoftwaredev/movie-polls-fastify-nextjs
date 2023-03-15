@@ -20,7 +20,7 @@ const redisClient: FastifyPluginAsync<RedisClientPluginOptions> = async (
   const redisClient = new Redis({
     token,
     url,
-    agent: new https.Agent({ keepAlive: true })
+    agent: new https.Agent({ keepAlive: true }),
   });
 
   fastify.log.info('Redis client configured.');

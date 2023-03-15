@@ -42,9 +42,7 @@ const DSelect: React.FC<DSelectProps> = ({ d }) => {
         ]}
         defaultValue={d}
         onOptionClick={(option) => {
-          router.push(`/topmovies?d=${option}`, {
-            forceOptimisticNavigation: true,
-          });
+          router.replace(`/topmovies?d=${option}`);
         }}
       />
       <h2>Popular Movies</h2>

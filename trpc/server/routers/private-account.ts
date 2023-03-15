@@ -7,7 +7,15 @@ const privateAccountRouter = router({
 
     await fastify.account.user.deleteAccount(userSession);
     await req.session.destroy();
-    res.clearCookie('sessionId');
+
+    const isDevEnv = process.env.NODE_ENV === 'development';
+    const domain = process.env.APP_DOMAIN || '';
+    res.clearCookie('sessionId', {
+      httpOnly: true,
+      secure: !isDevEnv,
+      sameSite: 'strict',
+      domain,
+    });
 
     return;
   }),

@@ -158,25 +158,9 @@ const PollForm: React.FC<{
   const {
     poll: { votingTokens },
   } = trpc.useContext();
-  const { updatePoll, isSuccessUpdatePoll, isSuccessRemoveMovie } = usePolls(
-    {}
-  );
+  const { updatePoll } = usePolls({});
 
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    isSuccessUpdatePoll &&
-      startTransition(() => {
-        router.refresh();
-      });
-  }, [isSuccessUpdatePoll]);
-
-  useEffect(() => {
-    isSuccessRemoveMovie &&
-      startTransition(() => {
-        router.refresh();
-      });
-  }, [isSuccessRemoveMovie]);
 
   return (
     <>
@@ -190,6 +174,10 @@ const PollForm: React.FC<{
                 poll.isActive &&
                   !input.poll.isActive &&
                   votingTokens.refetch({ pollId: poll.id });
+
+                startTransition(() => {
+                  router.refresh();
+                });
               },
             });
           }}
@@ -198,7 +186,13 @@ const PollForm: React.FC<{
         <InactivePoll
           poll={poll}
           onUpdate={(p) => {
-            updatePoll(p);
+            updatePoll(p, {
+              onSuccess: () => {
+                startTransition(() => {
+                  router.refresh();
+                });
+              },
+            });
           }}
         />
       )}

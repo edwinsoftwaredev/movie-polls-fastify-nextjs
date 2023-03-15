@@ -39,7 +39,7 @@ const MovieBackdrop: React.FC<{
         ? poster_file_path
         : backdrop_file_path
     );
-  }, [isNarrowViewport, isPoster, isBackdrop]);
+  }, [isNarrowViewport, isPoster, isBackdrop, movie]);
 
   return (
     <div

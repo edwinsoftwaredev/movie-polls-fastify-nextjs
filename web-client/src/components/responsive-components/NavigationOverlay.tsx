@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import trpc from 'src/trpc/client';
 import Button from '../Button';
 import styles from './NavigationOverlay.module.scss';
 

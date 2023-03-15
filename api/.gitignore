@@ -16,3 +16,5 @@ node_modules
 # database data
 mysql-data
 .vercel
+
+dist
