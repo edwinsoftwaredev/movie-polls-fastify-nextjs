@@ -12,7 +12,7 @@
     "@trpc/client": "^10.7.0",
     "@trpc/react-query": "^10.7.0",
     "@trpc/server": "^10.7.0",
-    "next": "latest",
+    "next": "13.2.3",
     "react": "latest",
     "react-dom": "latest",
     "trpc": "1.0.0"

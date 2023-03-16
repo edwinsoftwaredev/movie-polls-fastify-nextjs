@@ -1,8 +1,19 @@
 import { TRPCClientError } from '@trpc/client';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import type { Metadata } from 'next';
 import trpc from 'src/trpc/server';
 import Vote from './Vote';
+
+export async function generateMetadata({}): Promise<Metadata> {
+  const { csrfToken } = await trpc.query(
+    'session',
+    'getSession',
+    undefined,
+    headers()
+  );
+  return { title: 'Poll', other: { 'csrf-token': csrfToken } };
+}
 
 export default async function Page({
   params,

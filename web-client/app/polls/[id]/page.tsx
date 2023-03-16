@@ -1,6 +1,6 @@
 import { TRPCClientError } from '@trpc/client';
-import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import type { Metadata } from 'next';
 import PollForm from 'src/components/poll-form/PollForm';
 import PollVotingTokens from 'src/components/poll-voting-tokens/PollVotingTokens';
 import trpc from 'src/trpc/server';

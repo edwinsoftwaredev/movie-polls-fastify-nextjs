@@ -23,20 +23,22 @@ const MovieList: React.FC<{
   const {
     publicPoll: { votingToken: votingTokenContext },
   } = trpc.useContext();
+  const { isSuccess: isFetchSessionSucces } = trpc.session.getSession.useQuery(
+    undefined,
+    {
+      enabled: false,
+    }
+  );
   const { data: votingTokenData } = trpc.publicPoll.votingToken.useQuery(
     {
       id: searchParams?.get('vt') ?? '',
       pollId,
     },
     {
-      enabled: searchParams?.has('vt') ?? false,
+      enabled: (searchParams?.has('vt') && isFetchSessionSucces) ?? false,
       refetchOnMount: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
-      retry: true,
-      retryDelay(failureCount, error) {
-        return 5;
-      },
     }
   );
   const { mutate: mutateVote, isSuccess: isSuccessVote } =
