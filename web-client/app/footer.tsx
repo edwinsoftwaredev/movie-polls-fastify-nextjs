@@ -41,7 +41,7 @@ export default function Footer() {
         <article style={{ textAlign: 'center' }}>
           <p>
             <span style={{ verticalAlign: 'middle' }}>
-              Powered by <TMBDLogo width="7.25em" />
+              <TMBDLogo width="7.25em" />
             </span>
           </p>
           <p>

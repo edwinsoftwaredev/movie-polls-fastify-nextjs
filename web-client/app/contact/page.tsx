@@ -1,4 +1,4 @@
-import style from './Contact.module.scss';
+import styles from './Contact.module.scss';
 
 export const metadata = {
   title: 'Contact',
@@ -6,8 +6,16 @@ export const metadata = {
 
 export default async function Page() {
   return (
-    <div className={style['main']}>
-      <span>Contact</span>
-    </div>
+    <article className={styles['contact']}>
+      <h2>Contact</h2>
+      <section>
+        <div className={styles['content']}>
+          <span className={styles['emoji']}>&#128075;</span>
+          <a target={'_blank'} href="https://github.com/edwinsoftwaredev">
+            https://github.com/edwinsoftwaredev
+          </a>
+        </div>
+      </section>
+    </article>
   );
 }
