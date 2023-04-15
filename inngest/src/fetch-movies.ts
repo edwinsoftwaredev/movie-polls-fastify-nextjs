@@ -1,8 +1,8 @@
-'use strict';
-const { Redis } = require('@upstash/redis/with-fetch');
-const https = require('https');
-const axios = require('axios');
-const dopplerSecrets = require('./doppler-secrets');
+import https from 'https';
+import axios from 'axios';
+import getSecrets from './doppler-secrets';
+import { Genre, Movie } from '../types';
+import { Redis } from '@upstash/redis';
 
 const moviesType = {
   TopPopularMovies: 'TopPopularMovies',
@@ -11,11 +11,23 @@ const moviesType = {
   TrendingMoviesByGenre: 'TrendingMoviesByGenre',
 };
 
-let genres = undefined;
-const fetchedMovies = {};
+let genres: Array<Genre> = [];
+const fetchedMovies: Record<
+  string,
+  Omit<Partial<Movie>, 'images' | 'credits'> & {
+    images: {
+      backdrops: Array<Movie['images']['backdrops']['0']>;
+      posters: Array<Movie['images']['posters']['0']>;
+    };
+    credits: {
+      cast: Array<{ name: string }>;
+      crew: Array<{ name: string; job: string }>;
+    };
+  }
+> = {};
 
-const fetchGenres = async (tmdbUrl, tmdbKey) => {
-  if (genres) return Promise.resolve(genres);
+const fetchGenres = async (tmdbUrl: string, tmdbKey: string) => {
+  if (genres.length) return Promise.resolve(genres);
 
   const params = new URLSearchParams();
   params.append('api_key', tmdbKey);
@@ -30,7 +42,11 @@ const fetchGenres = async (tmdbUrl, tmdbKey) => {
     });
 };
 
-const fetchMovieDetails = async (tmdbUrl, tmdbKey, movieId) => {
+const fetchMovieDetails = async (
+  tmdbUrl: string,
+  tmdbKey: string,
+  movieId: number
+) => {
   if (fetchedMovies[`${movieId}`]) return fetchedMovies[`${movieId}`];
 
   const params = new URLSearchParams();
@@ -40,7 +56,7 @@ const fetchMovieDetails = async (tmdbUrl, tmdbKey, movieId) => {
   params.append('include_image_language', 'en,null');
 
   const details = await axios
-    .get(`${tmdbUrl}/movie/${movieId}?${params.toString()}`)
+    .get<Movie>(`${tmdbUrl}/movie/${movieId}?${params.toString()}`)
     .then((res) => res.data)
     .then((data) => {
       // filtering properties.
@@ -97,42 +113,64 @@ const fetchMovieDetails = async (tmdbUrl, tmdbKey, movieId) => {
   return details;
 };
 
-const fetchMoviesDetails = async (tmdbUrl, tmdbKey, movies) =>
-  movies.reduce(async (prevPromise, movie) => {
-    const prev = await prevPromise;
+const fetchMoviesDetails = async (
+  tmdbUrl: string,
+  tmdbKey: string,
+  movies: Array<Movie>
+) =>
+  movies.reduce(
+    async (prevPromise, movie: Movie) => {
+      const prev = await prevPromise;
 
-    const {
-      adult,
-      overview,
-      release_date,
-      id,
-      original_title,
-      original_language,
-      title,
-      vote_average,
-    } = movie;
+      const {
+        adult,
+        overview,
+        release_date,
+        id,
+        original_title,
+        original_language,
+        title,
+        vote_average,
+        vote_count,
+      } = movie;
 
-    const details = await fetchMovieDetails(tmdbUrl, tmdbKey, movie.id);
+      const details = await fetchMovieDetails(tmdbUrl, tmdbKey, movie.id);
 
-    if (!details.images.backdrops.length || !details.images.posters.length)
+      if (!details.images.backdrops.length || !details.images.posters.length)
+        return prev;
+
+      prev.push({
+        adult,
+        overview,
+        release_date,
+        id,
+        original_title,
+        original_language,
+        title,
+        vote_average,
+        vote_count,
+        ...details,
+      });
+
       return prev;
+    },
+    Promise.resolve<
+      Array<
+        {
+          adult: boolean;
+          overview: string;
+          release_date: string;
+          original_title: string;
+          original_language: string;
+          title: string;
+          vote_average: number;
+          vote_count: number;
+        } & Awaited<ReturnType<typeof fetchMovieDetails>>
+      >
+    >([])
+  );
 
-    prev.push({
-      adult,
-      overview,
-      release_date,
-      id,
-      original_title,
-      original_language,
-      title,
-      vote_average,
-      ...details,
-    });
-
-    return prev;
-  }, Promise.resolve([]));
-
-const fetchTopPopularMovies = async (tmdbUrl, tmdbKey) => {
+const fetchTopPopularMovies = async (tmdbUrl: string, tmdbKey: string) => {
   const now = new Date(Date.now());
   const fromDate = new Date(now.setFullYear(now.getFullYear() - 1));
 
@@ -147,11 +185,13 @@ const fetchTopPopularMovies = async (tmdbUrl, tmdbKey) => {
     fromDate.toISOString().split('T')[0]
   );
   params.append('vote_average.gte', '7');
-  params.append('vote_count.gte', 1000);
-  params.append('include_adult', false);
+  params.append('vote_count.gte', '1000');
+  params.append('include_adult', 'false');
 
   const res = await axios
-    .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
+    .get<{ results: Array<Movie> }>(
+      `${tmdbUrl}/discover/movie?${params.toString()}`
+    )
     .then((res) => res.data)
     .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results));
 
@@ -163,7 +203,7 @@ const fetchTopPopularMovies = async (tmdbUrl, tmdbKey) => {
   return movies;
 };
 
-const fetchTopTrendingMovies = async (tmdbUrl, tmdbKey) => {
+const fetchTopTrendingMovies = async (tmdbUrl: string, tmdbKey: string) => {
   const now = new Date(Date.now());
   const fromDate = new Date(now.setFullYear(now.getFullYear() - 1));
 
@@ -173,17 +213,19 @@ const fetchTopTrendingMovies = async (tmdbUrl, tmdbKey) => {
   params.append('api_key', tmdbKey);
   params.append('language', 'en-US');
   params.append('sort_by', 'primary_release_date.desc');
-  params.append('page', 1);
+  params.append('page', '1');
   params.append(
     'primary_release_date.gte',
     fromDate.toISOString().split('T')[0]
   );
-  params.append('vote_average.gte', 7);
-  params.append('vote_count.gte', 50);
-  params.append('include_adult', false);
+  params.append('vote_average.gte', '7');
+  params.append('vote_count.gte', '50');
+  params.append('include_adult', 'false');
 
   const res = await axios
-    .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
+    .get<{ results: Array<Movie> }>(
+      `${tmdbUrl}/discover/movie?${params.toString()}`
+    )
     .then((res) => res.data)
     .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results));
 
@@ -195,30 +237,32 @@ const fetchTopTrendingMovies = async (tmdbUrl, tmdbKey) => {
   return movies;
 };
 
-const fetchNowPlayingMovies = async (tmdbUrl, tmdbKey) => {
+const fetchNowPlayingMovies = async (tmdbUrl: string, tmdbKey: string) => {
   // Now Playing movies params
   const params = new URLSearchParams();
   params.append('api_key', tmdbKey);
   params.append('language', 'en-US');
   params.append('sort_by', 'primary_release_date.desc');
-  params.append('page', 1);
+  params.append('page', '1');
   params.append(
     'primary_release_date.lte',
     new Date().toISOString().split('T')[0]
   );
-  params.append('vote_average.gte', 1);
-  params.append('vote_count.gte', 50);
-  params.append('include_adult', false);
+  params.append('vote_average.gte', '1');
+  params.append('vote_count.gte', '50');
+  params.append('include_adult', 'false');
 
   const movies = await axios
-    .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
+    .get<{ results: Array<Movie> }>(
+      `${tmdbUrl}/discover/movie?${params.toString()}`
+    )
     .then((res) => res.data)
     .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results));
 
   return movies;
 };
 
-const fetchTrendingMoviesByGenre = (tmdbUrl, tmdbKey) => {
+const fetchTrendingMoviesByGenre = (tmdbUrl: string, tmdbKey: string) => {
   const now = new Date(Date.now());
   const fromDate = new Date(now.setFullYear(now.getFullYear() - 1));
 
@@ -226,37 +270,50 @@ const fetchTrendingMoviesByGenre = (tmdbUrl, tmdbKey) => {
   params.append('api_key', tmdbKey);
   params.append('language', 'en-US');
   params.append('sort_by', 'popularity.desc');
-  params.append('page', 1);
+  params.append('page', '1');
   params.append(
     'primary_release_date.gte',
     fromDate.toISOString().split('T')[0]
   );
-  params.append('vote_average.gte', 1);
-  params.append('vote_count.gte', 50);
-  params.append('include_adult', false);
+  params.append('vote_average.gte', '1');
+  params.append('vote_count.gte', '50');
+  params.append('include_adult', 'false');
 
   return genres
     ?.filter((genre) => genre.name !== 'Documentary')
-    .map((genre) => {
+    .map(async (genre) => {
       params.set('with_genres', `${genre.id}`);
-      return axios
-        .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
-        .then((res) => res.data)
-        .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results))
-        .then((movies) => {
-          // Adds genre name for the currernt genre
-          const result = {
-            genre_name: genres.find((item) => item.id === genre.id)?.name ?? '',
-            results: movies,
-          };
-
-          return result;
-        })
-        .catch((_) => ({}));
-    });
+      try {
+        const res = await axios.get<{ results: Array<Movie> }>(
+          `${tmdbUrl}/discover/movie?${params.toString()}`
+        );
+        const res_1 = res.data;
+        const movies = await fetchMoviesDetails(
+          tmdbUrl,
+          tmdbKey,
+          res_1.results
+        );
+        // Adds genre name for the currernt genre
+        const result_1 = {
+          genre_name: genres.find((item) => item.id === genre.id)?.name ?? '',
+          results: movies,
+        };
+        return result_1;
+      } catch (_err) {
+        return null;
+      }
+    }) as Array<
+    Promise<{
+      genre_name: string;
+      results: Awaited<ReturnType<typeof fetchMoviesDetails>>;
+    } | null>
+  >;
 };
 
-const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
+const fetchPopularMoviesByGenreAndDecade = (
+  tmdbUrl: string,
+  tmdbKey: string
+) => {
   const initDecade = Number.parseInt(`${new Date().getFullYear() / 10}`) * 10;
   let currentDecade = initDecade - 5 * 10;
 
@@ -264,11 +321,14 @@ const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
   params.append('api_key', tmdbKey);
   params.append('language', 'en-US');
   params.append('sort_by', 'vote_average.desc');
-  params.append('page', 1);
-  params.append('vote_count.gte', 500);
-  params.append('include_adult', false);
+  params.append('page', '1');
+  params.append('vote_count.gte', '500');
+  params.append('include_adult', 'false');
 
-  const resultArr = [];
+  const resultArr: Array<{
+    decade: number;
+    moviesByGenrePromise: Promise<Array<any>>;
+  }> = [];
 
   while (currentDecade <= initDecade) {
     params.set('primary_release_date.gte', `${currentDecade}-01-01`);
@@ -279,26 +339,45 @@ const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
       moviesByGenrePromise: Promise.allSettled(
         genres
           ?.filter((genre) => genre.name !== 'Documentary')
-          .map((genre) => {
+          .map(async (genre) => {
             params.set('with_genres', `${genre.id}`);
 
-            return axios
-              .get(`${tmdbUrl}/discover/movie?${params.toString()}`)
-              .then((res) => res.data)
-              .then((res) => fetchMoviesDetails(tmdbUrl, tmdbKey, res.results))
-              .then((movies) => {
-                // Adds genre name for the currernt genre
-                const result = {
-                  genre_name:
-                    genres.find((item) => item.id === genre.id)?.name ?? '',
-                  results: movies,
-                };
-
-                return result;
-              })
-              .catch(() => ({}));
+            try {
+              const res = await axios.get<{ results: Array<Movie> }>(
+                `${tmdbUrl}/discover/movie?${params.toString()}`
+              );
+              const res_1 = res.data;
+              const movies = await fetchMoviesDetails(
+                tmdbUrl,
+                tmdbKey,
+                res_1.results
+              );
+              // Adds genre name for the currernt genre
+              const result_1 = {
+                genre_name:
+                  genres.find((item) => item.id === genre.id)?.name ?? '',
+                results: movies,
+              };
+              return result_1;
+            } catch {
+              return null;
+            }
           }) ?? []
-      ).then((values) => values.map((res) => res.value ?? {})),
+      ).then(
+        (
+          values: Array<
+            PromiseSettledResult<{
+              genre_name: string;
+              results: Awaited<ReturnType<typeof fetchMoviesDetails>>;
+            } | null>
+          >
+        ) =>
+          values.reduce((prev, curr) => {
+            if (curr.status === 'fulfilled' && curr.value)
+              prev.push(curr.value);
+            return prev;
+          }, [] as Array<{ genre_name: string; results: Awaited<ReturnType<typeof fetchMoviesDetails>> }>)
+      ),
     });
 
     currentDecade += 10;
@@ -308,7 +387,7 @@ const fetchPopularMoviesByGenreAndDecade = (tmdbUrl, tmdbKey) => {
 };
 
 const fetchMovies = async () => {
-  const secrets = await dopplerSecrets.getSecrets();
+  const secrets = await getSecrets();
 
   const {
     UPSTASH_REDIS_REST_URL,
@@ -332,7 +411,10 @@ const fetchMovies = async () => {
 
   const p1 = Promise.all(fetchTrendingMoviesByGenre(tmdbUrl, tmdbKey)).then(
     (movies) => {
-      return redis.set(moviesType.TrendingMoviesByGenre, movies);
+      return redis.set(
+        moviesType.TrendingMoviesByGenre,
+        movies.filter((item) => item)
+      );
     }
   );
 
@@ -362,7 +444,7 @@ const fetchMovies = async () => {
           JSON.stringify({
             [index]: {
               status: result.status,
-              reason: result.reason,
+              reason: result.status === 'rejected' ? result.reason : undefined,
             },
           })
         )
@@ -372,4 +454,4 @@ const fetchMovies = async () => {
   return status;
 };
 
-module.exports = fetchMovies;
+export default fetchMovies;

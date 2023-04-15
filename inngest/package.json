@@ -1,0 +1,23 @@
+{
+  "name": "inngest",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@upstash/redis": "1.19.3",
+    "axios": "^1.3.5",
+    "firebase-functions": "latest",
+    "inngest": "^1.6.0",
+    "next": "^13.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "eslint": "^8.38.0",
+    "eslint-config-next": "latest",
+    "typescript": "^5.0.4"
+  }
+}

@@ -3,29 +3,19 @@
 // https://nextjs.org/docs/advanced-features/security-headers
 // https://helmetjs.github.io/
 
-const apiURL = process.env.NEXT_PUBLIC_API_HOST_URL || '';
-// https://cloud.google.com/identity-platform/docs/web/chrome-extension
-const googleURLs = 'https://accounts.google.com';
-
-const googleFontsURL = 'https://fonts.googleapis.com https://fonts.gstatic.com';
-
-const vercelInsights = 'https://vitals.vercel-insights.com';
-
-const TMDBImagesUrl = 'https://image.tmdb.org';
-
 // TODO: review headers in prod
 const ContentSecurityPolicy = `
   base-uri 'self';
   default-src 'self';
-  script-src 'self' ${googleURLs} 'unsafe-eval' 'unsafe-inline';
-  connect-src 'self' ${apiURL} ${vercelInsights};
+  script-src 'self';
+  connect-src 'self';
   child-src 'self';
-  frame-src 'self' ${googleURLs};
+  frame-src 'self';
   frame-ancestors 'self';
-  style-src 'self' ${googleURLs} ${googleFontsURL} 'unsafe-inline';
-  font-src 'self' ${googleFontsURL};
-  img-src 'self' ${TMDBImagesUrl} data:;
-  form-action 'self' ${apiURL};
+  style-src 'self';
+  font-src 'self';
+  img-src 'self';
+  form-action 'self';
   object-src 'none';
   script-src-attr 'none';
   upgrade-insecure-requests 
@@ -68,17 +58,7 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
   swcMinify: true,
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    config.module.rules.push({
-      test: /\.svg$/,
-      issuer: /\.[jt]sx?$/,
-      resourceQuery: { not: [/url/] },
-      use: ['@svgr/webpack'],
-    });
-    return config;
-  },
   async headers() {
     return [
       {
@@ -86,23 +66,6 @@ const nextConfig = {
         headers: securityHeaders,
       },
     ];
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'image.tmdb.org',
-        pathname: '/t/p/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        pathname: '**',
-      },
-    ],
-  },
-  experimental: {
-    appDir: true,
   },
 };
 

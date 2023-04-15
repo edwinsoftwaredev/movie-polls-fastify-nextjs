@@ -1,7 +1,6 @@
-import JustWatchLogo from 'public/justwatch-logos/justwatch-logo.svg';
 import { useMovieDetails } from 'hooks';
 import styles from './AvailableOn.module.scss';
-import TMBDLogo from 'public/tmdb-logos/blue_square.svg';
+import { JustWatchLogo, TMBDLogo } from 'src/components/logos';
 
 const skeletonItems = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -81,7 +80,7 @@ const AvailableOn: React.FC<StreamingOnProps> = ({ providers, movieTitle }) => {
               e.stopPropagation();
             }}
           >
-            <TMBDLogo width="2.2em" />
+            <TMBDLogo width="6.5em" />
           </a>
         </span>
         <span>

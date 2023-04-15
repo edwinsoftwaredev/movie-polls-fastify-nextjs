@@ -1,10 +1,11 @@
 import React from 'react';
-import TMBDLogo from 'public/tmdb-logos/blue_short.svg';
 import Link from 'next/link';
 import style from './footer.module.scss';
 import { Voltaire } from 'next/font/google';
+import { TMBDLogo } from 'src/components/logos';
 
 const voltaire = Voltaire({
+  subsets: ['latin'],
   weight: '400',
 });
 

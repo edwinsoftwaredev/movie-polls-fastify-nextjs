@@ -3,10 +3,11 @@ import { getRoute } from './routeHelper';
 import { createTRPCProxyClient, httpLink } from '@trpc/client';
 import { cache } from 'react';
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 
 // NOTE: The expected headers are the headers
 // in the nextjs request object.
-export const createTRPCClient = (headers: Headers | undefined) =>
+export const createTRPCClient = (headers: ReadonlyHeaders | undefined) =>
   createTRPCProxyClient<AppRouter>({
     links: [
       httpLink({
@@ -46,7 +47,7 @@ const trpc = {
       routerKey: RouterKey,
       procKey: ProcKey,
       procInput: ProcInput,
-      headers?: Headers | undefined
+      headers?: ReadonlyHeaders | undefined
     ): Promise<inferRouterOutputs<AppRouter[RouterKey]>[ProcKey]> => {
       const trpcClient = createTRPCClient(headers);
       return (trpcClient as any)[routerKey][procKey].query(procInput);

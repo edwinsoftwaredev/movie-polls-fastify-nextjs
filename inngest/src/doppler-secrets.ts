@@ -1,6 +1,8 @@
-const axios = require('axios');
+import axios from 'axios';
 
-module.exports.getSecrets = async () => {
+const getSecrets = async () => {
   const response = await axios.get(`${process.env.DOPPLER_URL}`);
   return response.data;
 };
+
+export default getSecrets;

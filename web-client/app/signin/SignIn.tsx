@@ -5,6 +5,7 @@ import { SignInWithGoogle } from './sign-in-with';
 import styles from './SignIn.module.scss';
 
 const voltaire = Voltaire({
+  subsets: ['latin'],
   weight: '400',
 });
 

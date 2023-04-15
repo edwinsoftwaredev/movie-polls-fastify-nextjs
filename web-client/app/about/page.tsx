@@ -1,13 +1,13 @@
 import { Voltaire } from 'next/font/google';
 import styles from './About.module.scss';
-import TMBDLogo from 'public/tmdb-logos/blue_short.svg';
-import JustWatchLogo from 'public/justwatch-logos/justwatch-logo.svg';
+import { JustWatchLogo, TMBDLogo } from 'src/components/logos';
 
 export const metadata = {
   title: 'About',
 };
 
 const voltaire = Voltaire({
+  subsets: ['latin'],
   weight: '400',
 });
 

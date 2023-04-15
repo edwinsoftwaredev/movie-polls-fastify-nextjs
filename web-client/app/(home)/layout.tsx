@@ -54,7 +54,7 @@ async function TrendingSlider() {
 
   return (
     <>
-      <Slider title="Popular Movies">
+      <Slider title="Trending Movies">
         <Suspense fallback={<SlideSkeleton slideSize={4} />}>
           {/* @ts-expect-error Server Component */}
           <SlideItems items={trending} slideSize={4} />
@@ -73,7 +73,7 @@ async function NowPlayingSlider() {
 
   return (
     <>
-      <Slider title="Popular Movies">
+      <Slider title="Now Playing">
         <Suspense fallback={<SlideSkeleton slideSize={5} />}>
           {/* @ts-expect-error Server Component */}
           <SlideItems items={nowPlaying} slideSize={5} />

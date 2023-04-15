@@ -6,6 +6,7 @@ import trpc from 'src/trpc/server';
 import { NavigationOverlay } from 'src/components/responsive-components';
 
 const voltaire = Voltaire({
+  subsets: ['latin'],
   weight: '400',
 });
 

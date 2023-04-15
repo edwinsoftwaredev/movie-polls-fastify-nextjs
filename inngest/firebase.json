@@ -1,0 +1,18 @@
+{
+  "hosting": {
+    "source": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      ".env.local",
+      ".vercel",
+      ".yarn/*",
+      "*.pem",
+      "*.tsbuildinfo"
+    ],
+    "frameworksBackend": {
+      "region": "us-east1"
+    }
+  }
+}

@@ -9,22 +9,22 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.20.4",
-    "@trpc/client": "^10.7.0",
-    "@trpc/react-query": "^10.7.0",
-    "@trpc/server": "^10.7.0",
-    "next": "13.2.3",
-    "react": "latest",
-    "react-dom": "latest",
+    "@trpc/client": "^10.20.0",
+    "@trpc/react-query": "^10.20.0",
+    "@trpc/server": "^10.20.0",
+    "next": "^13.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "trpc": "1.0.0"
   },
   "devDependencies": {
-    "@svgr/webpack": "^6.5.1",
-    "@types/node": "^18.15.3",
-    "@types/react": "^18.0.28",
+    "@svgr/webpack": "^7.0.0",
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.34",
     "@types/react-dom": "^18.0.11",
-    "eslint": "^8.36.0",
-    "eslint-config-next": "latest",
-    "sass": "^1.59.3",
-    "typescript": "^4.9.5"
+    "eslint": "^8.38.0",
+    "eslint-config-next": "^13.3.0",
+    "sass": "^1.62.0",
+    "typescript": "^5.0.4"
   }
 }
