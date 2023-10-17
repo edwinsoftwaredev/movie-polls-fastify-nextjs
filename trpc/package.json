@@ -5,12 +5,12 @@
     "generate": "prisma generate --schema ../prisma/schema.prisma"
   },
   "devDependencies": {
-    "typescript": "^5.0.4"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@prisma/client": "^4.12.0",
-    "@trpc/client": "^10.20.0",
-    "@trpc/server": "^10.20.0",
-    "zod": "^3.21.4"
+    "@prisma/client": "^5.4.2",
+    "@trpc/client": "^10.40.0",
+    "@trpc/server": "^10.40.0",
+    "zod": "^3.22.4"
   }
 }
