@@ -9,6 +9,9 @@ import SlideSkeleton from 'src/components/SlideSkeleton';
 import Slide from 'src/components/Slide';
 import { InferQueryOutput } from 'trpc/client/utils';
 
+export const revalidate = 3600;
+export const fetchCache = 'force-cache';
+
 async function SlideItems({
   items,
   slideSize,
@@ -37,7 +40,6 @@ async function PopularSlider() {
     <>
       <Slider title="Popular Movies">
         <Suspense fallback={<SlideSkeleton slideSize={3} />}>
-          {/* @ts-expect-error Server Component */}
           <SlideItems items={popular} slideSize={3} />
         </Suspense>
       </Slider>
@@ -56,7 +58,6 @@ async function TrendingSlider() {
     <>
       <Slider title="Trending Movies">
         <Suspense fallback={<SlideSkeleton slideSize={4} />}>
-          {/* @ts-expect-error Server Component */}
           <SlideItems items={trending} slideSize={4} />
         </Suspense>
       </Slider>
@@ -75,7 +76,6 @@ async function NowPlayingSlider() {
     <>
       <Slider title="Now Playing">
         <Suspense fallback={<SlideSkeleton slideSize={5} />}>
-          {/* @ts-expect-error Server Component */}
           <SlideItems items={nowPlaying} slideSize={5} />
         </Suspense>
       </Slider>
@@ -97,7 +97,6 @@ export default async function HomeLayout({
       <section className="slider-container">
         {/** slider */}
         <section>
-          {/* @ts-expect-error Server Component */}
           <PopularSlider />
         </section>
       </section>
@@ -106,7 +105,6 @@ export default async function HomeLayout({
       <section className="slider-container">
         {/** slider */}
         <section>
-          {/* @ts-expect-error Server Component */}
           <TrendingSlider />
         </section>
       </section>
@@ -115,7 +113,6 @@ export default async function HomeLayout({
       <section className="slider-container">
         {/** slider */}
         <section>
-          {/* @ts-expect-error Server Component */}
           <NowPlayingSlider />
         </section>
       </section>

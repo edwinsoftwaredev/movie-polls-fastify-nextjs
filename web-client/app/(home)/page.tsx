@@ -39,7 +39,6 @@ export default async function Page() {
     <>
       {isAuthenticated ? (
         <section className="slider-container">
-          {/* @ts-expect-error Server Component */}
           <ActivePolls />
         </section>
       ) : null}

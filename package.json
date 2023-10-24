@@ -18,7 +18,7 @@
     "inngest": "yarn workspace inngest"
   },
   "devDependencies": {
-    "prisma": "^4.11.0"
+    "prisma": "latest"
   },
   "packageManager": "yarn@3.6.4"
 }

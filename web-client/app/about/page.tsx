@@ -2,6 +2,8 @@ import { Voltaire } from 'next/font/google';
 import styles from './About.module.scss';
 import { JustWatchLogo, TMBDLogo } from 'src/components/logos';
 
+export const dynamic = 'force-static';
+
 export const metadata = {
   title: 'About',
 };

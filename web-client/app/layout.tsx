@@ -2,8 +2,9 @@ import 'styles/globals.scss';
 import AppProvider from './AppProvider';
 import Footer from './footer';
 import Header from './header';
+import type { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: 'Movie Polls',
     template: '%s | Movie Polls',
@@ -57,7 +58,6 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <body>
         <AppProvider>
-          {/* @ts-expect-error Server Component */}
           <Header />
           <main id="app-main">{children}</main>
           <Footer />

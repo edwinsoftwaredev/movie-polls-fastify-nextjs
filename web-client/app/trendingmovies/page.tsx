@@ -5,6 +5,9 @@ import { headers } from 'next/headers';
 import trpc from 'src/trpc/server';
 import type { Metadata } from 'next';
 
+export const revalidate = 3600;
+export const fetchCache = 'force-cache';
+
 export async function generateMetadata({}): Promise<Metadata> {
   const { csrfToken } = await trpc.query(
     'session',
@@ -28,7 +31,6 @@ export default async function Page() {
 
         {/** slider*/}
         <section>
-          {/* @ts-expect-error Server Component */}
           <TrendingMovies />
         </section>
       </section>

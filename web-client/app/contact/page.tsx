@@ -1,5 +1,7 @@
 import styles from './Contact.module.scss';
 
+export const dynamic = 'force-static';
+
 export const metadata = {
   title: 'Contact',
 };

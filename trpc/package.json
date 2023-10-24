@@ -8,7 +8,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@prisma/client": "^5.4.2",
+    "@prisma/client": "latest",
     "@trpc/client": "^10.40.0",
     "@trpc/server": "^10.40.0",
     "zod": "^3.22.4"

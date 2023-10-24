@@ -68,8 +68,6 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.module.rules.push({
       test: /\.svg$/,
@@ -100,9 +98,6 @@ const nextConfig = {
         pathname: '**',
       },
     ],
-  },
-  experimental: {
-    appDir: true,
   },
 };
 

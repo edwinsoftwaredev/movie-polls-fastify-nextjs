@@ -42,7 +42,6 @@ export default async function TrendingMovies() {
         <div key={genre.genre_name} className="slider-container">
           <Slider title={genre.genre_name}>
             <Suspense fallback={<SlideSkeleton slideSize={5} />}>
-              {/* @ts-expect-error Server Component */}
               <SlideItems items={genre.results} />
             </Suspense>
           </Slider>
