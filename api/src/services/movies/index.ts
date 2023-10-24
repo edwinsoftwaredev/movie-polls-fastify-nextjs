@@ -6,6 +6,7 @@ import routes from './plugins/routes';
 const movies: FastifyPluginAsync = async (fastify) => {
   // visit: https://github.com/upstash/ratelimit
   fastify.decorate('movies', {
+    ...fastify.movies,
     search: searchMovies(fastify),
   });
 

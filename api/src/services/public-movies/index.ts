@@ -2,11 +2,9 @@ import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import publicRoutes from './plugins/public-routes';
 import {
-  nowPlaying,
-  popular,
-  popularByDecadeAndGenre,
-  trending,
-  trendingByGenre,
+  homeMoviesVM,
+  trendingByGenreVM,
+  popularByDecadeAndGenreVM,
 } from './decorators/cached-movies';
 import { movieDetails } from './decorators/movie-details';
 import { movieProviders } from './decorators/movie-providers';
@@ -16,11 +14,10 @@ export interface MoviesPluginOptions extends FastifyPluginOptions {}
 
 const movies: FastifyPluginAsync<MoviesPluginOptions> = async (fastify) => {
   fastify.decorate('movies', {
-    nowPlaying,
-    popular,
-    trending,
-    trendingByGenre,
-    popularByDecadeAndGenre,
+    ...fastify.movies,
+    homeMoviesVM: homeMoviesVM(fastify),
+    trendingByGenreVM: trendingByGenreVM(fastify),
+    popularByDecadeAndGenreVM: popularByDecadeAndGenreVM(fastify),
     movieDetails,
     movieProviders,
     movie,

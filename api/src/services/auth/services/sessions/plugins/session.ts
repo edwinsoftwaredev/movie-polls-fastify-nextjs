@@ -67,8 +67,8 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
           });
       },
       set(sessionId, session, callback) {
-        const isSSR = session.get('isSSR') ?? false;
-        const hasSessionId = session.get('hasSessionId') ?? false;
+        const isSSR = session.isSSR ?? false;
+        const hasSessionId = session.hasSessionId ?? false;
         // If SSR and sessionId is not provided in the request,
         // the session is not created.
         // NOTE: While this validation will prevent saving a new session
@@ -82,7 +82,7 @@ const session: FastifyPluginAsync<SessionPluginOptions> = async (
         }
 
         const { userSession } = session;
-        const csrfSecret = session.get<string>('_csrf') || '';
+        const csrfSecret = session._csrf ?? '';
 
         fastify.log.info('Session upsert...');
         fastify.redisClient

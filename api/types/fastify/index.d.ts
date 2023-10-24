@@ -13,6 +13,9 @@ import type {
   Movie,
   MovieDetails,
   MovieProviders,
+  HomeMoviesVM,
+  TrendingByGenreVM,
+  PopularByDecadeAndGenreVM,
 } from '../../src/services/public-movies/decorators';
 
 import type { SearchMovies } from '../../src/services/movies/decorators';
@@ -37,11 +40,6 @@ import type {
   UpdateVotingToken,
 } from '../../src/services/poll/decorators';
 
-import {
-  Movie as MovieType,
-  MoviesByGenre,
-} from '../../src/services/public-movies/types';
-
 // Importing these type declaration allows the LSP to
 // provide methods and properties from them.
 // (type/module/global module augmentation)
@@ -54,7 +52,6 @@ import {
 import type * as FastifySession from '@fastify/session';
 import type * as FastifyCsrf from '@fastify/csrf-protection';
 import type * as Fastify from 'fastify';
-import { Pipeline } from '@upstash/redis/types/pkg/pipeline';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -72,14 +69,9 @@ declare module 'fastify' {
     };
 
     movies: {
-      nowPlaying: (redisPipeline: Pipeline) => Array<MovieType>;
-      popular: (redisPipeline: Pipeline) => Array<MovieType>;
-      trending: (redisPipeline: Pipeline) => Array<MovieType>;
-      trendingByGenre: (redisPipeline: Pipeline) => Array<MoviesByGenre>;
-      popularByDecadeAndGenre: (
-        redisPipeline: Pipeline,
-        decade: number
-      ) => Array<MoviesByGenre>;
+      homeMoviesVM: HomeMoviesVM;
+      trendingByGenreVM: TrendingByGenreVM;
+      popularByDecadeAndGenreVM: PopularByDecadeAndGenreVM;
       search: SearchMovies;
       movie: Movie;
       movieDetails: MovieDetails;
@@ -109,6 +101,9 @@ declare module 'fastify' {
   }
 
   interface Session {
+    isSSR?: boolean;
+    hasSessionId?: boolean;
+    _csrf?: string;
     userSession?: UserSession | null;
     verifyGoogleIdToken: (idToken: string) => Promise<LoginTicket>;
   }
