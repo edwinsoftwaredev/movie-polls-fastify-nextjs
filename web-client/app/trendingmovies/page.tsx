@@ -5,8 +5,8 @@ import { headers } from 'next/headers';
 import trpc from 'src/trpc/server';
 import type { Metadata } from 'next';
 
-export const revalidate = 3600;
-export const fetchCache = 'force-cache';
+// export const revalidate = 3600;
+// export const fetchCache = 'force-cache';
 
 export async function generateMetadata({}): Promise<Metadata> {
   const { csrfToken } = await trpc.query(

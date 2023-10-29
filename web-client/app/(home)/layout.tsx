@@ -9,8 +9,8 @@ import SlideSkeleton from 'src/components/SlideSkeleton';
 import Slide from 'src/components/Slide';
 import { InferQueryOutput } from 'trpc/client/utils';
 
-export const revalidate = 3600;
-export const fetchCache = 'force-cache';
+// export const revalidate = 3600;
+// export const fetchCache = 'force-cache';
 
 async function SlideItems({
   items,

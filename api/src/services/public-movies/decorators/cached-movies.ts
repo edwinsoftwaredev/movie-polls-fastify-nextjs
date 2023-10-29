@@ -23,13 +23,13 @@ export const trending = (redisPipeline: Pipeline) => {
 
 export const trendingByGenre = (redisPipeline: Pipeline) => {
   return redisPipeline.get<Array<MoviesByGenre>>(
-    CachedMoviesKeys.TrendingMoviesByGenre,
+    CachedMoviesKeys.TrendingMoviesByGenre
   );
 };
 
 export const popularByDecadeAndGenre = (
   redisPipeline: Pipeline,
-  decade: number,
+  decade: number
 ) => {
   return redisPipeline.get<Array<MoviesByGenre>>(`movies_${decade}`);
 };

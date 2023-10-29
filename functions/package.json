@@ -1,0 +1,22 @@
+{
+  "name": "functions",
+  "version": "1.0.0",
+  "packageManager": "yarn@3.6.4",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@google-cloud/billing": "^4.0.2",
+    "@google-cloud/firestore": "^7.1.0",
+    "@google-cloud/functions-framework": "^3.3.0",
+    "@google-cloud/secret-manager": "^5.0.1",
+    "@upstash/redis": "1.23.3",
+    "axios": "^1.6.0",
+    "google-auth-library": "^9.2.0",
+    "inngest": "^3.4.1"
+  }
+}

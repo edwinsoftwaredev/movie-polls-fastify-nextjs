@@ -5,8 +5,8 @@ import DSelect from 'src/components/top-movies/DSelect';
 import trpc from 'src/trpc/server';
 import TopMovies from './TopMovies';
 
-export const revalidate = 3600;
-export const fetchCache = 'force-cache';
+// export const revalidate = 3600;
+// export const fetchCache = 'force-cache';
 
 export async function generateMetadata({}): Promise<Metadata> {
   const { csrfToken } = await trpc.query(

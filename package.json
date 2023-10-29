@@ -4,7 +4,7 @@
     "api",
     "web-client",
     "trpc",
-    "inngest"
+    "functions"
   ],
   "scripts": {
     "api:build": "yarn workspace api build",
@@ -14,8 +14,7 @@
     "web:dev": "yarn workspace web-client dev",
     "web:build": "yarn workspace web-client build",
     "web:start": "yarn workspace web-client start",
-    "trpc:generate": "yarn workspace trpc generate",
-    "inngest": "yarn workspace inngest"
+    "trpc:generate": "yarn workspace trpc generate"
   },
   "devDependencies": {
     "prisma": "latest"
