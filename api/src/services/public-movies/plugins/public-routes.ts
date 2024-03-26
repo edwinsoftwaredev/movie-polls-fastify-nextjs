@@ -9,6 +9,7 @@ const publicRoutes: FastifyPluginAsync = async (fastify) => {
     // TODO: remove headers not need on client side
     const isFromMiddleware = req.headers['x-from-middleware'] === '1';
     if (req.method === 'GET' && isFromMiddleware) return;
+    if (process.env.NODE_ENV === 'development') return;
 
     res.code(401);
     res.send();

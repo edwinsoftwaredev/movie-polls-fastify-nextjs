@@ -2,7 +2,7 @@ import 'styles/globals.scss';
 import AppProvider from './AppProvider';
 import Footer from './footer';
 import Header from './header';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 export const metadata: Metadata = {
   title: {
@@ -43,10 +43,13 @@ export const metadata: Metadata = {
       notranslate: true,
     },
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-  },
+};
+
+export const viewport: Viewport = {
+  themeColor: 'black',
+  colorScheme: 'dark',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 interface RootLayoutProps {

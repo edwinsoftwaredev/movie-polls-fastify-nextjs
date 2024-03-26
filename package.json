@@ -17,7 +17,7 @@
     "trpc:generate": "yarn workspace trpc generate"
   },
   "devDependencies": {
-    "prisma": "latest"
+    "prisma": "^5.11.0"
   },
-  "packageManager": "yarn@3.6.4"
+  "packageManager": "yarn@4.1.1"
 }
