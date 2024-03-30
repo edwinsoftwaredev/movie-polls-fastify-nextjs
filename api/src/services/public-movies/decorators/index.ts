@@ -1,9 +1,4 @@
 export type {
-  NowPlaying,
-  Popular,
-  PopularByDecadeAndGenre,
-  Trending,
-  TrendingByGenre,
   HomeMoviesVM,
   TrendingByGenreVM,
   PopularByDecadeAndGenreVM,

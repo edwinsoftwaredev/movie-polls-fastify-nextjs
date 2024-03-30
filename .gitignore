@@ -1,6 +1,8 @@
 # local env files
 .env
 .env.*
+*.pem
+!prisma/us-east-1-bundle.pem
 
 # database data
 mysql-data

@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import React from 'react';
 
 export const animateDialogBackground = async (
   isReverse: boolean,

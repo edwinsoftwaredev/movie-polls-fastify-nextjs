@@ -38,6 +38,7 @@ node_modules
 # misc
 .DS_Store
 *.pem
+!prisma/us-east-1-bundle.pem
 
 # debug
 npm-debug.log*

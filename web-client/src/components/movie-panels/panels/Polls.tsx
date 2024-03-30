@@ -4,7 +4,7 @@ import { Button, Input, Label } from 'src/components';
 import { useMovie, useUserSessionDetails } from 'src/hooks';
 import usePolls from 'src/hooks/usePolls';
 import { Poll } from 'src/types/poll';
-import { Movie } from 'types';
+import type { Movie } from 'types';
 import styles from './Polls.module.scss';
 
 const Anonymous: React.FC = () => {

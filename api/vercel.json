@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/serverless.ts": {
+      "includeFiles": "../prisma/us-east-1-bundle.pem"
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
