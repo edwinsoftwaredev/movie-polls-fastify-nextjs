@@ -90,14 +90,12 @@ export const getActivePolls =
           return {
             ...rest,
             votingTokenCount: VotingToken.length,
-            remainingVotingTokenCount: VotingToken.filter(
-              (vt) => vt.unused === true
-            ).length,
+            remainingVotingTokenCount: VotingToken.filter((vt) => vt.unused)
+              .length,
           };
         })
       );
 
-// TODO: rate limit
 export const createPoll =
   (fastify: FastifyInstance) =>
   (userSession: UserSession, pollName: string, movieId: Movie['id']) =>
@@ -173,107 +171,118 @@ export const getPoll =
     return {
       ...rest,
       votingTokenCount: VotingToken.length,
-      remainingVotingTokenCount: VotingToken.filter((vt) => vt.unused === true)
-        .length,
+      remainingVotingTokenCount: VotingToken.filter((vt) => vt.unused).length,
     };
   };
 
 export const updatePoll =
   (fastify: FastifyInstance) =>
   async (userSession: UserSession, poll: Omit<Poll, 'createdAt'>) =>
-    fastify.prismaClient.$transaction(
-      async (tx) => {
-        const currentPoll = await tx.poll.findUniqueOrThrow({
-          where: {
-            id: poll.id,
-          },
-          select: {
-            authorId: true,
-            isActive: true,
-            expiresOn: true,
-          },
-        });
+    fastify.prismaClient
+      .$transaction(
+        async (tx) => {
+          const currentPoll = await tx.poll.findUniqueOrThrow({
+            where: {
+              id: poll.id,
+            },
+            select: {
+              authorId: true,
+              isActive: true,
+              expiresOn: true,
+            },
+          });
 
-        // Checks permissions
-        if (currentPoll.authorId !== userSession.userId)
-          throw new Error('UNAUTHORIZED');
+          // Checks permissions
+          if (currentPoll.authorId !== userSession.userId)
+            throw new Error('UNAUTHORIZED');
 
-        if (
-          currentPoll.isActive &&
-          currentPoll.expiresOn &&
-          currentPoll.expiresOn < new Date()
-        )
-          throw new Error('ACTIVE_POLL');
+          if (
+            currentPoll.isActive &&
+            currentPoll.expiresOn &&
+            currentPoll.expiresOn < new Date()
+          )
+            throw new Error('ACTIVE_POLL');
 
-        if (currentPoll.isActive && poll.isActive)
-          throw new Error('ACTIVE_POLL');
+          if (currentPoll.isActive && poll.isActive)
+            throw new Error('ACTIVE_POLL');
 
-        if (!currentPoll.isActive && poll.isActive && !poll.expiresOn)
-          throw new Error('INVALID_DATE');
+          if (!currentPoll.isActive && poll.isActive && !poll.expiresOn)
+            throw new Error('INVALID_DATE');
 
-        if (poll.expiresOn) {
-          const maxDate = new Date();
-          maxDate.setDate(maxDate.getDate() + 28);
+          if (poll.expiresOn) {
+            const maxDate = new Date();
+            maxDate.setDate(maxDate.getDate() + 28);
 
-          if (poll.expiresOn > maxDate) throw new Error('INVALID_DATE');
-        }
+            if (poll.expiresOn > maxDate) throw new Error('INVALID_DATE');
+          }
 
-        // NOTE: Poll updates cascade to MoviePoll
-        return tx.poll.update({
-          data: {
-            isActive: poll.isActive,
-            name: poll.name,
-            expiresOn: poll.expiresOn,
-            ...(currentPoll.isActive && !poll.isActive
-              ? {
-                  expiresOn: null,
-                  VotingToken: {
-                    updateMany: {
-                      where: { pollId: poll.id },
-                      data: {
-                        unused: true,
-                        movieId: null,
+          // NOTE: Poll updates cascade to MoviePoll
+          return tx.poll.update({
+            data: {
+              isActive: poll.isActive,
+              name: poll.name,
+              expiresOn: poll.expiresOn,
+              ...(currentPoll.isActive && !poll.isActive
+                ? {
+                    expiresOn: null,
+                    VotingToken: {
+                      updateMany: {
+                        where: { pollId: poll.id },
+                        data: {
+                          unused: true,
+                          movieId: null,
+                        },
                       },
                     },
-                  },
-                }
-              : {}),
-          },
-          where: {
-            id: poll.id,
-          },
-        });
-      },
-      { isolationLevel: 'Serializable' }
-    );
+                  }
+                : {}),
+            },
+            where: {
+              id: poll.id,
+            },
+          });
+        },
+        { isolationLevel: 'Serializable' }
+      )
+      .then(async (data) => {
+        await fastify.redisClient.del(`poll-${poll.id}`);
+        return data;
+      });
 
 export const removePoll =
   (fastify: FastifyInstance) =>
   (userSession: UserSession, pollId: Poll['id']) =>
-    fastify.prismaClient.$transaction(
-      async (tx) => {
-        const currentPoll = await tx.poll.findUniqueOrThrow({
-          where: {
-            id: pollId,
-          },
-          select: {
-            authorId: true,
-          },
-        });
+    fastify.prismaClient
+      .$transaction(
+        async (tx) => {
+          const currentPoll = await tx.poll.findUniqueOrThrow({
+            where: {
+              id: pollId,
+            },
+            select: {
+              authorId: true,
+            },
+          });
 
-        // Checks permissions
-        if (currentPoll.authorId !== userSession.userId)
-          throw new Error('UNAUTHORIZED');
+          // Checks permissions
+          if (currentPoll.authorId !== userSession.userId)
+            throw new Error('UNAUTHORIZED');
 
-        // NOTE: Poll deletes cascade to MoviePoll
-        return tx.poll.delete({
-          where: {
-            id: pollId,
-          },
-        });
-      },
-      { isolationLevel: 'Serializable' }
-    );
+          // NOTE: Poll deletes cascade to MoviePoll
+          return tx.poll.delete({
+            where: {
+              id: pollId,
+            },
+          });
+        },
+        { isolationLevel: 'Serializable' }
+      )
+      .then(async (data) => {
+        // TODO: instead of deleting the key update it to a value that
+        // mark the key as deleted
+        await fastify.redisClient.del(`poll-${data.id}`);
+        return data;
+      });
 
 export const addMovie =
   (fastify: FastifyInstance) =>

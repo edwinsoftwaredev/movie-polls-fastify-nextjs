@@ -2,8 +2,29 @@ import { MoviePoll, Poll, Prisma, VotingToken } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { FastifyInstance } from 'fastify';
 
+type PollVM = Omit<Poll, 'createdAt' | 'authorId'> & {
+  votingTokenCount: number;
+  remainingVotingTokenCount: number;
+  author: {
+    displayName: string;
+    picture: string | null;
+  };
+  MoviePoll: {
+    _count: {
+      VotingToken: number;
+    };
+    pollId: string;
+    movieId: number;
+  }[];
+};
+
 export const getPoll =
   (fastify: FastifyInstance) => async (pollId: Poll['id']) => {
+    const cachedPoll = await fastify.redisClient.get<PollVM>(`poll-${pollId}`);
+
+    // TODO: handle polls in cache that already expired
+    if (cachedPoll) return cachedPoll;
+
     const result = await fastify.prismaClient.poll.findUniqueOrThrow({
       where: {
         id: pollId,
@@ -40,12 +61,17 @@ export const getPoll =
 
     const { VotingToken, ...rest } = result;
 
-    return {
+    const poll = {
       ...rest,
       votingTokenCount: VotingToken.length,
-      remainingVotingTokenCount: VotingToken.filter((vt) => vt.unused === true)
-        .length,
+      remainingVotingTokenCount: VotingToken.filter((vt) => vt.unused).length,
     };
+
+    // TODO: Add typed decorators for adding and removing polls to redisClient
+    // PollsVM are visible to any user and must not include sensitive values/properties
+    fastify.redisClient.set<PollVM>(`poll-${poll.id}`, poll, { ex: 300 });
+
+    return poll;
   };
 
 export const getVotingToken =
@@ -133,6 +159,12 @@ export const voteHandler =
         },
         { isolationLevel: 'Serializable' }
       )
+      .then(async (vote) => {
+        // For every write there will be one read.
+        // In a burst of traffic this might not be optimal.
+        await fastify.redisClient.del(`poll-${vote.pollId}`);
+        return vote;
+      })
       .catch((err) => {
         if (err instanceof Prisma.PrismaClientKnownRequestError) {
           if (err.code === 'P2034') {
