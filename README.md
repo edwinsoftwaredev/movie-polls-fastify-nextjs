@@ -1,6 +1,6 @@
 # Movie Polls
 
-![system-architecture](https://github.com/edwinsoftwaredev/movie-polls-fastify-nextjs/assets/12868992/fc971570-0efc-43ef-bdcc-bb7267b3eba7)
+![system-architecture](https://github.com/edwinsoftwaredev/movie-polls-fastify-nextjs/assets/12868992/f9b9360d-cf32-43db-b40c-bc9b01eead47)
 
 ## Project Structure
 
