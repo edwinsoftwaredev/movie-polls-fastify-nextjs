@@ -7,6 +7,10 @@ import { pollRouter } from 'trpc/server/routers';
 import { trcpErrorHandler } from 'trpc/server/context';
 
 const routes: FastifyPluginAsync = async (fastify) => {
+  fastify.addHook('onSend', async (_req, res) => {
+    res.header('Access-Control-Max-Age', 300);
+  });
+
   fastify.register(csrfRouteGuard);
   fastify.register(userAuthRouteGuard);
 

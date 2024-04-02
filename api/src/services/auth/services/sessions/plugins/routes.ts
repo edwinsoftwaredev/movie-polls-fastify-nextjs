@@ -4,6 +4,10 @@ import { createTRPCFastifyContext } from 'trpc/server';
 import { sessionRouter } from 'trpc/server/routers';
 
 const routes: FastifyPluginAsync = async (fastify) => {
+  fastify.addHook('onSend', async (_req, res) => {
+    res.header('Access-Control-Max-Age', 300);
+  });
+
   fastify.register(fastifyTRPCPlugin, {
     trpcOptions: {
       router: sessionRouter,

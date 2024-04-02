@@ -18,6 +18,8 @@ const publicRoutes: FastifyPluginAsync = async (fastify) => {
 
   fastify.addHook('onSend', async (_req, res) => {
     // edge network configs
+    res.header('Access-Control-Max-Age', 300);
+
     res.header(
       'Cache-Control',
       `s-maxage=${
