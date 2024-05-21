@@ -1711,13 +1711,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/session@npm:^10.7.0":
-  version: 10.7.0
-  resolution: "@fastify/session@npm:10.7.0"
+"@fastify/session@npm:^10.9.0":
+  version: 10.9.0
+  resolution: "@fastify/session@npm:10.9.0"
   dependencies:
     fastify-plugin: "npm:^4.0.0"
     safe-stable-stringify: "npm:^2.3.1"
-  checksum: 10/f18342b20b91410e8cde8b8ba1873b623a7a43752b645c7279d66a8a4ed66c78874f9421810b053f2bd1ebc00ddcc7a2a9293318cd11abe0ba25002f3ff768fb
+  checksum: 10/2408a7df9bfd9e0871f898a5caf3a8ba57a6641270e614b0b38dbab58a13bcc397620ed3a4f28a3d7cb13a5738866baad6249df8d329414d91c7bed4eebce4ed
   languageName: node
   linkType: hard
 
@@ -3276,7 +3276,7 @@ __metadata:
     "@fastify/csrf-protection": "npm:^6.4.1"
     "@fastify/formbody": "npm:^7.4.0"
     "@fastify/helmet": "npm:^11.1.1"
-    "@fastify/session": "npm:^10.7.0"
+    "@fastify/session": "npm:^10.9.0"
     "@prisma/client": "npm:^5.11.0"
     "@trpc/server": "npm:^10.45.2"
     "@types/node": "npm:^20.11.30"
