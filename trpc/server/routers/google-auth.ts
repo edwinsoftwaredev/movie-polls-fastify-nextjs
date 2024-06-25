@@ -48,7 +48,9 @@ const googleAuthRouter = router({
             })
             .then(async (user) => {
               req.session.set('userSession', {
-                ...req.session.userSession,
+                id: req.session.userSession?.id ?? '',
+                csrfSecret: req.session.userSession?.csrfSecret ?? '',
+                expiresOn: req.session.userSession?.expiresOn ?? null,
                 userId: user.id,
               });
 
