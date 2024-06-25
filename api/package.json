@@ -12,29 +12,29 @@
     "@fastify/csrf-protection": "^6.4.1",
     "@fastify/formbody": "^7.4.0",
     "@fastify/helmet": "^11.1.1",
-    "@fastify/session": "^10.7.0",
-    "@prisma/client": "^5.11.0",
+    "@fastify/session": "^10.9.0",
+    "@prisma/client": "^5.15.1",
     "@trpc/server": "^10.45.2",
-    "@upstash/ratelimit": "^1.0.1",
-    "@upstash/redis": "1.23.3",
+    "@upstash/ratelimit": "^1.2.1",
+    "@upstash/redis": "1.31.6",
     "@vercel/edge": "^1.1.1",
     "dotenv": "^16.4.5",
-    "fastify": "^4.26.2",
+    "fastify": "^4.28.0",
     "fastify-plugin": "^4.5.1",
-    "google-auth-library": "^9.7.0",
+    "google-auth-library": "^9.11.0",
     "trpc": "1.0.0",
-    "undici": "^6.11.1"
+    "undici": "^6.19.2"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
-    "@typescript-eslint/parser": "^7.4.0",
-    "@vercel/node": "^3.0.24",
-    "eslint": "^8.57.0",
-    "nodemon": "^3.1.0",
+    "@types/node": "^20.14.8",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
+    "@vercel/node": "^3.1.7",
+    "eslint": "^9.5.0",
+    "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.4.3"
+    "typescript": "^5.5.2"
   }
 }

@@ -7,6 +7,7 @@ import Fastify from 'fastify';
 
 const app = Fastify({
   logger: true,
+  trustProxy: 1,
 });
 
 app.register(serverlessFunc);

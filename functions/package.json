@@ -6,17 +6,17 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "typescript": "^5.4.3"
+    "@types/node": "^20.14.8",
+    "typescript": "^5.5.2"
   },
   "dependencies": {
-    "@google-cloud/billing": "^4.3.0",
-    "@google-cloud/firestore": "^7.5.0",
-    "@google-cloud/functions-framework": "^3.3.0",
-    "@google-cloud/secret-manager": "^5.2.0",
-    "@upstash/redis": "1.29.0",
-    "axios": "^1.6.8",
-    "google-auth-library": "^9.7.0",
-    "inngest": "^3.16.1"
+    "@google-cloud/billing": "^4.5.0",
+    "@google-cloud/firestore": "^7.8.0",
+    "@google-cloud/functions-framework": "^3.4.0",
+    "@google-cloud/secret-manager": "^5.6.0",
+    "@upstash/redis": "1.31.6",
+    "axios": "^1.7.2",
+    "google-auth-library": "^9.11.0",
+    "inngest": "^3.19.16"
   }
 }
