@@ -2,6 +2,8 @@
 
 ![system-architecture](https://github.com/edwinsoftwaredev/movie-polls-fastify-nextjs/assets/12868992/f9b9360d-cf32-43db-b40c-bc9b01eead47)
 
+![screenshot](https://github.com/user-attachments/assets/f8deb62e-42ab-411b-a52d-ac2ceeb828d4)
+
 ## Project Structure
 
 - **📁 API**

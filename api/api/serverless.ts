@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import dotenv from 'dotenv'
+dotenv.config({ path: '../.env' }) // update to dotenvx
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import serverlessFunc from '../src/server';
@@ -7,6 +7,7 @@ import Fastify from 'fastify';
 
 const app = Fastify({
   logger: true,
+  trustProxy: 1,
 });
 
 app.register(serverlessFunc);

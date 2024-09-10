@@ -5,18 +5,18 @@
   "scripts": {
     "build": "tsc"
   },
-  "devDependencies": {
-    "@types/node": "^20.11.30",
-    "typescript": "^5.4.3"
-  },
   "dependencies": {
-    "@google-cloud/billing": "^4.3.0",
-    "@google-cloud/firestore": "^7.5.0",
-    "@google-cloud/functions-framework": "^3.3.0",
-    "@google-cloud/secret-manager": "^5.2.0",
-    "@upstash/redis": "1.29.0",
-    "axios": "^1.6.8",
-    "google-auth-library": "^9.7.0",
-    "inngest": "^3.16.1"
+    "@google-cloud/billing": "^4.5.0",
+    "@google-cloud/firestore": "^7.10.0",
+    "@google-cloud/functions-framework": "^3.4.2",
+    "@google-cloud/secret-manager": "^5.6.0",
+    "@upstash/redis": "1.34.0",
+    "axios": "^1.7.7",
+    "google-auth-library": "^9.14.1",
+    "inngest": "^3.22.10"
+  },
+  "peerDependencies": {
+    "@types/node": "*",
+    "typescript": "*"
   }
 }

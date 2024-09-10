@@ -26,11 +26,12 @@ export function trcpErrorHandler(procedureError: {
   req: CreateFastifyContextOptions['req']; // request object
 }) {
   const { error } = procedureError;
-  // TODO: send to bug reporting
+
   if (error.cause instanceof Prisma.PrismaClientKnownRequestError) {
+    // TODO: report error
   }
 
-  // TODO: Create custom Error
   if (error.cause instanceof Error) {
+    // TODO: Create custom Error
   }
 }

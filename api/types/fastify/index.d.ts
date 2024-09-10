@@ -104,7 +104,7 @@ declare module 'fastify' {
     isSSR?: boolean;
     hasSessionId?: boolean;
     _csrf?: string;
-    userSession?: UserSession | null;
+    userSession: UserSession | null;
     verifyGoogleIdToken: (idToken: string) => Promise<LoginTicket>;
   }
 }

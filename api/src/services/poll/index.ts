@@ -1,9 +1,9 @@
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { 
-  createPoll, 
-  getActivePolls, 
-  getInactivePolls,     
+import {
+  createPoll,
+  getActivePolls,
+  getInactivePolls,
   getPoll,
   updatePoll,
   removePoll,
@@ -12,13 +12,13 @@ import {
   addVotingTokens,
   getVotingTokens,
   updateVotingToken,
-  removeVotingToken 
+  removeVotingToken
 } from './decorators';
 import routes from './plugins/routes';
 
-interface PollPluginOpts extends FastifyPluginOptions {}
+// interface PollPluginOpts extends FastifyPluginOptions {}
 
-const poll: FastifyPluginAsync<PollPluginOpts> = async (fastify) => {
+const poll: FastifyPluginAsync = async (fastify) => {
   fastify.decorate('polls', {
     getActivePolls: getActivePolls(fastify),
     getInactivePolls: getInactivePolls(fastify),
