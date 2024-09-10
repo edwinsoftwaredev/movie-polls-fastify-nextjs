@@ -88,6 +88,7 @@ const t = initTRPC.context<Context>().create({
             },
             message: 'Invalid date.',
           };
+          break;
         }
 
         default: {

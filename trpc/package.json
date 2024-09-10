@@ -2,15 +2,20 @@
   "name": "trpc",
   "version": "1.0.0",
   "scripts": {
-    "generate": "prisma generate --schema ../prisma/schema.prisma"
-  },
-  "devDependencies": {
-    "typescript": "^5.5.2"
+    "generate": "prisma generate --schema ../prisma/schema.prisma",
+    "lint": "eslint .",
+    "syntax-check": "tsc --emitDeclarationOnly false --noEmit true",
+    "ci": "eslint . && tsc --emitDeclarationOnly false --noEmit true"
   },
   "dependencies": {
-    "@prisma/client": "^5.15.1",
-    "@trpc/client": "^10.45.2",
-    "@trpc/server": "^10.45.2",
     "zod": "^3.23.8"
+  },
+  "peerDependencies": {
+    "@prisma/client": "*",
+    "@trpc/client": "*",
+    "@trpc/server": "*",
+    "@typescript-eslint/eslint-plugin": "*",
+    "@typescript-eslint/parser": "*",
+    "typescript": "*"
   }
 }

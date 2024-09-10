@@ -8,10 +8,10 @@ import {
   pollPlugin,
   publicPollPlugin,
 } from './plugins';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import fastifyHelmet from '@fastify/helmet';
 
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 const serverlessFunc: FastifyPluginAsync = async (fastify) => {
   // helmet plugin

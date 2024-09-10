@@ -10,9 +10,9 @@ import { movieDetails } from './decorators/movie-details';
 import { movieProviders } from './decorators/movie-providers';
 import { movie } from './decorators/movie';
 
-export interface MoviesPluginOptions extends FastifyPluginOptions {}
+// export interface MoviesPluginOptions extends FastifyPluginOptions {}
 
-const movies: FastifyPluginAsync<MoviesPluginOptions> = async (fastify) => {
+const movies: FastifyPluginAsync = async (fastify) => {
   fastify.decorate('movies', {
     ...fastify.movies,
     homeMoviesVM: homeMoviesVM(fastify),

@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import dotenv from 'dotenv'
+dotenv.config({ path: '../.env' }) // update to dotenvx
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import serverlessFunc from '../src/server';
