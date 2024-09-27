@@ -3,8 +3,7 @@
   "workspaces": [
     "api",
     "web-client",
-    "trpc",
-    "functions"
+    "trpc"
   ],
   "scripts": {
     "api:build": "yarn workspace api build",
