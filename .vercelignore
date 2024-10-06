@@ -6,6 +6,9 @@
 # database data
 mysql-data
 
+# other code
+functions
+
 # node
 node_modules
 
