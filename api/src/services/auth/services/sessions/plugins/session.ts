@@ -2,7 +2,7 @@ import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import fastifySession from '@fastify/session';
 import fastifyCookie from '@fastify/cookie';
-import { UserSession } from '@prisma/client';
+import { UserSession } from 'app-types';
 
 interface SessionPluginOptions extends FastifyPluginOptions {
   sessionSecret: string;

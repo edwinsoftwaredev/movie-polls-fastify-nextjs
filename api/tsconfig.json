@@ -17,5 +17,6 @@
     "emitDeclarationOnly": true,
     "composite": true
   },
-  "exclude": ["middleware.ts"]
+  "exclude": ["middleware.ts"],
+  "references": [{ "path": "../app-types" }]
 }

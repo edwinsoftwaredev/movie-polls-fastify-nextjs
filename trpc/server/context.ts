@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { DynamoDBServiceException } from '@aws-sdk/client-dynamodb';
 import { inferAsyncReturnType, TRPCError } from '@trpc/server';
 import { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 import { FastifyInstance } from 'fastify';
@@ -27,7 +27,7 @@ export function trcpErrorHandler(procedureError: {
 }) {
   const { error } = procedureError;
 
-  if (error.cause instanceof Prisma.PrismaClientKnownRequestError) {
+  if (error.cause instanceof DynamoDBServiceException) {
     // TODO: report error
   }
 

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { DynamoDBServiceException } from '@aws-sdk/client-dynamodb';
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { Context } from './context';
 
@@ -6,34 +6,8 @@ const t = initTRPC.context<Context>().create({
   errorFormatter: ({ error, type, path, input, ctx, shape }) => {
     shape = { ...shape, data: { ...shape.data, stack: undefined } };
 
-    if (error.cause instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.cause instanceof DynamoDBServiceException) {
       switch (true) {
-        case error.cause.code === 'P2002': {
-          shape = {
-            ...shape,
-            data: {
-              ...shape.data,
-              code: 'BAD_REQUEST',
-              httpStatus: 400,
-            },
-            message: 'Duplicated.',
-          };
-          break;
-        }
-
-        case error.cause.code === 'P2025': {
-          shape = {
-            ...shape,
-            data: {
-              ...shape.data,
-              code: 'NOT_FOUND',
-              httpStatus: 404,
-            },
-            message: 'Not found.',
-          };
-          break;
-        }
-
         default: {
           break;
         }

@@ -25,33 +25,21 @@ const googleAuthRouter = router({
           const userId = `gg-${googleUserId}`;
           const provider = 'Google';
 
-          return fastify.prismaClient.user
-            .upsert({
-              where: {
-                id: userId,
-              },
-              update: {
-                displayName,
-                email,
-                emailVerified,
-                picture,
-                provider,
-              },
-              create: {
-                id: userId,
-                displayName: displayName || 'Anonymous',
-                provider,
-                email,
-                emailVerified,
-                picture,
-              },
-            })
-            .then(async (user) => {
+          return fastify.account.user
+            .createUser(
+              userId,
+              displayName || 'Anonymous',
+              provider,
+              email || '',
+              emailVerified || false,
+              picture || ''
+            )
+            .then(async () => {
               req.session.set('userSession', {
                 id: req.session.userSession?.id ?? '',
                 csrfSecret: req.session.userSession?.csrfSecret ?? '',
                 expiresOn: req.session.userSession?.expiresOn ?? null,
-                userId: user.id,
+                userId: userId,
               });
 
               return req.session

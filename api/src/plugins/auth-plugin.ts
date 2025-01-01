@@ -2,7 +2,7 @@ import { FastifyPluginAsync } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import { auth } from '../services';
 import googleOAuth2Client from './google-oauth2-client';
-import prismaClient from './prisma-client';
+import dynamoDBClient from './dynamodb-client';
 import redisClient from './redis-client';
 
 const authPlugin: FastifyPluginAsync = async (fastify) => {
@@ -10,11 +10,12 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
   const redisConnectionToken = process.env.UPSTASH_REDIS_REST_TOKEN || '';
   const sessionSecret = process.env.SESSION_SECRET || '';
   const isDevEnv = process.env.NODE_ENV === 'development';
-  const databaseUrl = process.env.DATABASE_URL || '';
+  const accessKeyId = process.env.DYNAMODB_ACCESS_KEY || '';
+  const secretAccessKey = process.env.DYNAMODB_SECRET_ACCESS_KEY || '';
   const googleClientID = process.env.GOOGLE_OAUTH2_CLIENT_ID || '';
   const domain = process.env.APP_DOMAIN || '';
 
-  fastify.register(prismaClient, { databaseUrl });
+  fastify.register(dynamoDBClient, { accessKeyId, secretAccessKey });
   fastify.register(redisClient, {
     url: redisConnectionString,
     token: redisConnectionToken,

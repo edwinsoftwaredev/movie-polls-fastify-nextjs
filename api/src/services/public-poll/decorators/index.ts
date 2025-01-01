@@ -1,8 +1,14 @@
-import { MoviePoll, Poll, Prisma, VotingToken } from '@prisma/client';
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  QueryCommand,
+  TransactWriteCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { TRPCError } from '@trpc/server';
 import { FastifyInstance } from 'fastify';
+import { MoviePoll, Poll, VotingToken } from 'app-types';
 
-type PollVM = Omit<Poll, 'createdAt' | 'authorId'> & {
+type PollVM = Omit<Poll, 'createdAt'> & {
   votingTokenCount: number;
   remainingVotingTokenCount: number;
   author: {
@@ -25,71 +31,147 @@ export const getPoll =
     // TODO: handle polls in cache that already expired
     if (cachedPoll) return cachedPoll;
 
-    const result = await fastify.prismaClient.poll.findUniqueOrThrow({
-      where: {
-        id: pollId,
-      },
-      select: {
-        id: true,
-        name: true,
-        author: {
-          select: {
-            displayName: true,
-            picture: true,
+    const author = await DynamoDBDocumentClient.from(fastify.dynamoDBClient)
+      .send(
+        new QueryCommand({
+          TableName: fastify.vars.PollsVotingTokenTable,
+          KeyConditionExpression: 'PK = :poll',
+          ExpressionAttributeValues: {
+            ':poll': pollId,
           },
-        },
-        MoviePoll: {
-          select: {
-            movieId: true,
-            pollId: true,
-            _count: {
-              select: {
-                VotingToken: true,
+          ProjectionExpression: 'authorId',
+          Limit: 1,
+        })
+      )
+      .then((output) => output.Items as [{ authorId: string }] | undefined)
+      .catch((_) => {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      });
+
+    if (!author || !author.length) throw new TRPCError({ code: 'NOT_FOUND' });
+
+    const userAuthor = await DynamoDBDocumentClient.from(fastify.dynamoDBClient)
+      .send(
+        new GetCommand({
+          TableName: fastify.vars.usersTable,
+          Key: { PK: author[0].authorId, SK: 'metadata' },
+          ProjectionExpression: 'displayName,picture',
+        })
+      )
+      .then((output) => {
+        if (!output.Item)
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+          });
+        return {
+          displayName: output.Item.displayName,
+          picture: output.Item.picture,
+        };
+      })
+      .catch((_) => {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      });
+
+    const poll = await DynamoDBDocumentClient.from(fastify.dynamoDBClient)
+      .send(
+        new GetCommand({
+          TableName: fastify.vars.usersTable,
+          Key: { PK: `${author[0].authorId}#polls`, SK: pollId },
+          ProjectionExpression: 'id,#name,isActive,movies,expiresOn,createdAt',
+          ExpressionAttributeNames: {
+            '#name': 'name',
+          },
+        })
+      )
+      .then((output) => {
+        if (!output.Item) throw new TRPCError({ code: 'BAD_REQUEST' });
+        return output.Item as Poll;
+      })
+      .catch((_) => {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      });
+
+    const pollVotes = await Promise.all(
+      Array.from(poll.movies).map((movie) =>
+        DynamoDBDocumentClient.from(fastify.dynamoDBClient)
+          .send(
+            new QueryCommand({
+              TableName: fastify.vars.PollsVotingTokenTable,
+              KeyConditionExpression: 'PK = :pollId',
+              FilterExpression: '#movieId = :movieId',
+              ExpressionAttributeNames: {
+                '#movieId': 'movieId',
               },
-            },
-          },
-        },
-        VotingToken: {
-          select: {
-            unused: true,
-          },
-        },
-        isActive: true,
-        expiresOn: true,
-      },
-    });
+              ExpressionAttributeValues: {
+                ':pollId': pollId,
+                ':movieId': movie,
+              },
+              Select: 'COUNT',
+              ConsistentRead: false,
+            })
+          )
+          .then((output) => ({
+            total: output.ScannedCount || 0,
+            votes: output.Count || 0,
+            movie: movie,
+          }))
+          .catch((_) => {
+            throw new TRPCError({ code: 'BAD_REQUEST' });
+          })
+      )
+    );
 
-    const { VotingToken, ...rest } = result;
+    const votingTokenCount = pollVotes[0].total;
+    const remainingVotingTokenCount = pollVotes.reduce(
+      (rem, item) => rem - item.votes,
+      votingTokenCount
+    );
 
-    const poll = {
-      ...rest,
-      votingTokenCount: VotingToken.length,
-      remainingVotingTokenCount: VotingToken.filter((vt) => vt.unused).length,
+    const pollR = {
+      id: poll.id,
+      name: poll.name,
+      expiresOn: poll.expiresOn,
+      isActive: poll.isActive,
+      createdAt: poll.createdAt,
+      author: userAuthor,
+      MoviePoll: pollVotes.map((item) => ({
+        movieId: item.movie,
+        pollId: pollId,
+        _count: { VotingToken: item.votes },
+      })),
+      votingTokenCount,
+      remainingVotingTokenCount,
     };
 
     // TODO: Add typed decorators for adding and removing polls to redisClient
     // PollsVM are visible to any user and must not include sensitive values/properties
-    fastify.redisClient.set<PollVM>(`poll-${poll.id}`, poll, { ex: 300 });
+    fastify.redisClient.set(`poll-${pollR.id}`, pollR, { ex: 300 });
 
-    return poll;
+    return pollR;
   };
 
 export const getVotingToken =
   (fastify: FastifyInstance) =>
   async (pollId: Poll['id'], votingTokenId: VotingToken['id']) =>
-    fastify.prismaClient.votingToken.findUniqueOrThrow({
-      where: {
-        id_pollId: {
-          id: votingTokenId,
-          pollId: pollId,
-        },
-      },
-      select: {
-        id: true,
-        pollId: true,
-        unused: true,
-      },
-    });
+    DynamoDBDocumentClient.from(fastify.dynamoDBClient)
+      .send(
+        new GetCommand({
+          TableName: fastify.vars.PollsVotingTokenTable,
+          Key: {
+            PK: pollId,
+            SK: votingTokenId,
+          },
+          ProjectionExpression: 'id,pollId,movieId,unused',
+          ConsistentRead: false,
+        })
+      )
+      .then((output) => {
+        if (!output.Item) throw new TRPCError({ code: 'BAD_REQUEST' });
+        return output.Item as VotingToken;
+      })
+      .catch((_) => {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      });
 
 export const voteHandler =
   (fastify: FastifyInstance) =>
@@ -97,88 +179,84 @@ export const voteHandler =
     pollId: Poll['id'],
     votingTokenId: VotingToken['id'],
     movieId: MoviePoll['movieId']
-  ) =>
-    fastify.prismaClient
-      .$transaction(
-        async (tx) => {
-          const currentPoll = await tx.poll.findUniqueOrThrow({
-            where: {
-              id: pollId,
-            },
-            select: {
-              expiresOn: true,
-              isActive: true,
-              MoviePoll: {
-                where: {
-                  movieId,
-                  pollId,
-                },
-              },
-              VotingToken: {
-                where: {
-                  id: votingTokenId,
-                  pollId,
-                },
-              },
-            },
-          });
-
-          if (
-            !currentPoll.MoviePoll.at(0) ||
-            !currentPoll.VotingToken.at(0) ||
-            !currentPoll.isActive ||
-            !currentPoll.expiresOn ||
-            currentPoll.VotingToken.at(0)?.unused === false
-          )
-            throw new TRPCError({ code: 'UNAUTHORIZED' });
-
-          if (currentPoll.expiresOn < new Date())
-            throw new TRPCError({
-              code: 'BAD_REQUEST',
-              message: 'Poll is expired.',
-            });
-
-          return tx.votingToken.update({
-            where: {
-              id_pollId: {
-                id: currentPoll.VotingToken.at(0)!.id,
-                pollId,
-              },
-            },
-            data: {
-              unused: false,
-              movieId: currentPoll.MoviePoll.at(0)!.movieId,
-            },
-            select: {
-              id: true,
-              pollId: true,
-              movieId: true,
-              unused: true,
-            },
-          });
-        },
-        { isolationLevel: 'Serializable' }
+  ) => {
+    const author = await DynamoDBDocumentClient.from(fastify.dynamoDBClient)
+      .send(
+        new QueryCommand({
+          TableName: fastify.vars.PollsVotingTokenTable,
+          KeyConditionExpression: 'PK = :poll',
+          ExpressionAttributeValues: {
+            ':poll': pollId,
+          },
+          Limit: 1,
+          ProjectionExpression: 'authorId',
+        })
       )
-      .then(async (vote) => {
-        // For every write there will be one read.
-        // In a burst of traffic this might not be optimal.
-        await fastify.redisClient.del(`poll-${vote.pollId}`);
-        return vote;
-      })
-      .catch((err) => {
-        if (err instanceof Prisma.PrismaClientKnownRequestError) {
-          if (err.code === 'P2034') {
-            throw new TRPCError({
-              code: 'CONFLICT',
-              cause: {
-                errorCode: 'P2034',
-              },
-            });
-          }
-        }
-
-        throw err;
+      .then((output) => output.Items as [{ authorId: string }] | undefined)
+      .catch((_) => {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
       });
+
+    if (!author || !author.length) throw new TRPCError({ code: 'BAD_REQUEST' });
+
+    const user = author[0].authorId;
+
+    await DynamoDBDocumentClient.from(fastify.dynamoDBClient)
+      .send(
+        new TransactWriteCommand({
+          ClientRequestToken: votingTokenId,
+          TransactItems: [
+            {
+              ConditionCheck: {
+                TableName: fastify.vars.usersTable,
+                Key: { PK: `${user}#polls`, SK: `${pollId}` },
+                ConditionExpression:
+                  'isActive = :trueval AND (attribute_type(expiresOn, :stringtype) AND expiresOn > :datenow) AND contains(movies, :movie)',
+
+                ExpressionAttributeValues: {
+                  ':trueval': true,
+                  ':stringtype': 'S',
+                  ':datenow': new Date().toISOString(),
+                  ':movie': movieId,
+                },
+              },
+            },
+            {
+              Update: {
+                TableName: fastify.vars.PollsVotingTokenTable,
+                Key: { PK: pollId, SK: votingTokenId },
+                ConditionExpression:
+                  'attribute_type(movieId, :nulltype) AND #unused = :trueval',
+                UpdateExpression:
+                  'SET #movieId = :v_movieId, #unused = :falseval',
+                ExpressionAttributeNames: {
+                  '#movieId': 'movieId',
+                  '#unused': 'unused',
+                },
+                ExpressionAttributeValues: {
+                  ':v_movieId': movieId,
+                  ':nulltype': 'NULL',
+                  ':trueval': true,
+                  ':falseval': false,
+                },
+              },
+            },
+          ],
+        })
+      )
+      .catch((e) => {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      });
+
+    await fastify.redisClient.del(`poll-${pollId}`);
+
+    return {
+      id: votingTokenId,
+      pollId: pollId,
+      movieId: movieId,
+      unused: false,
+    };
+  };
 
 export type GetPoll = ReturnType<typeof getPoll>;
 export type GetVotingToken = ReturnType<typeof getVotingToken>;

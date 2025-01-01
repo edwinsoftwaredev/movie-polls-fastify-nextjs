@@ -38,7 +38,7 @@ export default async function PollLayout({
   const isOwner = whoami
     ? poll === null
       ? false
-      : whoami.id === poll.authorId
+      : whoami.id === poll.author.id
     : false;
 
   const { poll: publicPoll } = !isOwner

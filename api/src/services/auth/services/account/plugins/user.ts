@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { deleteAccount, getUser } from '../decorators';
+import { deleteAccount, getUser, createUser } from '../decorators';
 
 const user: FastifyPluginAsync = async (fastify) => {
   fastify.decorate('account', {
@@ -8,6 +8,7 @@ const user: FastifyPluginAsync = async (fastify) => {
     user: {
       getUser: getUser(fastify),
       deleteAccount: deleteAccount(fastify),
+      createUser: createUser(fastify),
     },
   });
 };

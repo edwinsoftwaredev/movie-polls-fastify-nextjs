@@ -54,7 +54,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const isOwner = whoami
     ? poll === null
       ? false
-      : whoami.id === poll.authorId
+      : whoami.id === poll.author.id
     : false;
 
   if (isOwner) return <PollFormWithVotingTokens poll={poll!} />;

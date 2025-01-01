@@ -1,11 +1,12 @@
 import { FastifyPluginAsync } from 'fastify';
-import prismaClient from './prisma-client';
+import dynamoDBClient from './dynamodb-client';
 import { poll } from '../services';
 
 const pollPlugin: FastifyPluginAsync = async (fastify) => {
-  const databaseUrl = process.env.DATABASE_URL || '';
+  const accessKeyId = process.env.DYNAMODB_ACCESS_KEY || '';
+  const secretAccessKey = process.env.DYNAMODB_SECRET_ACCESS_KEY || '';
 
-  fastify.register(prismaClient, { databaseUrl });
+  fastify.register(dynamoDBClient, { accessKeyId, secretAccessKey });
   fastify.register(poll);
 };
 

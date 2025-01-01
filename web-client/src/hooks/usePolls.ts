@@ -1,6 +1,5 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import trpc from 'src/trpc/client';
-import { Poll as PollType } from 'src/types/poll';
 import { InferQueryOutput } from 'trpc/client/utils';
 
 interface UsePollsOpts {
@@ -78,11 +77,11 @@ const usePolls = ({ fetchInactivePolls, fetchActivePolls }: UsePollsOpts) => {
     op === 'remove' &&
       (!poll.isActive
         ? updatePolls(undefined, {
-            ctx: pollContext.activePolls,
+            ctx: pollContext.inactivePolls,
             pollId: poll.id,
           })
         : updatePolls(undefined, {
-            ctx: pollContext.inactivePolls,
+            ctx: pollContext.activePolls,
             pollId: poll.id,
           }));
 

@@ -1,0 +1,12 @@
+{
+  "name": "app-types",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "@typescript-eslint/eslint-plugin": "*",
+    "@typescript-eslint/parser": "*",
+    "typescript": "*"
+  }
+}

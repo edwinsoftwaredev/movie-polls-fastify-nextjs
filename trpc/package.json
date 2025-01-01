@@ -2,16 +2,16 @@
   "name": "trpc",
   "version": "1.0.0",
   "scripts": {
-    "generate": "prisma generate --schema ../prisma/schema.prisma",
+    "generate": "yarn workspace app-types build",
     "lint": "eslint .",
     "syntax-check": "tsc --emitDeclarationOnly false --noEmit true",
     "ci": "eslint . && tsc --emitDeclarationOnly false --noEmit true"
   },
   "dependencies": {
+    "app-types": "1.0.0",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
-    "@prisma/client": "*",
     "@trpc/client": "*",
     "@trpc/server": "*",
     "@typescript-eslint/eslint-plugin": "*",

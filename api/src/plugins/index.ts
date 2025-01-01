@@ -1,4 +1,4 @@
-import prismaClient from './prisma-client';
+import dynamoDBClient from './dynamodb-client';
 import redisClient from './redis-client';
 import authPlugin from './auth-plugin';
 import publicMoviesPlugin from './public-movie-plugin';
@@ -7,7 +7,7 @@ import pollPlugin from './poll-plugin';
 import publicPollPlugin from './public-poll-plugin';
 
 export {
-  prismaClient,
+  dynamoDBClient,
   redisClient,
   authPlugin,
   publicMoviesPlugin,

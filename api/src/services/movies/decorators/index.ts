@@ -1,6 +1,6 @@
-import { UserSession } from '@prisma/client';
 import { FastifyInstance } from 'fastify';
 import { Movie } from '../../../../src/services/public-movies/types';
+import { UserSession } from 'app-types';
 
 export const searchMovies =
   (fastify: FastifyInstance) =>

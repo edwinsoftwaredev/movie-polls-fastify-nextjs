@@ -12,7 +12,7 @@
 
   - TypeScript
   - Fastify
-  - Prisma
+  - Amazon DynamoDB SDK
   - tRPC
   - Upstash SDK
   - Vercel SDK
@@ -48,7 +48,7 @@
 ## Deployment Environment
 
 - Vercel
-- AWS RDS
+- Amazon DynamoDB
 - Upstash
 - GitHub
 - Inngest
@@ -65,4 +65,3 @@
 - nodemon
 - ts-node
 - Node.js
- 

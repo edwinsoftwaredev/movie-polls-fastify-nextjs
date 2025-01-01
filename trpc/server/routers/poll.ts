@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { procedure, router } from '../init-tRPC';
-import { Poll, VotingToken } from '@prisma/client';
+import { Poll, VotingToken } from 'app-types';
 
-// TODO: Add Prisma-Zod generators
+// TODO: Add Zod generators
 const pollRouter = router({
   // GET: /polls/active
   activePolls: procedure.query(async ({ ctx }) => {

@@ -1,4 +1,3 @@
-import { UserSession, PrismaClient } from '@prisma/client';
 import { Redis } from '@upstash/redis';
 import { OAuth2Client, LoginTicket } from 'google-auth-library';
 // Current project configuration requires to define full path
@@ -21,6 +20,7 @@ import type {
 import type { SearchMovies } from '../../src/services/movies/decorators';
 
 import type {
+  CreateUser,
   DeleteAccount,
   GetUser,
 } from '../../src/services/auth/services/account/decorators';
@@ -52,19 +52,27 @@ import type {
 import type * as FastifySession from '@fastify/session';
 import type * as FastifyCsrf from '@fastify/csrf-protection';
 import type * as Fastify from 'fastify';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { UserSession } from 'app-types';
 
 declare module 'fastify' {
   interface FastifyInstance {
     redisClient: Redis;
-    prismaClient: PrismaClient;
+    dynamoDBClient: DynamoDBClient;
     googleOAuth2Client: OAuth2Client;
     verifyGoogleIdToken: (idToken: string) => Promise<LoginTicket>;
+
+    vars: {
+      usersTable: string;
+      PollsVotingTokenTable: string;
+    };
 
     // services
     account: {
       user: {
         getUser: GetUser;
         deleteAccount: DeleteAccount;
+        createUser: CreateUser;
       };
     };
 

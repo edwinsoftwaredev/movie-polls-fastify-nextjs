@@ -3,7 +3,8 @@
   "workspaces": [
     "api",
     "web-client",
-    "trpc"
+    "trpc",
+    "app-types"
   ],
   "scripts": {
     "api:build": "yarn workspace api build",
@@ -26,15 +27,16 @@
     "@typescript-eslint/eslint-plugin": "^8.5.0",
     "@typescript-eslint/parser": "^8.5.0",
     "eslint": "^8.57.0",
-    "prisma": "^5.19.1",
     "typescript": "5.5.4"
   },
   "packageManager": "yarn@4.1.1",
   "dependencies": {
-    "@prisma/client": "^5.19.1",
     "@tanstack/react-query": "4.36.1",
     "@trpc/client": "^10.45.2",
     "@trpc/react-query": "^10.45.2",
     "@trpc/server": "^10.45.2"
+  },
+  "resolutions": {
+    "@types/react": "18.3.5"
   }
 }
