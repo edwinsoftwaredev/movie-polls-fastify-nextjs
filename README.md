@@ -1,6 +1,6 @@
 # Movie Polls
 
-![system-architecture](https://github.com/edwinsoftwaredev/movie-polls-fastify-nextjs/assets/12868992/f9b9360d-cf32-43db-b40c-bc9b01eead47)
+![system-architecture](https://github.com/user-attachments/assets/fe8d083b-0104-418d-a4d3-431dbb75e864)
 
 ![screenshot](https://github.com/user-attachments/assets/f8deb62e-42ab-411b-a52d-ac2ceeb828d4)
 
