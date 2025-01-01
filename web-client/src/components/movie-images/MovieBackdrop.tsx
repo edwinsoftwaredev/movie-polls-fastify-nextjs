@@ -49,8 +49,8 @@ const MovieBackdrop: React.FC<{
         aspectRatio: isBackdrop
           ? '16 / 9'
           : isNarrowViewport || isPoster
-          ? '6 / 9'
-          : '16 / 9',
+            ? '6 / 9'
+            : '16 / 9',
         maxWidth:
           (typeof maxWidth === 'number' &&
             !isNarrowViewport &&
@@ -88,13 +88,12 @@ const MovieBackdrop: React.FC<{
         placeholder={'empty'}
         loading={'lazy'}
         fill={true}
-        sizes={`(min-width: 300px) 780px, (min-width: 780px) ${
-          showHD && !isNarrowViewport ? '1280px' : '780px'
-        } , (min-width: 1280px) ${
-          showHD && !isNarrowViewport ? '1280px' : '780px'
-        }, (min-width: 1920px) ${
-          showHD && !isNarrowViewport ? '100vw' : '780px'
-        }, 100vw`}
+        sizes={
+          `(min-width: 300px) 780px, (min-width: 780px) ${showHD && !isNarrowViewport ? '1280px' : '780px'
+          }, (min-width: 1280px) ${showHD && !isNarrowViewport ? '1280px' : '780px'
+          }, (min-width: 1920px) ${showHD && !isNarrowViewport ? '100vw' : '780px'
+          }, 100vw`
+        }
         quality={100}
         alt={title}
       />
