@@ -1,4 +1,3 @@
-import { fetch } from 'undici';
 import { MovieDetail } from '../types';
 
 export const movieDetails = async (

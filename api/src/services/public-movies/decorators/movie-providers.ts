@@ -1,4 +1,3 @@
-import { fetch } from 'undici';
 import { MovieProviders as MovieProvidersType } from '../types';
 
 export const movieProviders = async (

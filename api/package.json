@@ -26,8 +26,7 @@
     "fastify": "^5.0.0",
     "fastify-plugin": "^5.0.1",
     "google-auth-library": "^9.14.1",
-    "trpc": "1.0.0",
-    "undici": "^6.19.8"
+    "trpc": "1.0.0"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {

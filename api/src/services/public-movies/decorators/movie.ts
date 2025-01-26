@@ -1,4 +1,3 @@
-import { fetch } from 'undici';
 import { Movie as MovieType } from '../types';
 
 const imageLanguage: Record<string, string> = {
