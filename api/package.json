@@ -23,7 +23,7 @@
     "@vercel/edge": "^1.1.2",
     "app-types": "1.0.0",
     "dotenv": "^16.4.5",
-    "fastify": "^5.0.0",
+    "fastify": "^5.3.1",
     "fastify-plugin": "^5.0.1",
     "google-auth-library": "^9.14.1",
     "trpc": "1.0.0"
