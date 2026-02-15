@@ -3184,10 +3184,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:^10.45.2":
-  version: 10.45.2
-  resolution: "@trpc/server@npm:10.45.2"
-  checksum: 10/0f3fdb5cd505c9f6947e00d67d61663cf87c51c9a591e5f3443f62b37b7d78e1f729cc6784090ec46e4a3c38e73277170590be8eeb8c4ee3dffcc80a3557c1a4
+"@trpc/server@npm:^10.45.3":
+  version: 10.45.3
+  resolution: "@trpc/server@npm:10.45.3"
+  checksum: 10/5d968d7938de4e23e779d0c8d1bcb0c8ac14d51dcd55f612631b06474428f0973638c6bb881ec23315207efc1d9b55fe596dd5ca0ade52af724d92935492a71a
   languageName: node
   linkType: hard
 
@@ -8030,7 +8030,7 @@ __metadata:
     "@tanstack/react-query": "npm:4.36.1"
     "@trpc/client": "npm:^10.45.2"
     "@trpc/react-query": "npm:^10.45.2"
-    "@trpc/server": "npm:^10.45.2"
+    "@trpc/server": "npm:^10.45.3"
     "@types/node": "npm:^22.7.4"
     "@typescript-eslint/eslint-plugin": "npm:^8.8.0"
     "@typescript-eslint/parser": "npm:^8.8.0"
